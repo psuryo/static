@@ -1,295 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panduan dan Soal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<h2 class="sr-only">Panduan pengerjaan Backend Testing dan Benchmarking untuk tugas framework Spring Boot</h2>
+    :root {
+      --bg:        #0d0f14;
+      --surface:   #141720;
+      --border:    #252a38;
+      --accent:    #4f8ef7;
+      --accent2:   #7dd3a8;
+      --text:      #e4e8f5;
+      --muted:     #6b738f;
+      --tag-bg:    rgba(79,142,247,0.12);
+      --radius:    12px;
+    }
 
-<style>
-  .guide-root { font-family: var(--font-sans); padding: 1rem 0; color: var(--color-text-primary); }
-  .section-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
-  .section-title { font-size: 15px; font-weight: 500; margin: 0 0 1rem; display: flex; align-items: center; gap: 8px; }
-  .badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 99px; }
-  .badge-blue { background: #E6F1FB; color: #0C447C; }
-  .badge-amber { background: #FAEEDA; color: #633806; }
-  .step { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
-  .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--color-text-secondary); }
-  .step-body { flex: 1; }
-  .step-title { font-size: 14px; font-weight: 500; margin: 0 0 2px; }
-  .step-desc { font-size: 13px; color: var(--color-text-secondary); margin: 0; line-height: 1.6; }
-  code { font-family: var(--font-mono); font-size: 12px; background: var(--color-background-secondary); padding: 1px 5px; border-radius: 4px; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
-  .checklist { list-style: none; padding: 0; margin: 0; }
-  .checklist li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; padding: 5px 0; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); line-height: 1.5; }
-  .checklist li:last-child { border-bottom: none; }
-  .checklist li i { color: #1D9E75; flex-shrink: 0; margin-top: 1px; }
-  .threshold { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .threshold:last-child { border-bottom: none; }
-  .threshold-label { color: var(--color-text-secondary); }
-  .threshold-val { font-weight: 500; color: var(--color-text-primary); font-family: var(--font-mono); font-size: 12px; }
-  .dep-block { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; margin: 8px 0; font-family: var(--font-mono); font-size: 12px; color: var(--color-text-primary); line-height: 1.8; }
-  .tab-row { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
-  .tab-btn { font-size: 13px; padding: 5px 14px; border-radius: 99px; border: 0.5px solid var(--color-border-secondary); background: transparent; cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; }
-  .tab-btn.active { background: var(--color-background-primary); border-color: var(--color-border-primary); color: var(--color-text-primary); font-weight: 500; }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-  .warn-box { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 8px 12px; font-size: 13px; color: #633806; margin-top: 8px; }
-  .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .prog-label { font-size: 13px; color: var(--color-text-secondary); min-width: 140px; }
-  .prog-bar-wrap { flex: 1; height: 6px; background: var(--color-background-secondary); border-radius: 99px; overflow: hidden; }
-  .prog-bar { height: 100%; border-radius: 99px; }
-  .prog-val { font-size: 12px; font-weight: 500; min-width: 36px; text-align: right; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  @media (max-width: 500px) { .grid2 { grid-template-columns: 1fr; } }
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2.5rem 1.25rem 5rem;
+      background-image:
+        radial-gradient(ellipse 70% 50% at 80% -10%, rgba(79,142,247,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at -5% 90%, rgba(125,211,168,0.08) 0%, transparent 55%);
+    }
 
-  /* Per-tab accent colors */
-  .tab-setup    { --tab-bg: #E6F1FB; --tab-border: #85B7EB; --tab-text: #0C447C; --tab-num-bg: #B5D4F4; --tab-accent: #185FA5; }
-  .tab-unit     { --tab-bg: #EAF3DE; --tab-border: #97C459; --tab-text: #27500A; --tab-num-bg: #C0DD97; --tab-accent: #3B6D11; }
-  .tab-integ    { --tab-bg: #EEEDFE; --tab-border: #AFA9EC; --tab-text: #3C3489; --tab-num-bg: #CECBF6; --tab-accent: #534AB7; }
-  .tab-cov      { --tab-bg: #E1F5EE; --tab-border: #5DCAA5; --tab-text: #085041; --tab-num-bg: #9FE1CB; --tab-accent: #0F6E56; }
-  .tab-load     { --tab-bg: #FAEEDA; --tab-border: #EF9F27; --tab-text: #633806; --tab-num-bg: #FAC775; --tab-accent: #BA7517; }
-  .tab-bukti    { --tab-bg: #FAECE7; --tab-border: #F0997B; --tab-text: #711B13; --tab-num-bg: #F5C4B3; --tab-accent: #993C1D; }
+    .wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+    }
 
-  .section-header {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--tab-bg); border-left: 4px solid var(--tab-accent);
-    border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 1.25rem;
-  }
-  .section-header i { color: var(--tab-accent); font-size: 18px; }
-  .section-header span { font-size: 14px; font-weight: 500; color: var(--tab-text); }
+    /* ── Header ── */
+    header {
+      margin-bottom: 3rem;
+      animation: fadeUp .55s ease both;
+    }
 
-  .colored-step-num {
-    background: var(--tab-num-bg) !important;
-    color: var(--tab-text) !important;
-    border-color: var(--tab-border) !important;
-  }
-  .colored-dep-block {
-    border-left: 3px solid var(--tab-border);
-  }
-  .tab-btn.active-setup  { background: #E6F1FB; border-color: #185FA5; color: #0C447C; }
-  .tab-btn.active-unit   { background: #EAF3DE; border-color: #3B6D11; color: #27500A; }
-  .tab-btn.active-integ  { background: #EEEDFE; border-color: #534AB7; color: #3C3489; }
-  .tab-btn.active-cov    { background: #E1F5EE; border-color: #0F6E56; color: #085041; }
-  .tab-btn.active-load   { background: #FAEEDA; border-color: #BA7517; color: #633806; }
-  .tab-btn.active-bukti  { background: #FAECE7; border-color: #993C1D; color: #711B13; }
-</style>
+    .header-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      letter-spacing: .18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: .65rem;
+      opacity: .85;
+    }
 
-<div class="guide-root">
+    h1 {
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
 
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;">
-    <i class="ti ti-flask" style="font-size:20px;color:#185FA5;" aria-hidden="true"></i>
-    <span style="font-size:18px;font-weight:500;">Panduan Backend Testing & Benchmarking</span>
-    <span class="badge badge-blue">Spring Boot</span>
-  </div>
+    h1 span {
+      color: var(--accent2);
+    }
 
-  <div class="tab-row">
-    <button class="tab-btn active" onclick="switchTab('setup')">1. Setup</button>
-    <button class="tab-btn" onclick="switchTab('unit')">2. Unit Test</button>
-    <button class="tab-btn" onclick="switchTab('integration')">3. Integration Test</button>
-    <button class="tab-btn" onclick="switchTab('coverage')">4. Coverage</button>
-    <button class="tab-btn" onclick="switchTab('load')">5. Load Test</button>
-    <button class="tab-btn" onclick="switchTab('bukti')">6. Bukti</button>
-  </div>
+    .header-desc {
+      margin-top: .85rem;
+      color: var(--muted);
+      font-size: .92rem;
+      line-height: 1.6;
+    }
 
-  <!-- TAB 1: SETUP -->
-  <div id="tab-setup" class="tab-content active tab-setup">
-    <div class="section-card">
-      <div class="section-header"><i class="ti ti-package" aria-hidden="true"></i><span>Tambahkan dependensi ke <code>pom.xml</code></span></div>
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <p class="step-title">JUnit 5 + Mockito</p>
-          <p class="step-desc">Sudah otomatis tersedia jika menggunakan <code>spring-boot-starter-test</code>. Pastikan ada di pom.xml:</p>
-          <div class="dep-block">&lt;dependency&gt;<br>&nbsp;&nbsp;&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;<br>&nbsp;&nbsp;&lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;<br>&nbsp;&nbsp;&lt;scope&gt;test&lt;/scope&gt;<br>&lt;/dependency&gt;</div>
+    /* ── Section heading ── */
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1rem;
+      animation: fadeUp .55s ease both;
+    }
+
+    .section-heading h2 {
+      font-size: .78rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Card list ── */
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      animation: fadeUp .55s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 60%, rgba(79,142,247,0.04));
+      pointer-events: none;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(79,142,247,0.12);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+
+    .icon-blue  { background: rgba(79,142,247,0.15); color: var(--accent); }
+    .icon-green { background: rgba(125,211,168,0.15); color: var(--accent2); }
+    .icon-amber { background: rgba(251,191,36,0.13);  color: #fbbf24; }
+
+    .card-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-title {
+      font-size: .97rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: .22rem;
+    }
+
+    .card-url {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .66rem;
+      padding: .22rem .55rem;
+      border-radius: 99px;
+      background: var(--tag-bg);
+      color: var(--accent);
+      flex-shrink: 0;
+      letter-spacing: .05em;
+    }
+
+    .tag-soal    { background: rgba(251,191,36,0.12); color: #fbbf24; }
+    .tag-tugas   { background: rgba(125,211,168,0.12); color: var(--accent2); }
+    .tag-panduan { background: rgba(79,142,247,0.12);  color: var(--accent); }
+
+    .card-arrow {
+      color: var(--muted);
+      font-size: .9rem;
+      flex-shrink: 0;
+      transition: color .2s, transform .2s;
+    }
+
+    .card:hover .card-arrow {
+      color: var(--accent);
+      transform: translateX(3px);
+    }
+
+    /* ── Placeholder card (coming soon) ── */
+    .card-placeholder {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      color: var(--muted);
+      font-size: .88rem;
+      animation: fadeUp .55s ease both;
+    }
+
+    .card-placeholder-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px dashed var(--border);
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: .75rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      animation: fadeUp .55s ease both;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:nth-child(1) { animation-delay: .08s; }
+    .card:nth-child(2) { animation-delay: .16s; }
+    .card:nth-child(3) { animation-delay: .24s; }
+    .card:nth-child(4) { animation-delay: .32s; }
+    .card-placeholder  { animation-delay: .36s; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <header>
+      <p class="header-label">// index</p>
+      <h1>Panduan <span>&amp;</span> Soal</h1>
+      <p class="header-desc">Kumpulan tautan panduan, soal ujian, dan tugas untuk mata kuliah terkait.</p>
+    </header>
+
+    <!-- Panduan -->
+    <div class="section-heading" style="animation-delay:.05s">
+      <h2>Panduan</h2>
+    </div>
+
+    <div class="card-list">
+      <a class="card" href="https://panduan.philipus.my.id/backend-testing" target="_blank" rel="noopener">
+        <div class="card-icon icon-blue">⚙️</div>
+        <div class="card-body">
+          <div class="card-title">Panduan Backend Testing</div>
+          <div class="card-url">panduan.philipus.my.id/backend-testing</div>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <p class="step-title">Testcontainers (untuk Integration Test dengan DB)</p>
-          <div class="dep-block">&lt;dependency&gt;<br>&nbsp;&nbsp;&lt;groupId&gt;org.testcontainers&lt;/groupId&gt;<br>&nbsp;&nbsp;&lt;artifactId&gt;junit-jupiter&lt;/artifactId&gt;<br>&nbsp;&nbsp;&lt;scope&gt;test&lt;/scope&gt;<br>&lt;/dependency&gt;<br>&lt;dependency&gt;<br>&nbsp;&nbsp;&lt;groupId&gt;org.testcontainers&lt;/groupId&gt;<br>&nbsp;&nbsp;&lt;artifactId&gt;postgresql&lt;/artifactId&gt;<br>&nbsp;&nbsp;&lt;scope&gt;test&lt;/scope&gt;<br>&lt;/dependency&gt;</div>
+        <span class="card-tag tag-panduan">Panduan</span>
+        <span class="card-arrow">→</span>
+      </a>
+    </div>
+
+    <!-- Soal -->
+    <div class="section-heading" style="animation-delay:.15s">
+      <h2>Soal</h2>
+    </div>
+
+    <div class="card-list">
+      <a class="card" href="https://panduan.philipus.my.id/uas-tip4" target="_blank" rel="noopener">
+        <div class="card-icon icon-amber">📝</div>
+        <div class="card-body">
+          <div class="card-title">Soal UAS TIP 4</div>
+          <div class="card-url">panduan.philipus.my.id/uas-tip4</div>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <p class="step-title">JaCoCo plugin untuk code coverage</p>
-          <div class="dep-block">&lt;plugin&gt;<br>&nbsp;&nbsp;&lt;groupId&gt;org.jacoco&lt;/groupId&gt;<br>&nbsp;&nbsp;&lt;artifactId&gt;jacoco-maven-plugin&lt;/artifactId&gt;<br>&nbsp;&nbsp;&lt;version&gt;0.8.11&lt;/version&gt;<br>&lt;/plugin&gt;</div>
+        <span class="card-tag tag-soal">Soal</span>
+        <span class="card-arrow">→</span>
+      </a>
+    </div>
+
+    <!-- Tugas -->
+    <div class="section-heading" style="animation-delay:.22s">
+      <h2>Tugas</h2>
+    </div>
+
+    <div class="card-list">
+      <a class="card" href="https://panduan.philipus.my.id/tugasapps" target="_blank" rel="noopener">
+        <div class="card-icon icon-green">🛠️</div>
+        <div class="card-body">
+          <div class="card-title">Tugas Apps Script</div>
+          <div class="card-url">panduan.philipus.my.id/tugasapps</div>
         </div>
+        <span class="card-tag tag-tugas">Tugas</span>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <!-- Slot kosong untuk entri berikutnya -->
+      <div class="card-placeholder">
+        <div class="card-placeholder-icon">＋</div>
+        <span>Entri berikutnya akan ditambahkan di sini…</span>
       </div>
     </div>
-    <div class="warn-box"><i class="ti ti-alert-triangle" aria-hidden="true" style="margin-right:4px;"></i> Pastikan Docker Desktop aktif sebelum menjalankan Testcontainers — Docker dibutuhkan untuk spin-up DB container saat integration test.</div>
+
+    <footer>panduan.philipus.my.id &nbsp;·&nbsp; last updated 2026</footer>
   </div>
-
-  <!-- TAB 2: UNIT TEST -->
-  <div id="tab-unit" class="tab-content tab-unit">
-    <div class="section-card">
-      <div class="section-header"><i class="ti ti-microscope" aria-hidden="true"></i><span>Unit Testing — Service layer dengan Mockito</span></div>
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <p class="step-title">Buat file test di <code>src/test/java/…/service/</code></p>
-          <p class="step-desc">Satu file test per service class. Contoh: <code>ProductServiceTest.java</code></p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <p class="step-title">Gunakan anotasi <code>@ExtendWith(MockitoExtension.class)</code></p>
-          <p class="step-desc">Mock repository dengan <code>@Mock</code>, inject ke service dengan <code>@InjectMocks</code>. Jangan load Spring context — unit test harus cepat.</p>
-          <div class="dep-block">@ExtendWith(MockitoExtension.class)<br>class ProductServiceTest {<br>&nbsp;&nbsp;@Mock ProductRepository repo;<br>&nbsp;&nbsp;@InjectMocks ProductService service;<br><br>&nbsp;&nbsp;@Test<br>&nbsp;&nbsp;void findById_returnsProduct() {<br>&nbsp;&nbsp;&nbsp;&nbsp;when(repo.findById(1L)).thenReturn(Optional.of(new Product()));<br>&nbsp;&nbsp;&nbsp;&nbsp;assertNotNull(service.findById(1L));<br>&nbsp;&nbsp;}<br>}</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <p class="step-title">Pastikan semua service class punya test</p>
-          <p class="step-desc">Requirement: <em>all service classes</em>. Cek semua file di package <code>service/</code>, buat test untuk setiap method publik.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB 3: INTEGRATION TEST -->
-  <div id="tab-integration" class="tab-content tab-integ">
-    <div class="section-card">
-      <div class="section-header"><i class="ti ti-plug-connected" aria-hidden="true"></i><span>Integration Testing — Controller endpoints</span></div>
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <p class="step-title">Gunakan <code>@SpringBootTest</code> + <code>MockMvc</code></p>
-          <p class="step-desc">Load full Spring context. Gunakan <code>MockMvc</code> untuk kirim request HTTP simulasi ke setiap endpoint controller.</p>
-          <div class="dep-block">@SpringBootTest<br>@AutoConfigureMockMvc<br>class ProductControllerTest {<br>&nbsp;&nbsp;@Autowired MockMvc mockMvc;<br><br>&nbsp;&nbsp;@Test<br>&nbsp;&nbsp;void getProducts_returns200() throws Exception {<br>&nbsp;&nbsp;&nbsp;&nbsp;mockMvc.perform(get("/api/products"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.andExpect(status().isOk());<br>&nbsp;&nbsp;}<br>}</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <p class="step-title">Gunakan Testcontainers untuk DB nyata</p>
-          <p class="step-desc">Tambahkan <code>@Testcontainers</code> dan deklarasikan container PostgreSQL agar test menggunakan DB asli, bukan H2 in-memory.</p>
-          <div class="dep-block">@Testcontainers<br>@SpringBootTest<br>class ProductIntegrationTest {<br>&nbsp;&nbsp;@Container<br>&nbsp;&nbsp;static PostgreSQLContainer&lt;?&gt; db =<br>&nbsp;&nbsp;&nbsp;&nbsp;new PostgreSQLContainer&lt;&gt;("postgres:15");<br><br>&nbsp;&nbsp;@DynamicPropertySource<br>&nbsp;&nbsp;static void props(DynamicPropertyRegistry r) {<br>&nbsp;&nbsp;&nbsp;&nbsp;r.add("spring.datasource.url", db::getJdbcUrl);<br>&nbsp;&nbsp;&nbsp;&nbsp;r.add("spring.datasource.username", db::getUsername);<br>&nbsp;&nbsp;&nbsp;&nbsp;r.add("spring.datasource.password", db::getPassword);<br>&nbsp;&nbsp;}<br>}</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <p class="step-title">Test semua endpoint di setiap controller</p>
-          <p class="step-desc">Cek: GET (list & by ID), POST (create), PUT/PATCH (update), DELETE. Verifikasi status code dan response body.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB 4: COVERAGE -->
-  <div id="tab-coverage" class="tab-content tab-cov">
-    <div class="section-card">
-      <div class="section-header"><i class="ti ti-chart-bar" aria-hidden="true"></i><span>Code Coverage ≥ 70% dengan JaCoCo</span></div>
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <p class="step-title">Konfigurasi JaCoCo di <code>pom.xml</code></p>
-          <div class="dep-block">&lt;plugin&gt;<br>&nbsp;&nbsp;&lt;groupId&gt;org.jacoco&lt;/groupId&gt;<br>&nbsp;&nbsp;&lt;artifactId&gt;jacoco-maven-plugin&lt;/artifactId&gt;<br>&nbsp;&nbsp;&lt;executions&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;execution&gt;&lt;id&gt;prepare-agent&lt;/id&gt;&lt;goals&gt;&lt;goal&gt;prepare-agent&lt;/goal&gt;&lt;/goals&gt;&lt;/execution&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;execution&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;id&gt;report&lt;/id&gt;&lt;phase&gt;verify&lt;/phase&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;goals&gt;&lt;goal&gt;report&lt;/goal&gt;&lt;/goals&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/execution&gt;<br>&nbsp;&nbsp;&lt;/executions&gt;<br>&lt;/plugin&gt;</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <p class="step-title">Jalankan dan lihat laporan</p>
-          <div class="dep-block">mvn clean verify</div>
-          <p class="step-desc" style="margin-top:6px;">Buka <code>target/site/jacoco/index.html</code> di browser. Fokus pada kolom <em>Missed Instructions</em> di package <code>service</code> dan <code>controller</code>.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <p class="step-title">Target cakupan per package</p>
-          <div style="margin-top:6px;">
-            <div class="progress-row">
-              <span class="prog-label">service package</span>
-              <div class="prog-bar-wrap"><div class="prog-bar" style="width:70%;background:#1D9E75;"></div></div>
-              <span class="prog-val" style="color:#1D9E75;">≥ 70%</span>
-            </div>
-            <div class="progress-row">
-              <span class="prog-label">controller package</span>
-              <div class="prog-bar-wrap"><div class="prog-bar" style="width:70%;background:#1D9E75;"></div></div>
-              <span class="prog-val" style="color:#1D9E75;">≥ 70%</span>
-            </div>
-          </div>
-          <p class="step-desc" style="margin-top:6px;">Jika masih di bawah 70%, tambah test case untuk branch/condition yang belum ter-cover (lihat highlight merah di laporan HTML JaCoCo).</p>
-        </div>
-      </div>
-    </div>
-    <div class="warn-box"><i class="ti ti-info-circle" aria-hidden="true" style="margin-right:4px;"></i> Screenshot laporan JaCoCo (HTML) sebagai bukti submission. Pastikan nama package dan persentase coverage terlihat jelas.</div>
-  </div>
-
-  <!-- TAB 5: LOAD TEST -->
-  <div id="tab-load" class="tab-content tab-load">
-    <div class="section-card">
-      <div class="section-header"><i class="ti ti-antenna" aria-hidden="true"></i><span>Load Benchmarking — k6 (rekomendasi) atau JMeter</span></div>
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <p class="step-title">Install k6</p>
-          <div class="dep-block">winget install k6  # Windows<br>brew install k6   # macOS</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <p class="step-title">Buat script <code>load-test.js</code> — simulasi user journey</p>
-          <div class="dep-block">import http from 'k6/http';<br>import { sleep } from 'k6';<br><br>export const options = {<br>&nbsp;&nbsp;vus: 50,        // 50 concurrent users<br>&nbsp;&nbsp;duration: '5m', // 5 menit<br>};<br><br>export default function () {<br>&nbsp;&nbsp;// 1. Login<br>&nbsp;&nbsp;const loginRes = http.post('/api/auth/login', JSON.stringify({...}));<br>&nbsp;&nbsp;const token = loginRes.json('token');<br><br>&nbsp;&nbsp;// 2. Fetch list<br>&nbsp;&nbsp;http.get('/api/products', { headers: { Authorization: `Bearer ${token}` } });<br><br>&nbsp;&nbsp;// 3. Create resource<br>&nbsp;&nbsp;http.post('/api/products', JSON.stringify({...}));<br><br>&nbsp;&nbsp;// 4. Logout<br>&nbsp;&nbsp;http.post('/api/auth/logout');<br>&nbsp;&nbsp;sleep(1);<br>}</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <p class="step-title">Jalankan dan simpan hasil</p>
-          <div class="dep-block">k6 run --out json=result.json load-test.js</div>
-          <p class="step-desc" style="margin-top:6px;">Atau gunakan JMeter dan export <code>.jtl</code> report.</p>
-        </div>
-      </div>
-    </div>
-    <div class="section-card" style="margin-top:0;">
-      <div class="section-header"><i class="ti ti-target" aria-hidden="true"></i><span>Pass threshold yang harus terpenuhi</span></div>
-      <div class="threshold"><span class="threshold-label">API throughput</span><span class="threshold-val">≥ 100 req/s @ 50 VU</span></div>
-      <div class="threshold"><span class="threshold-label">p95 latency</span><span class="threshold-val">&lt; 500ms</span></div>
-      <div class="threshold"><span class="threshold-label">Error rate</span><span class="threshold-val">&lt; 1%</span></div>
-      <div class="threshold"><span class="threshold-label">DB query</span><span class="threshold-val">tidak ada query &gt; 200ms</span></div>
-      <div class="threshold"><span class="threshold-label">JVM memory</span><span class="threshold-val">tidak heap exhaustion selama 5 menit</span></div>
-    </div>
-    <div class="warn-box"><i class="ti ti-bulb" aria-hidden="true" style="margin-right:4px;"></i> Untuk DB query performance, aktifkan slow query log di PostgreSQL atau gunakan Spring Actuator endpoint <code>/actuator/metrics</code> sambil load test berjalan.</div>
-  </div>
-
-  <!-- TAB 6: BUKTI -->
-  <div id="tab-bukti" class="tab-content tab-bukti">
-    <div class="section-card">
-      <div class="section-header"><i class="ti ti-clipboard-check" aria-hidden="true"></i><span>Checklist bukti yang perlu dikumpulkan</span></div>
-      <ul class="checklist">
-        <li><i class="ti ti-circle-check" aria-hidden="true"></i> Screenshot laporan JaCoCo (HTML) — pastikan ≥ 70% line coverage di package service dan controller terlihat</li>
-        <li><i class="ti ti-circle-check" aria-hidden="true"></i> Output <code>mvn test</code> atau <code>mvn verify</code> di terminal — semua test hijau (BUILD SUCCESS)</li>
-        <li><i class="ti ti-circle-check" aria-hidden="true"></i> File <code>result.json</code> dari k6 <strong>atau</strong> file <code>.jtl</code> dari JMeter</li>
-        <li><i class="ti ti-circle-check" aria-hidden="true"></i> Screenshot summary k6 di terminal (atau JMeter Summary Report) yang menampilkan throughput, p95 latency, dan error rate</li>
-        <li><i class="ti ti-circle-check" aria-hidden="true"></i> Kode test (file <code>*Test.java</code>) tersedia di repository GitHub</li>
-        <li><i class="ti ti-circle-check" aria-hidden="true"></i> Script load test (<code>load-test.js</code> atau JMeter <code>.jmx</code>) juga tersedia di repo</li>
-      </ul>
-    </div>
-    <div class="section-card" style="background:var(--color-background-secondary);">
-      <div class="section-header"><i class="ti ti-route" aria-hidden="true"></i><span>Urutan pengerjaan yang disarankan</span></div>
-      <div class="step"><div class="step-num" style="background:#E6F1FB;color:#185FA5;border-color:#B5D4F4;">1</div><div class="step-body"><p class="step-desc">Tambah dependensi di <code>pom.xml</code> dan pastikan build berhasil</p></div></div>
-      <div class="step"><div class="step-num" style="background:#E6F1FB;color:#185FA5;border-color:#B5D4F4;">2</div><div class="step-body"><p class="step-desc">Tulis unit test untuk semua service class</p></div></div>
-      <div class="step"><div class="step-num" style="background:#E6F1FB;color:#185FA5;border-color:#B5D4F4;">3</div><div class="step-body"><p class="step-desc">Tulis integration test untuk semua controller endpoint</p></div></div>
-      <div class="step"><div class="step-num" style="background:#E6F1FB;color:#185FA5;border-color:#B5D4F4;">4</div><div class="step-body"><p class="step-desc">Jalankan <code>mvn verify</code> dan cek laporan JaCoCo — iterasi sampai ≥ 70%</p></div></div>
-      <div class="step"><div class="step-num" style="background:#E6F1FB;color:#185FA5;border-color:#B5D4F4;">5</div><div class="step-body"><p class="step-desc">Jalankan aplikasi, lalu eksekusi k6/JMeter, verifikasi semua threshold terpenuhi</p></div></div>
-      <div class="step" style="margin-bottom:0;"><div class="step-num" style="background:#E6F1FB;color:#185FA5;border-color:#B5D4F4;">6</div><div class="step-body"><p class="step-desc">Kumpulkan semua bukti screenshot dan file ke repo</p></div></div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-const tabColors = { setup:'active-setup', unit:'active-unit', integration:'active-integ', coverage:'active-cov', load:'active-load', bukti:'active-bukti' };
-function switchTab(id) {
-  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); Object.values(tabColors).forEach(c => b.classList.remove(c)); });
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
-  if (tabColors[id]) event.target.classList.add(tabColors[id]);
-}
-// init first tab button color
-document.querySelector('.tab-btn.active').classList.add('active-setup');
-</script>
+</body>
+</html>
