@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul Sesi 6 — Google Apps Script</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:     #0B1D3A;
+    --teal:     #0891B2;
+    --teal-md:  #06B6D4;
+    --teal-lt:  #CFFAFE;
+    --teal-xs:  #ECFEFF;
+    --green:    #059669;
+    --green-lt: #D1FAE5;
+    --green-xs: #ECFDF5;
+    --blue:     #1A56DB;
+    --blue-lt:  #DBEAFE;
+    --blue-xs:  #EFF6FF;
+    --purple:   #7C3AED;
+    --purple-lt:#EDE9FE;
+    --purple-xs:#F5F3FF;
+    --orange:   #D97706;
+    --orange-lt:#FEF3C7;
+    --orange-xs:#FFFBEB;
+    --pink:     #DB2777;
+    --pink-lt:  #FCE7F3;
+    --slate:    #64748B;
+    --border:   #E2E8F0;
+    --bg:       #F8FAFC;
+    --white:    #FFFFFF;
+    --code-bg:  #0F172A;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Sora', sans-serif; background: var(--bg); color: var(--navy); line-height: 1.7; font-size: 15px; }
+
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--teal), #67E8F9);
+    width: 0%; z-index: 9999; transition: width 0.1s linear;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
+    background: var(--navy); padding: 24px 0; overflow-y: auto;
+    z-index: 100; display: flex; flex-direction: column; transition: transform 0.3s ease;
+  }
+  .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; }
+  .sidebar-logo .badge { display: inline-block; background: var(--teal); color: white; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
+  .sidebar-logo h2 { font-size: 13px; font-weight: 700; color: white; line-height: 1.4; }
+  .sidebar-logo p  { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .nav-section-title { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 0 20px 8px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; text-decoration: none; color: rgba(255,255,255,0.55); font-size: 12.5px; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; }
+  .nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
+  .nav-item.active { color: white; background: rgba(6,182,212,0.15); border-left-color: var(--teal-md); }
+  .nav-item .nav-icon { font-size: 14px; flex-shrink: 0; }
+  .nav-item .nav-time { margin-left: auto; font-size: 10px; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); padding: 1px 6px; border-radius: 10px; }
+  .nav-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 10px 0; }
+  .nav-back { display: flex; align-items: center; gap: 8px; padding: 9px 20px; text-decoration: none; color: rgba(255,255,255,0.35); font-size: 11.5px; transition: color 0.2s; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; }
+  .nav-back:hover { color: rgba(255,255,255,0.7); }
+
+  /* ── MAIN ── */
+  .main { margin-left: 240px; min-height: 100vh; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #042F2E 0%, #064E3B 40%, #0C4A6E 100%);
+    padding: 64px 56px 56px; position: relative; overflow: hidden;
+  }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 420px; height: 420px; background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%); pointer-events: none; }
+  .hero::after  { content: ''; position: absolute; bottom: -40px; left: 180px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(5,150,105,0.15) 0%, transparent 70%); pointer-events: none; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(6,182,212,0.2); border: 1px solid rgba(6,182,212,0.4); color: #67E8F9; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 20px; }
+  .hero-badge span { width: 6px; height: 6px; background: #22D3EE; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+  .hero h1 { font-size: 36px; font-weight: 800; color: white; line-height: 1.15; margin-bottom: 12px; }
+  .hero h1 em { color: #67E8F9; font-style: normal; }
+  .hero .subtitle { font-size: 16px; color: rgba(255,255,255,0.6); max-width: 580px; margin-bottom: 36px; }
+  .hero-stats { display: flex; gap: 24px; flex-wrap: wrap; }
+  .stat-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
+  .stat-icon { font-size: 20px; }
+  .stat-label { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; }
+  .stat-value { font-size: 15px; font-weight: 700; color: white; }
+
+  /* ── SECTIONS ── */
+  .section { padding: 48px 56px; border-bottom: 1px solid var(--border); opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .section.visible { opacity: 1; transform: translateY(0); }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+  .section-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .section-icon.teal   { background: var(--teal-lt); }
+  .section-icon.green  { background: var(--green-lt); }
+  .section-icon.blue   { background: var(--blue-lt); }
+  .section-icon.purple { background: var(--purple-lt); }
+  .section-icon.orange { background: var(--orange-lt); }
+  .section-icon.pink   { background: var(--pink-lt); }
+  .section-icon.navy   { background: rgba(11,29,58,0.08); }
+  .section-tag { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 2px; }
+  .section-title { font-size: 22px; font-weight: 800; color: var(--navy); line-height: 1.2; }
+  .section-subtitle { font-size: 13.5px; color: var(--slate); margin-top: 2px; }
+
+  /* ── INFO BOXES ── */
+  .info-box { border-radius: 12px; padding: 18px 20px; margin: 16px 0; }
+  .info-box.teal   { background: var(--teal-xs);   border: 1px solid #A5F3FC; }
+  .info-box.green  { background: var(--green-xs);  border: 1px solid #A7F3D0; }
+  .info-box.blue   { background: var(--blue-xs);   border: 1px solid #BFDBFE; }
+  .info-box.purple { background: var(--purple-xs); border: 1px solid #DDD6FE; }
+  .info-box.orange { background: var(--orange-xs); border: 1px solid #FDE68A; }
+  .info-box.navy   { background: rgba(11,29,58,0.04); border: 1px solid rgba(11,29,58,0.12); }
+  .info-box-title  { font-size: 13px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .info-box.teal   .info-box-title { color: var(--teal); }
+  .info-box.green  .info-box-title { color: var(--green); }
+  .info-box.blue   .info-box-title { color: var(--blue); }
+  .info-box.purple .info-box-title { color: var(--purple); }
+  .info-box.orange .info-box-title { color: var(--orange); }
+  .info-box p { font-size: 13.5px; color: var(--navy); line-height: 1.7; }
+
+  /* ── PROJECT OPTION CARDS ── */
+  .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin: 20px 0; }
+  .project-card { background: white; border: 2px solid var(--border); border-radius: 16px; overflow: hidden; transition: all 0.25s; cursor: default; }
+  .project-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.10); }
+  .project-card.featured { border-color: var(--teal); }
+  .project-top { padding: 20px 22px 16px; }
+  .project-emoji { font-size: 32px; margin-bottom: 10px; }
+  .project-title { font-size: 16px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+  .project-desc  { font-size: 13px; color: var(--slate); line-height: 1.6; }
+  .project-bottom { padding: 14px 22px; border-top: 1px solid var(--border); background: var(--bg); }
+  .project-features { display: flex; flex-direction: column; gap: 5px; }
+  .project-feature { font-size: 12px; color: var(--slate); display: flex; align-items: center; gap: 7px; }
+  .project-feature::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; }
+  .project-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; margin-bottom: 10px; }
+  .badge-rec  { background: var(--teal-lt); color: var(--teal); }
+  .badge-adv  { background: var(--purple-lt); color: var(--purple); }
+  .badge-chal { background: var(--orange-lt); color: var(--orange); }
+
+  /* ── SESSIONS RECAP ── */
+  .recap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+  .recap-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; border-top: 3px solid var(--color, var(--teal)); }
+  .recap-num  { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--color, var(--teal)); margin-bottom: 4px; }
+  .recap-title{ font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .recap-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .recap-tag  { font-size: 10px; font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--slate); border: 1px solid var(--border); padding: 2px 7px; border-radius: 10px; }
+
+  /* ── TIMELINE ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .timeline-item { display: flex; gap: 20px; position: relative; }
+  .timeline-item:not(:last-child)::before { content: ''; position: absolute; left: 19px; top: 44px; bottom: 0; width: 2px; background: var(--border); }
+  .timeline-dot { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; color: white; z-index: 1; }
+  .dot-teal   { background: var(--teal); }
+  .dot-blue   { background: var(--blue); }
+  .dot-green  { background: var(--green); }
+  .dot-orange { background: var(--orange); }
+  .dot-navy   { background: var(--navy); }
+  .timeline-content { flex: 1; padding-bottom: 24px; }
+  .timeline-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+  .timeline-meta  { font-size: 12px; color: var(--slate); margin-bottom: 6px; }
+  .timeline-desc  { font-size: 13px; color: var(--slate); }
+
+  /* ── CODE BLOCK ── */
+  .code-block { background: var(--code-bg); border-radius: 14px; overflow: hidden; margin: 16px 0; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .code-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot { width: 11px; height: 11px; border-radius: 50%; }
+  .code-dot.red    { background: #FF5F57; }
+  .code-dot.yellow { background: #FEBC2E; }
+  .code-dot.green  { background: #28C840; }
+  .code-filename { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: rgba(255,255,255,0.35); }
+  .copy-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); font-size: 11px; padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-family: 'Sora', sans-serif; }
+  .copy-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+  .copy-btn.copied { color: #4ADE80; border-color: #4ADE80; }
+  pre { padding: 20px 22px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #CBD5E1; }
+  .kw  { color: #93C5FD; }
+  .fn  { color: #FDE68A; }
+  .str { color: #86EFAC; }
+  .cm  { color: #4B5563; font-style: italic; }
+  .mt  { color: #F9A8D4; }
+  .nm  { color: #FCA5A5; }
+  .vr  { color: #C4B5FD; }
+
+  /* ── STEPS ── */
+  .steps { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+  .step { display: flex; gap: 16px; align-items: flex-start; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; transition: border-color 0.2s; }
+  .step:hover { border-color: var(--teal-md); }
+  .step-num { width: 32px; height: 32px; border-radius: 8px; background: var(--teal); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  .step-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+  .step-desc  { font-size: 13px; color: var(--slate); line-height: 1.6; }
+  .step-desc code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--teal-xs); color: var(--teal); padding: 1px 6px; border-radius: 4px; }
+
+  /* ── OBJECTIVES ── */
+  .objectives-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 8px; }
+  .objective-card { display: flex; align-items: flex-start; gap: 12px; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; transition: box-shadow 0.2s, border-color 0.2s; }
+  .objective-card:hover { border-color: var(--teal-md); box-shadow: 0 4px 16px rgba(8,145,178,0.1); }
+  .obj-check { width: 24px; height: 24px; border-radius: 50%; background: var(--teal-lt); color: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+  .obj-text { font-size: 13.5px; font-weight: 500; color: var(--navy); line-height: 1.5; }
+
+  /* ── PRESENTATION RUBRIC ── */
+  .rubric-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .rubric-table thead tr { background: var(--navy); color: white; }
+  .rubric-table th { padding: 12px 14px; font-size: 12px; font-weight: 600; text-align: left; }
+  .rubric-table th:first-child { border-radius: 10px 0 0 0; }
+  .rubric-table th:last-child  { border-radius: 0 10px 0 0; }
+  .rubric-table td { padding: 12px 14px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .rubric-table tbody tr:nth-child(even) { background: var(--bg); }
+  .rubric-table tbody tr:hover { background: var(--teal-xs); }
+  .rubric-table td:first-child { font-weight: 700; color: var(--navy); }
+  .rubric-table td:last-child  { font-weight: 700; color: var(--teal); text-align: center; }
+  .rubric-total { background: var(--teal); color: white; font-weight: 700; }
+  .rubric-total td { color: white !important; padding: 14px; font-size: 14px; }
+
+  /* ── COMPLETION CARD ── */
+  .completion-card {
+    background: linear-gradient(135deg, #042F2E 0%, #064E3B 50%, #0C4A6E 100%);
+    border-radius: 20px; padding: 40px 44px; margin: 32px 0;
+    position: relative; overflow: hidden; text-align: center;
+  }
+  .completion-card::before { content: ''; position: absolute; top: -60px; right: -60px; width: 280px; height: 280px; background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%); }
+  .completion-card::after  { content: ''; position: absolute; bottom: -40px; left: -40px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(5,150,105,0.15) 0%, transparent 70%); }
+  .completion-trophy { font-size: 56px; margin-bottom: 16px; position: relative; z-index: 1; }
+  .completion-title { font-size: 28px; font-weight: 800; color: white; margin-bottom: 10px; position: relative; z-index: 1; }
+  .completion-sub   { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.7; max-width: 480px; margin: 0 auto 24px; position: relative; z-index: 1; }
+  .completion-skills { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; position: relative; z-index: 1; }
+  .skill-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 20px; }
+
+  /* ── CHEAT SHEET ── */
+  .cheat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin-top: 8px; }
+  .cheat-item { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .cheat-cmd { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--teal); font-weight: 500; background: var(--teal-xs); padding: 5px 10px; border-radius: 6px; display: inline-block; }
+  .cheat-desc { font-size: 12.5px; color: var(--slate); }
+  .cheat-session { font-size: 10px; font-weight: 700; color: rgba(8,145,178,0.5); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── FOOTER ── */
+  footer { background: white; border-top: 1px solid var(--border); padding: 24px 56px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  footer .footer-left  { font-size: 12px; color: var(--slate); }
+  footer .footer-right { font-size: 12px; color: var(--slate); }
+
+  /* ── MOBILE ── */
+  .menu-toggle { display: none; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--navy); color: white; border: none; border-radius: 8px; width: 36px; height: 36px; cursor: pointer; font-size: 16px; align-items: center; justify-content: center; }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .hero, .section { padding: 32px 20px; }
+    footer { padding: 20px; }
+    .menu-toggle { display: flex; }
+    .hero h1 { font-size: 26px; }
+    .recap-grid { grid-template-columns: repeat(2, 1fr); }
+    .project-grid { grid-template-columns: 1fr; }
+    .completion-card { padding: 28px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="badge">Sesi 6 — Final</div>
+    <h2>Google Apps Script</h2>
+    <p>Modul Praktikum Sekretaris</p>
+  </div>
+  <div class="nav-section-title">Navigasi</div>
+  <a class="nav-item active" href="#overview"><span class="nav-icon">📋</span> Gambaran Umum <span class="nav-time">10'</span></a>
+  <a class="nav-item" href="#recap"><span class="nav-icon">🔄</span> Rekap Sesi 1–5 <span class="nav-time">10'</span></a>
+  <a class="nav-item" href="#projects"><span class="nav-icon">🗂️</span> Pilihan Proyek</a>
+  <a class="nav-item" href="#project-a"><span class="nav-icon">📅</span> Proyek A — Cuti</a>
+  <a class="nav-item" href="#project-b"><span class="nav-icon">📝</span> Proyek B — Notulen</a>
+  <a class="nav-item" href="#project-c"><span class="nav-icon">📦</span> Proyek C — Stok</a>
+  <div class="nav-divider"></div>
+  <a class="nav-item" href="#presentation"><span class="nav-icon">🎤</span> Presentasi <span class="nav-time">30'</span></a>
+  <a class="nav-item" href="#closing"><span class="nav-icon">🏆</span> Penutup Kursus</a>
+  <div class="nav-divider"></div>
+  <a class="nav-back" href="index.html">← Kembali ke Dashboard</a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero" id="top">
+    <div class="hero-badge"><span></span> Sesi Terakhir • UKWMS Surabaya</div>
+    <h1>Capstone Project —<br><em>Office Automation Mini-Tool</em></h1>
+    <p class="subtitle">Sesi keenam dan terakhir — bangun satu tool kantor lengkap dari nol, gabungkan semua yang sudah dipelajari, lalu presentasikan hasilnya.</p>
+    <div class="hero-stats">
+      <div class="stat-card"><div class="stat-icon">⏱️</div><div><div class="stat-label">Durasi</div><div class="stat-value">90 Menit</div></div></div>
+      <div class="stat-card"><div class="stat-icon">🧩</div><div><div class="stat-label">Prasyarat</div><div class="stat-value">Semua Sesi</div></div></div>
+      <div class="stat-card"><div class="stat-icon">🎯</div><div><div class="stat-label">Format</div><div class="stat-value">Build + Presentasi</div></div></div>
+      <div class="stat-card"><div class="stat-icon">🏆</div><div><div class="stat-label">Output</div><div class="stat-value">Tool Siap Pakai</div></div></div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: OVERVIEW -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon teal">📋</div>
+      <div>
+        <div class="section-tag">Gambaran Umum</div>
+        <div class="section-title">Tujuan & Alokasi Waktu</div>
+      </div>
+    </div>
+
+    <div class="info-box teal" style="margin-bottom:28px;">
+      <div class="info-box-title">🎓 Ini Bukan Ujian — Ini Pameran Karya</div>
+      <p>Sesi terakhir ini bukan tentang menghafal syntax atau mengikuti instruksi langkah demi langkah. Ini adalah kesempatan Anda untuk <strong>membuktikan bahwa Anda bisa membangun sesuatu yang nyata dan berguna</strong>. Pilih satu dari tiga proyek yang tersedia, bangun dengan bebas, dan tunjukkan hasilnya kepada kelas. Tool yang Anda buat hari ini bisa langsung digunakan di kantor besok.</p>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:16px;">Setelah sesi ini, mahasiswa mampu:</h3>
+    <div class="objectives-grid">
+      <div class="objective-card"><div class="obj-check">✓</div><div class="obj-text">Merancang alur kerja tool kantor secara mandiri dari awal</div></div>
+      <div class="objective-card"><div class="obj-check">✓</div><div class="obj-text">Menggabungkan loop, kondisi, trigger, email, dan menu dalam satu script terpadu</div></div>
+      <div class="objective-card"><div class="obj-check">✓</div><div class="obj-text">Men-debug dan menyelesaikan masalah script secara mandiri</div></div>
+      <div class="objective-card"><div class="obj-check">✓</div><div class="obj-text">Mengemas tool agar bisa digunakan oleh non-programmer</div></div>
+      <div class="objective-card"><div class="obj-check">✓</div><div class="obj-text">Mempresentasikan tool dan menjelaskan cara kerjanya kepada audiens</div></div>
+      <div class="objective-card"><div class="obj-check">✓</div><div class="obj-text">Mengidentifikasi peluang otomasi lain di lingkungan kerja nyata</div></div>
+    </div>
+
+    <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:28px 0 16px;">Alokasi Waktu (90 Menit)</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot dot-teal">1</div>
+        <div class="timeline-content">
+          <div class="timeline-title">Rekap & Briefing Proyek</div>
+          <div class="timeline-meta">20 menit</div>
+          <div class="timeline-desc">Review cepat Sesi 1–5, penjelasan 3 pilihan proyek, dan pembagian kelompok atau individu</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot dot-blue">2</div>
+        <div class="timeline-content">
+          <div class="timeline-title">Build Time — Bangun Tool</div>
+          <div class="timeline-meta">40 menit</div>
+          <div class="timeline-desc">Mahasiswa memilih proyek dan membangun tool secara mandiri atau kelompok. Dosen berkeliling membantu.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot dot-green">3</div>
+        <div class="timeline-content">
+          <div class="timeline-title">Presentasi & Demo</div>
+          <div class="timeline-meta">25 menit</div>
+          <div class="timeline-desc">Setiap mahasiswa/kelompok demo tool mereka (3–4 menit), lalu satu pertanyaan dari kelas</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot dot-orange">4</div>
+        <div class="timeline-content">
+          <div class="timeline-title">Penutupan & Sertifikasi</div>
+          <div class="timeline-meta">5 menit</div>
+          <div class="timeline-desc">Refleksi perjalanan 6 sesi, apresiasi, dan langkah berikutnya setelah kursus ini</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: RECAP -->
+  <section class="section" id="recap">
+    <div class="section-header">
+      <div class="section-icon teal">🔄</div>
+      <div>
+        <div class="section-tag">Rekap Singkat</div>
+        <div class="section-title">Semua yang Sudah Anda Pelajari</div>
+        <div class="section-subtitle">6 sesi, 6 blok fondasi — semuanya tersedia untuk Capstone ini</div>
+      </div>
+    </div>
+
+    <div class="recap-grid">
+      <div class="recap-card" style="--color:#2563EB">
+        <div class="recap-num">Sesi 1</div>
+        <div class="recap-title">Baca & Tulis Data</div>
+        <div class="recap-tags">
+          <span class="recap-tag">getValue()</span>
+          <span class="recap-tag">setValue()</span>
+          <span class="recap-tag">getRange()</span>
+        </div>
+      </div>
+      <div class="recap-card" style="--color:#059669">
+        <div class="recap-num">Sesi 2</div>
+        <div class="recap-title">Loop & Banyak Baris</div>
+        <div class="recap-tags">
+          <span class="recap-tag">for loop</span>
+          <span class="recap-tag">getLastRow()</span>
+          <span class="recap-tag">let/const</span>
+        </div>
+      </div>
+      <div class="recap-card" style="--color:#D97706">
+        <div class="recap-num">Sesi 3</div>
+        <div class="recap-title">Kondisi & Warna</div>
+        <div class="recap-tags">
+          <span class="recap-tag">if/else</span>
+          <span class="recap-tag">setBackground()</span>
+          <span class="recap-tag">operator</span>
+        </div>
+      </div>
+      <div class="recap-card" style="--color:#7C3AED">
+        <div class="recap-num">Sesi 4</div>
+        <div class="recap-title">Form & Email</div>
+        <div class="recap-tags">
+          <span class="recap-tag">onFormSubmit</span>
+          <span class="recap-tag">e.values[]</span>
+          <span class="recap-tag">GmailApp</span>
+        </div>
+      </div>
+      <div class="recap-card" style="--color:#DB2777">
+        <div class="recap-num">Sesi 5</div>
+        <div class="recap-title">Menu & Dialog UI</div>
+        <div class="recap-tags">
+          <span class="recap-tag">onOpen()</span>
+          <span class="recap-tag">createMenu()</span>
+          <span class="recap-tag">ui.prompt()</span>
+        </div>
+      </div>
+      <div class="recap-card" style="--color:#0891B2">
+        <div class="recap-num">Sesi 6</div>
+        <div class="recap-title">Semua Digabung!</div>
+        <div class="recap-tags">
+          <span class="recap-tag">capstone</span>
+          <span class="recap-tag">integrasi</span>
+          <span class="recap-tag">presentasi</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box teal">
+      <div class="info-box-title">💡 Cara Menggunakan Rekap Ini</div>
+      <p>Selama build time, gunakan rekap ini sebagai referensi cepat. Jika Anda lupa sintaks tertentu, buka modul sesi yang relevan atau lihat Cheat Sheet di bagian bawah modul ini yang merangkum semua perintah dari Sesi 1–5.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3: PROJECT OPTIONS -->
+  <section class="section" id="projects">
+    <div class="section-header">
+      <div class="section-icon blue">🗂️</div>
+      <div>
+        <div class="section-tag">Pilih Proyek Anda</div>
+        <div class="section-title">Tiga Pilihan Tool Kantor</div>
+        <div class="section-subtitle">Pilih satu yang paling relevan dengan pekerjaan Anda</div>
+      </div>
+    </div>
+
+    <div class="project-grid">
+      <div class="project-card featured">
+        <div class="project-top">
+          <div class="project-badge badge-rec">⭐ Direkomendasikan</div>
+          <div class="project-emoji">📅</div>
+          <div class="project-title">Proyek A — Leave Request Tracker</div>
+          <div class="project-desc">Sistem pengajuan cuti lengkap: karyawan isi form → manager terima email notifikasi → data tercatat di sheet → konfirmasi terkirim ke karyawan.</div>
+        </div>
+        <div class="project-bottom">
+          <div class="project-features">
+            <div class="project-feature">Google Form untuk pengajuan cuti</div>
+            <div class="project-feature">Email otomatis ke manager & karyawan</div>
+            <div class="project-feature">Warna status di sheet (Pending/Approved)</div>
+            <div class="project-feature">Menu kustom untuk approve/reject</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-badge badge-adv">🔵 Menantang</div>
+          <div class="project-emoji">📝</div>
+          <div class="project-title">Proyek B — Meeting Minutes Logger</div>
+          <div class="project-desc">Tool notulen rapat digital: input judul rapat, peserta, dan poin diskusi via dialog → data terformat otomatis di sheet → ringkasan dikirim ke semua peserta.</div>
+        </div>
+        <div class="project-bottom">
+          <div class="project-features">
+            <div class="project-feature">Input data via ui.prompt() dialog</div>
+            <div class="project-feature">Format notulen otomatis di sheet</div>
+            <div class="project-feature">Kirim ringkasan via email ke semua peserta</div>
+            <div class="project-feature">Arsip notulen dengan timestamp</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-badge badge-chal">🟠 Kreatif</div>
+          <div class="project-emoji">📦</div>
+          <div class="project-title">Proyek C — Inventory Alert System</div>
+          <div class="project-desc">Sistem monitor stok: scan kolom jumlah stok → sorot merah jika di bawah batas minimum → kirim email peringatan ke PIC pengadaan secara otomatis.</div>
+        </div>
+        <div class="project-bottom">
+          <div class="project-features">
+            <div class="project-feature">Loop & kondisi untuk cek stok minimum</div>
+            <div class="project-feature">Highlight otomatis barang kritis</div>
+            <div class="project-feature">Email peringatan berformat HTML</div>
+            <div class="project-feature">Menu kustom "Cek Stok Sekarang"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: PROJECT A -->
+  <section class="section" id="project-a">
+    <div class="section-header">
+      <div class="section-icon blue">📅</div>
+      <div>
+        <div class="section-tag">Proyek A — Starter Kit</div>
+        <div class="section-title">Leave Request Tracker</div>
+        <div class="section-subtitle">Sistem pengajuan cuti otomatis end-to-end</div>
+      </div>
+    </div>
+
+    <div class="info-box navy" style="margin-bottom:20px;">
+      <div class="info-box-title">📋 Arsitektur Sistem</div>
+      <p><strong>Form</strong> (nama, email, tanggal mulai, tanggal akhir, alasan) → <strong>Trigger onFormSubmit</strong> → catat ke sheet dengan status "Pending" → warnai kuning → kirim email ke manager → kirim konfirmasi ke karyawan. Dosen bisa approve via menu kustom → status berubah "Approved" → warnai hijau → email persetujuan terkirim.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div>
+        <div class="code-filename">leaveTracker.gs — Starter Kit Proyek A</div>
+        <button class="copy-btn" onclick="copyCode(this,'code-a')">Salin</button>
+      </div>
+      <pre id="code-a"><span class="cm">// ════════════════════════════════════
+// LEAVE REQUEST TRACKER — Proyek A
+// Sesi 6 Capstone — UKWMS 2025
+// ════════════════════════════════════</span>
+
+<span class="kw">const</span> EMAIL_MANAGER = <span class="str">"manager@email.com"</span>; <span class="cm">// ← ganti dengan email manager</span>
+
+<span class="cm">// ── Menu kustom ──</span>
+<span class="kw">function</span> <span class="fn">onOpen</span>() {
+  <span class="mt">SpreadsheetApp</span>.<span class="fn">getUi</span>()
+    .<span class="fn">createMenu</span>(<span class="str">"📅 Leave Tracker"</span>)
+    .<span class="fn">addItem</span>(<span class="str">"✅ Approve Pengajuan Dipilih"</span>, <span class="str">"approveCuti"</span>)
+    .<span class="fn">addItem</span>(<span class="str">"❌ Tolak Pengajuan Dipilih"</span>,   <span class="str">"tolakCuti"</span>)
+    .<span class="fn">addSeparator</span>()
+    .<span class="fn">addItem</span>(<span class="str">"📊 Lihat Ringkasan Cuti"</span>,       <span class="str">"ringkasanCuti"</span>)
+    .<span class="fn">addToUi</span>();
+}
+
+<span class="cm">// ── Trigger: saat form disubmit ──</span>
+<span class="kw">function</span> <span class="fn">prosesPermohonanCuti</span>(<span class="vr">e</span>) {
+  <span class="kw">const</span> nama       = <span class="vr">e</span>.values[<span class="nm">1</span>];
+  <span class="kw">const</span> emailKary  = <span class="vr">e</span>.values[<span class="nm">2</span>];
+  <span class="kw">const</span> tglMulai   = <span class="vr">e</span>.values[<span class="nm">3</span>];
+  <span class="kw">const</span> tglAkhir   = <span class="vr">e</span>.values[<span class="nm">4</span>];
+  <span class="kw">const</span> alasan     = <span class="vr">e</span>.values[<span class="nm">5</span>];
+  <span class="kw">const</span> sheet      = <span class="mt">SpreadsheetApp</span>.<span class="fn">getActiveSheet</span>();
+  <span class="kw">const</span> barisBaru  = sheet.<span class="fn">getLastRow</span>();
+
+  <span class="cm">// Tandai baris sebagai Pending (kuning)</span>
+  sheet.<span class="fn">getRange</span>(barisBaru, <span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">6</span>).<span class="fn">setBackground</span>(<span class="str">"#FEF3C7"</span>);
+  sheet.<span class="fn">getRange</span>(barisBaru, <span class="nm">7</span>).<span class="fn">setValue</span>(<span class="str">"Pending"</span>); <span class="cm">// kolom G = Status</span>
+
+  <span class="cm">// Kirim notifikasi ke manager</span>
+  <span class="mt">GmailApp</span>.<span class="fn">sendEmail</span>(
+    EMAIL_MANAGER,
+    <span class="str">"🔔 Permohonan Cuti Baru — "</span> + nama,
+    <span class="str">"Ada permohonan cuti masuk:\n\n"</span>
+    + <span class="str">"Nama   : "</span> + nama + <span class="str">"\n"</span>
+    + <span class="str">"Periode: "</span> + tglMulai + <span class="str">" s/d "</span> + tglAkhir + <span class="str">"\n"</span>
+    + <span class="str">"Alasan : "</span> + alasan + <span class="str">"\n\n"</span>
+    + <span class="str">"Buka spreadsheet untuk menyetujui atau menolak."</span>
+  );
+
+  <span class="cm">// Kirim konfirmasi ke karyawan</span>
+  <span class="mt">GmailApp</span>.<span class="fn">sendEmail</span>(
+    emailKary,
+    <span class="str">"📋 Permohonan Cuti Diterima — Menunggu Persetujuan"</span>,
+    <span class="str">"Halo "</span> + nama + <span class="str">",\n\nPermohonan cuti Anda sudah kami terima dan sedang diproses.\n"</span>
+    + <span class="str">"Periode: "</span> + tglMulai + <span class="str">" s/d "</span> + tglAkhir + <span class="str">"\n\n"</span>
+    + <span class="str">"Kami akan menghubungi Anda setelah ada keputusan.\n\nTerima kasih."</span>
+  );
+}
+
+<span class="cm">// ── Menu: Approve baris yang dipilih ──</span>
+<span class="kw">function</span> <span class="fn">approveCuti</span>() {
+  <span class="kw">const</span> ui    = <span class="mt">SpreadsheetApp</span>.<span class="fn">getUi</span>();
+  <span class="kw">const</span> sheet = <span class="mt">SpreadsheetApp</span>.<span class="fn">getActiveSheet</span>();
+  <span class="kw">const</span> baris = sheet.<span class="fn">getActiveCell</span>().<span class="fn">getRow</span>();
+
+  <span class="kw">if</span> (baris &lt; <span class="nm">2</span>) { ui.<span class="fn">alert</span>(<span class="str">"Pilih baris data terlebih dahulu."</span>); <span class="kw">return</span>; }
+
+  <span class="kw">const</span> nama      = sheet.<span class="fn">getRange</span>(baris, <span class="nm">2</span>).<span class="fn">getValue</span>();
+  <span class="kw">const</span> emailKary = sheet.<span class="fn">getRange</span>(baris, <span class="nm">3</span>).<span class="fn">getValue</span>();
+  <span class="kw">const</span> tglMulai  = sheet.<span class="fn">getRange</span>(baris, <span class="nm">4</span>).<span class="fn">getValue</span>();
+  <span class="kw">const</span> tglAkhir  = sheet.<span class="fn">getRange</span>(baris, <span class="nm">5</span>).<span class="fn">getValue</span>();
+
+  sheet.<span class="fn">getRange</span>(baris, <span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">7</span>).<span class="fn">setBackground</span>(<span class="str">"#D1FAE5"</span>); <span class="cm">// hijau</span>
+  sheet.<span class="fn">getRange</span>(baris, <span class="nm">7</span>).<span class="fn">setValue</span>(<span class="str">"Approved ✓"</span>);
+
+  <span class="mt">GmailApp</span>.<span class="fn">sendEmail</span>(
+    emailKary,
+    <span class="str">"✅ Cuti Anda Disetujui!"</span>,
+    <span class="str">"Halo "</span> + nama + <span class="str">",\n\nPermohonan cuti Anda telah DISETUJUI.\n"</span>
+    + <span class="str">"Periode: "</span> + tglMulai + <span class="str">" s/d "</span> + tglAkhir + <span class="str">"\n\nSelamat berlibur!"</span>
+  );
+
+  ui.<span class="fn">alert</span>(<span class="str">"✅ Cuti "</span> + nama + <span class="str">" berhasil disetujui. Email konfirmasi terkirim."</span>);
+}
+
+<span class="cm">// ── Menu: Ringkasan cuti ──</span>
+<span class="kw">function</span> <span class="fn">ringkasanCuti</span>() {
+  <span class="kw">const</span> sheet   = <span class="mt">SpreadsheetApp</span>.<span class="fn">getActiveSheet</span>();
+  <span class="kw">const</span> lastRow = sheet.<span class="fn">getLastRow</span>();
+  <span class="kw">let</span> pending = <span class="nm">0</span>, approved = <span class="nm">0</span>, tolak = <span class="nm">0</span>;
+
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="nm">2</span>; i &lt;= lastRow; i++) {
+    <span class="kw">const</span> status = sheet.<span class="fn">getRange</span>(i, <span class="nm">7</span>).<span class="fn">getValue</span>();
+    <span class="kw">if</span> (status.<span class="fn">includes</span>(<span class="str">"Pending"</span>))   pending++;
+    <span class="kw">else if</span> (status.<span class="fn">includes</span>(<span class="str">"Approved"</span>)) approved++;
+    <span class="kw">else if</span> (status.<span class="fn">includes</span>(<span class="str">"Tolak"</span>))    tolak++;
+  }
+
+  <span class="mt">SpreadsheetApp</span>.<span class="fn">getUi</span>().<span class="fn">alert</span>(
+    <span class="str">"📊 Ringkasan Cuti\n\n"</span>
+    + <span class="str">"⏳ Pending  : "</span> + pending  + <span class="str">" pengajuan\n"</span>
+    + <span class="str">"✅ Approved : "</span> + approved + <span class="str">" pengajuan\n"</span>
+    + <span class="str">"❌ Ditolak  : "</span> + tolak    + <span class="str">" pengajuan\n"</span>
+    + <span class="str">"──────────────────\n"</span>
+    + <span class="str">"Total       : "</span> + (pending + approved + tolak) + <span class="str">" pengajuan"</span>
+  );
+}</pre>
+    </div>
+  </section>
+
+  <!-- SECTION 5: PROJECT B -->
+  <section class="section" id="project-b">
+    <div class="section-header">
+      <div class="section-icon purple">📝</div>
+      <div>
+        <div class="section-tag">Proyek B — Starter Kit</div>
+        <div class="section-title">Meeting Minutes Logger</div>
+        <div class="section-subtitle">Tool notulen rapat digital dengan distribusi email otomatis</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div>
+        <div class="code-filename">meetingLogger.gs — Starter Kit Proyek B</div>
+        <button class="copy-btn" onclick="copyCode(this,'code-b')">Salin</button>
+      </div>
+      <pre id="code-b"><span class="cm">// ════════════════════════════════════
+// MEETING MINUTES LOGGER — Proyek B
+// Sesi 6 Capstone — UKWMS 2025
+// ════════════════════════════════════</span>
+
+<span class="kw">function</span> <span class="fn">onOpen</span>() {
+  <span class="mt">SpreadsheetApp</span>.<span class="fn">getUi</span>()
+    .<span class="fn">createMenu</span>(<span class="str">"📝 Notulen Rapat"</span>)
+    .<span class="fn">addItem</span>(<span class="str">"➕ Catat Rapat Baru"</span>,           <span class="str">"catatRapat"</span>)
+    .<span class="fn">addItem</span>(<span class="str">"📧 Kirim Notulen Terakhir"</span>,      <span class="str">"kirimNotulen"</span>)
+    .<span class="fn">addSeparator</span>()
+    .<span class="fn">addItem</span>(<span class="str">"📋 Lihat Semua Notulen"</span>,         <span class="str">"lihatNotulen"</span>)
+    .<span class="fn">addToUi</span>();
+}
+
+<span class="kw">function</span> <span class="fn">catatRapat</span>() {
+  <span class="kw">const</span> ui = <span class="mt">SpreadsheetApp</span>.<span class="fn">getUi</span>();
+
+  <span class="cm">// Kumpulkan info rapat via dialog bertahap</span>
+  <span class="kw">const</span> r1 = ui.<span class="fn">prompt</span>(<span class="str">"📝 Notulen Rapat (1/4)"</span>, <span class="str">"Judul / Agenda Rapat:"</span>,      ui.ButtonSet.OK_CANCEL);
+  <span class="kw">if</span> (r1.<span class="fn">getSelectedButton</span>() != ui.Button.OK) <span class="kw">return</span>;
+
+  <span class="kw">const</span> r2 = ui.<span class="fn">prompt</span>(<span class="str">"📝 Notulen Rapat (2/4)"</span>, <span class="str">"Peserta (pisahkan koma):"</span>,    ui.ButtonSet.OK_CANCEL);
+  <span class="kw">if</span> (r2.<span class="fn">getSelectedButton</span>() != ui.Button.OK) <span class="kw">return</span>;
+
+  <span class="kw">const</span> r3 = ui.<span class="fn">prompt</span>(<span class="str">"📝 Notulen Rapat (3/4)"</span>, <span class="str">"Email peserta (pisahkan koma):"</span>, ui.ButtonSet.OK_CANCEL);
+  <span class="kw">if</span> (r3.<span class="fn">getSelectedButton</span>() != ui.Button.OK) <span class="kw">return</span>;
+
+  <span class="kw">const</span> r4 = ui.<span class="fn">prompt</span>(<span class="str">"📝 Notulen Rapat (4/4)"</span>, <span class="str">"Poin-poin keputusan (pisahkan ;):"</span>, ui.ButtonSet.OK_CANCEL);
+  <span class="kw">if</span> (r4.<span class="fn">getSelectedButton</span>() != ui.Button.OK) <span class="kw">return</span>;
+
+  <span class="kw">const</span> judul   = r1.<span class="fn">getResponseText</span>();
+  <span class="kw">const</span> peserta = r2.<span class="fn">getResponseText</span>();
+  <span class="kw">const</span> emails  = r3.<span class="fn">getResponseText</span>();
+  <span class="kw">const</span> poin    = r4.<span class="fn">getResponseText</span>();
+  <span class="kw">const</span> waktu   = <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toLocaleString</span>(<span class="str">"id-ID"</span>);
+
+  <span class="cm">// Catat ke sheet</span>
+  <span class="kw">const</span> sheet = <span class="mt">SpreadsheetApp</span>.<span class="fn">getActiveSheet</span>();
+  <span class="kw">const</span> baris = sheet.<span class="fn">getLastRow</span>() + <span class="nm">1</span>;
+
+  sheet.<span class="fn">getRange</span>(baris, <span class="nm">1</span>).<span class="fn">setValue</span>(waktu);
+  sheet.<span class="fn">getRange</span>(baris, <span class="nm">2</span>).<span class="fn">setValue</span>(judul);
+  sheet.<span class="fn">getRange</span>(baris, <span class="nm">3</span>).<span class="fn">setValue</span>(peserta);
+  sheet.<span class="fn">getRange</span>(baris, <span class="nm">4</span>).<span class="fn">setValue</span>(poin);
+  sheet.<span class="fn">getRange</span>(baris, <span class="nm">5</span>).<span class="fn">setValue</span>(emails);
+  sheet.<span class="fn">getRange</span>(baris, <span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">5</span>).<span class="fn">setBackground</span>(<span class="str">"#EDE9FE"</span>); <span class="cm">// ungu muda</span>
+
+  <span class="cm">// Format poin jadi list</span>
+  <span class="kw">const</span> daftarPoin = poin.<span class="fn">split</span>(<span class="str">";"</span>)
+    .<span class="fn">map</span>(p => <span class="str">"• "</span> + p.<span class="fn">trim</span>())
+    .<span class="fn">join</span>(<span class="str">"\n"</span>);
+
+  <span class="cm">// Kirim notulen ke semua peserta</span>
+  <span class="kw">const</span> daftarEmail = emails.<span class="fn">split</span>(<span class="str">","</span>).<span class="fn">map</span>(e => e.<span class="fn">trim</span>());
+  daftarEmail.<span class="fn">forEach</span>(email => {
+    <span class="mt">GmailApp</span>.<span class="fn">sendEmail</span>(
+      email,
+      <span class="str">"📋 Notulen Rapat — "</span> + judul,
+      <span class="str">"Notulen Rapat\n"</span>
+      + <span class="str">"═══════════════════\n"</span>
+      + <span class="str">"Agenda  : "</span> + judul   + <span class="str">"\n"</span>
+      + <span class="str">"Peserta : "</span> + peserta + <span class="str">"\n"</span>
+      + <span class="str">"Waktu   : "</span> + waktu   + <span class="str">"\n\n"</span>
+      + <span class="str">"Keputusan:\n"</span> + daftarPoin + <span class="str">"\n\n"</span>
+      + <span class="str">"Notulen ini dibuat otomatis."</span>
+    );
+  });
+
+  ui.<span class="fn">alert</span>(<span class="str">"✅ Notulen berhasil disimpan dan dikirim ke "</span> + daftarEmail.length + <span class="str">" peserta."</span>);
+}</pre>
+    </div>
+  </section>
+
+  <!-- SECTION 6: PROJECT C -->
+  <section class="section" id="project-c">
+    <div class="section-header">
+      <div class="section-icon orange">📦</div>
+      <div>
+        <div class="section-tag">Proyek C — Starter Kit</div>
+        <div class="section-title">Inventory Alert System</div>
+        <div class="section-subtitle">Monitor stok otomatis dengan notifikasi email peringatan</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot red"></div><div class="code-dot yellow"></div><div class="code-dot green"></div></div>
+        <div class="code-filename">inventoryAlert.gs — Starter Kit Proyek C</div>
+        <button class="copy-btn" onclick="copyCode(this,'code-c')">Salin</button>
+      </div>
+      <pre id="code-c"><span class="cm">// ════════════════════════════════════
+// INVENTORY ALERT SYSTEM — Proyek C
+// Sesi 6 Capstone — UKWMS 2025
+// ════════════════════════════════════</span>
+
+<span class="kw">const</span> EMAIL_PIC   = <span class="str">"pengadaan@email.com"</span>; <span class="cm">// ← ganti dengan email PIC</span>
+<span class="kw">const</span> STOK_MIN    = <span class="nm">10</span>; <span class="cm">// batas minimum stok — bisa diubah</span>
+
+<span class="cm">// Struktur sheet: A=Nama Barang, B=Satuan, C=Stok, D=Min, E=Status</span>
+
+<span class="kw">function</span> <span class="fn">onOpen</span>() {
+  <span class="mt">SpreadsheetApp</span>.<span class="fn">getUi</span>()
+    .<span class="fn">createMenu</span>(<span class="str">"📦 Inventory"</span>)
+    .<span class="fn">addItem</span>(<span class="str">"🔍 Cek Stok Sekarang"</span>,         <span class="str">"cekStok"</span>)
+    .<span class="fn">addItem</span>(<span class="str">"📧 Kirim Laporan Stok"</span>,         <span class="str">"kirimLaporan"</span>)
+    .<span class="fn">addSeparator</span>()
+    .<span class="fn">addItem</span>(<span class="str">"🎨 Reset Warna Sheet"</span>,          <span class="str">"resetWarna"</span>)
+    .<span class="fn">addToUi</span>();
+}
+
+<span class="kw">function</span> <span class="fn">cekStok</span>() {
+  <span class="kw">const</span> sheet    = <span class="mt">SpreadsheetApp</span>.<span class="fn">getActiveSheet</span>();
+  <span class="kw">const</span> lastRow  = sheet.<span class="fn">getLastRow</span>();
+  <span class="kw">let</span> kritis = [], aman = <span class="nm">0</span>;
+
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="nm">2</span>; i &lt;= lastRow; i++) {
+    <span class="kw">const</span> nama   = sheet.<span class="fn">getRange</span>(i, <span class="nm">1</span>).<span class="fn">getValue</span>();
+    <span class="kw">const</span> stok   = sheet.<span class="fn">getRange</span>(i, <span class="nm">3</span>).<span class="fn">getValue</span>();
+    <span class="kw">const</span> minVal = sheet.<span class="fn">getRange</span>(i, <span class="nm">4</span>).<span class="fn">getValue</span>() || STOK_MIN;
+    <span class="kw">const</span> baris  = sheet.<span class="fn">getRange</span>(i, <span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">5</span>);
+
+    <span class="kw">if</span> (stok &lt;= <span class="nm">0</span>) {
+      baris.<span class="fn">setBackground</span>(<span class="str">"#FEE2E2"</span>); <span class="cm">// merah — habis</span>
+      sheet.<span class="fn">getRange</span>(i, <span class="nm">5</span>).<span class="fn">setValue</span>(<span class="str">"⛔ Habis"</span>);
+      kritis.<span class="fn">push</span>(nama + <span class="str">" (HABIS)"</span>);
+
+    } <span class="kw">else if</span> (stok &lt;= minVal) {
+      baris.<span class="fn">setBackground</span>(<span class="str">"#FEF3C7"</span>); <span class="cm">// kuning — hampir habis</span>
+      sheet.<span class="fn">getRange</span>(i, <span class="nm">5</span>).<span class="fn">setValue</span>(<span class="str">"⚠️ Kritis: "</span> + stok);
+      kritis.<span class="fn">push</span>(nama + <span class="str">" (sisa "</span> + stok + <span class="str">")"</span>);
+
+    } <span class="kw">else</span> {
+      baris.<span class="fn">setBackground</span>(<span class="str">"#D1FAE5"</span>); <span class="cm">// hijau — aman</span>
+      sheet.<span class="fn">getRange</span>(i, <span class="nm">5</span>).<span class="fn">setValue</span>(<span class="str">"✅ Aman"</span>);
+      aman++;
+    }
+  }
+
+  <span class="cm">// Kirim email jika ada stok kritis</span>
+  <span class="kw">if</span> (kritis.length > <span class="nm">0</span>) {
+    <span class="mt">GmailApp</span>.<span class="fn">sendEmail</span>(
+      EMAIL_PIC,
+      <span class="str">"⚠️ Peringatan Stok Kritis — "</span> + kritis.length + <span class="str">" Barang"</span>,
+      <span class="str">"Halo Tim Pengadaan,\n\nBerikut barang yang perlu segera dipesan:\n\n"</span>
+      + kritis.<span class="fn">map</span>((b, i) => (i+<span class="nm">1</span>) + <span class="str">". "</span> + b).<span class="fn">join</span>(<span class="str">"\n"</span>)
+      + <span class="str">"\n\nMohon segera ditindaklanjuti.\nSistem Inventory Otomatis"</span>
+    );
+  }
+
+  <span class="mt">SpreadsheetApp</span>.<span class="fn">getUi</span>().<span class="fn">alert</span>(
+    <span class="str">"📊 Hasil Cek Stok\n\n"</span>
+    + <span class="str">"✅ Aman    : "</span> + aman          + <span class="str">" barang\n"</span>
+    + <span class="str">"⚠️ Kritis  : "</span> + kritis.length + <span class="str">" barang"</span>
+    + (kritis.length > <span class="nm">0</span> ? <span class="str">"\n\nEmail peringatan sudah dikirim ke PIC."</span> : <span class="str">""</span>)
+  );
+}
+
+<span class="kw">function</span> <span class="fn">resetWarna</span>() {
+  <span class="kw">const</span> sheet   = <span class="mt">SpreadsheetApp</span>.<span class="fn">getActiveSheet</span>();
+  <span class="kw">const</span> lastRow = sheet.<span class="fn">getLastRow</span>();
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="nm">2</span>; i &lt;= lastRow; i++) {
+    sheet.<span class="fn">getRange</span>(i, <span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">5</span>).<span class="fn">setBackground</span>(<span class="kw">null</span>);
+    sheet.<span class="fn">getRange</span>(i, <span class="nm">5</span>).<span class="fn">clearContent</span>();
+  }
+  <span class="mt">SpreadsheetApp</span>.<span class="fn">getUi</span>().<span class="fn">alert</span>(<span class="str">"✅ Sheet berhasil direset."</span>);
+}</pre>
+    </div>
+  </section>
+
+  <!-- SECTION 7: PRESENTATION -->
+  <section class="section" id="presentation">
+    <div class="section-header">
+      <div class="section-icon green">🎤</div>
+      <div>
+        <div class="section-tag">Presentasi — 25 Menit</div>
+        <div class="section-title">Demo & Penilaian</div>
+        <div class="section-subtitle">Setiap mahasiswa/kelompok mendapat 3–4 menit untuk demo</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;color:var(--navy);margin-bottom:12px;">Panduan Presentasi</h3>
+    <p style="font-size:14px;color:var(--slate);line-height:1.8;margin-bottom:20px;">Presentasi Anda cukup singkat dan fokus. Ikuti alur berikut:</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Perkenalkan masalah (30 detik)</div>
+          <div class="step-desc">Ceritakan tugas kantor apa yang diotomatisasi dan mengapa itu penting atau melelahkan jika dilakukan manual.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Demo tool secara live (2 menit)</div>
+          <div class="step-desc">Tunjukkan tool bekerja nyata: isi form / klik menu / lihat hasil di sheet / tunjukkan email yang terkirim. Jangan slide — langsung demo!</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Jelaskan satu konsep kunci (45 detik)</div>
+          <div class="step-desc">Pilih satu bagian script yang paling Anda bangga — jelaskan cara kerjanya dalam bahasa sederhana.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Satu pertanyaan dari kelas (45 detik)</div>
+          <div class="step-desc">Mahasiswa lain atau dosen mengajukan satu pertanyaan. Jawab sebaik mungkin — tidak apa jika tidak tahu semua jawaban.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;color:var(--navy);margin:28px 0 12px;">Rubrik Penilaian Capstone</h3>
+    <table class="rubric-table">
+      <thead><tr><th>Aspek</th><th>Kriteria</th><th>Bobot</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Fungsionalitas</td>
+          <td>Tool berjalan tanpa error, fitur utama bekerja sesuai yang dijanjikan</td>
+          <td>35</td>
+        </tr>
+        <tr>
+          <td>Integrasi Konsep</td>
+          <td>Menggunakan minimal 3 konsep dari Sesi 1–5 (loop, kondisi, email, menu, dll)</td>
+          <td>25</td>
+        </tr>
+        <tr>
+          <td>Kegunaan Nyata</td>
+          <td>Tool bisa langsung digunakan di kantor oleh non-programmer</td>
+          <td>20</td>
+        </tr>
+        <tr>
+          <td>Presentasi</td>
+          <td>Demo jelas, mampu menjelaskan cara kerja script, menjawab pertanyaan</td>
+          <td>15</td>
+        </tr>
+        <tr>
+          <td>Kreativitas</td>
+          <td>Ada fitur tambahan atau pendekatan unik di luar starter kit</td>
+          <td>5</td>
+        </tr>
+        <tr class="rubric-total">
+          <td colspan="2">Total Nilai</td>
+          <td>100</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box green">
+      <div class="info-box-title">✅ Tips Presentasi</div>
+      <p>• Siapkan tab spreadsheet dan Script Editor sudah terbuka sebelum giliran Anda<br>
+      • Gunakan akun Google dengan data dummy yang sudah terisi — jangan mulai dari kosong<br>
+      • Jika ada bagian yang belum selesai, jujur saja dan jelaskan apa yang ingin Anda tambahkan<br>
+      • Yang dinilai adalah pemahaman dan proses — bukan kesempurnaan hasil akhir</p>
+    </div>
+  </section>
+
+  <!-- SECTION 8: CLOSING -->
+  <section class="section" id="closing">
+    <div class="section-header">
+      <div class="section-icon teal">🏆</div>
+      <div>
+        <div class="section-tag">Penutup Kursus</div>
+        <div class="section-title">Selamat! Anda Telah Menyelesaikan Kursus</div>
+      </div>
+    </div>
+
+    <div class="completion-card">
+      <div class="completion-trophy">🏆</div>
+      <div class="completion-title">Sekretaris Digital Bersertifikat</div>
+      <div class="completion-sub">Anda telah menempuh 6 sesi, menulis ratusan baris kode, dan membangun tools nyata yang bisa langsung digunakan di kantor. Itu bukan hal kecil.</div>
+      <div class="completion-skills">
+        <span class="skill-pill">📊 Data Spreadsheet</span>
+        <span class="skill-pill">🔄 Loop & Otomasi</span>
+        <span class="skill-pill">🎨 Validasi & Warna</span>
+        <span class="skill-pill">📧 Email Otomatis</span>
+        <span class="skill-pill">🛠 Menu Kustom</span>
+        <span class="skill-pill">🏗 Project Integration</span>
+      </div>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;color:var(--navy);margin-bottom:16px;">Apa Selanjutnya?</h3>
+    <div class="objectives-grid">
+      <div class="objective-card">
+        <div class="obj-check">→</div>
+        <div>
+          <div class="obj-text" style="font-weight:700;margin-bottom:4px;">Gunakan tools Anda di pekerjaan nyata</div>
+          <div style="font-size:12.5px;color:var(--slate);">Adaptasi starter kit atau tool capstone Anda ke kebutuhan kantor atau kampus yang sebenarnya.</div>
+        </div>
+      </div>
+      <div class="objective-card">
+        <div class="obj-check">→</div>
+        <div>
+          <div class="obj-text" style="font-weight:700;margin-bottom:4px;">Pelajari Google Apps Script lebih lanjut</div>
+          <div style="font-size:12.5px;color:var(--slate);">Dokumentasi resmi di <strong>developers.google.com/apps-script</strong> gratis dan lengkap.</div>
+        </div>
+      </div>
+      <div class="objective-card">
+        <div class="obj-check">→</div>
+        <div>
+          <div class="obj-text" style="font-weight:700;margin-bottom:4px;">Eksplorasi layanan Google lainnya</div>
+          <div style="font-size:12.5px;color:var(--slate);">CalendarApp, DriveApp, DocumentApp, SlidesApp — semuanya bisa dikontrol dengan Apps Script.</div>
+        </div>
+      </div>
+      <div class="objective-card">
+        <div class="obj-check">→</div>
+        <div>
+          <div class="obj-text" style="font-weight:700;margin-bottom:4px;">Ajarkan ke rekan kerja</div>
+          <div style="font-size:12.5px;color:var(--slate);">Cara terbaik untuk benar-benar memahami sesuatu adalah dengan mengajarkannya kepada orang lain.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;color:var(--navy);margin:32px 0 12px;">Cheat Sheet Master — Semua Perintah Sesi 1–6</h3>
+    <p style="font-size:13.5px;color:var(--slate);margin-bottom:16px;">Simpan halaman ini sebagai referensi permanen Anda:</p>
+    <div class="cheat-grid">
+      <div class="cheat-item"><div class="cheat-session">Sesi 1</div><div class="cheat-cmd">SpreadsheetApp.getActiveSheet()</div><div class="cheat-desc">Ambil sheet aktif</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 1</div><div class="cheat-cmd">.getRange("A1") / .getRange(r,c)</div><div class="cheat-desc">Pilih sel — statis atau dinamis</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 1</div><div class="cheat-cmd">.getValue() / .setValue(data)</div><div class="cheat-desc">Baca / tulis nilai sel</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 1</div><div class="cheat-cmd">Logger.log(pesan)</div><div class="cheat-desc">Cetak ke log untuk debugging</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 2</div><div class="cheat-cmd">for (let i=2; i&lt;=lastRow; i++)</div><div class="cheat-desc">Loop dari baris 2 ke bawah</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 2</div><div class="cheat-cmd">sheet.getLastRow()</div><div class="cheat-desc">Baris terakhir yang berisi data</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 2</div><div class="cheat-cmd">new Date().toLocaleDateString("id-ID")</div><div class="cheat-desc">Tanggal hari ini format Indonesia</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 3</div><div class="cheat-cmd">if (a === b) { } else if { } else { }</div><div class="cheat-desc">Percabangan kondisi bertingkat</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 3</div><div class="cheat-cmd">.setBackground("#HEX")</div><div class="cheat-desc">Warnai latar sel atau range</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 3</div><div class="cheat-cmd">.setFontColor() / .setFontWeight()</div><div class="cheat-desc">Warna teks / cetak tebal</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 4</div><div class="cheat-cmd">function namaFungsi(e) { }</div><div class="cheat-desc">Fungsi dengan parameter event trigger</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 4</div><div class="cheat-cmd">e.values[0] / e.values[n]</div><div class="cheat-desc">Timestamp / jawaban pertanyaan ke-n</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 4</div><div class="cheat-cmd">GmailApp.sendEmail(to, subj, body)</div><div class="cheat-desc">Kirim email teks atau HTML</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 4</div><div class="cheat-cmd">sheet.appendRow([v1, v2, v3])</div><div class="cheat-desc">Tambah baris baru di akhir data</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 5</div><div class="cheat-cmd">function onOpen() { }</div><div class="cheat-desc">Berjalan otomatis saat file dibuka</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 5</div><div class="cheat-cmd">ui.createMenu("Nama").addItem(...).addToUi()</div><div class="cheat-desc">Buat menu kustom di Sheets</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 5</div><div class="cheat-cmd">ui.alert("pesan")</div><div class="cheat-desc">Dialog pesan untuk pengguna</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 5</div><div class="cheat-cmd">ui.prompt("judul", "pesan", ButtonSet)</div><div class="cheat-desc">Dialog input dari pengguna</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 5</div><div class="cheat-cmd">resp.getResponseText()</div><div class="cheat-desc">Ambil teks input dari dialog prompt</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 5</div><div class="cheat-cmd">range.clearContent()</div><div class="cheat-desc">Hapus isi sel, pertahankan format</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 6</div><div class="cheat-cmd">sheet.getActiveCell().getRow()</div><div class="cheat-desc">Nomor baris sel yang sedang dipilih</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 6</div><div class="cheat-cmd">str.split(",").map(s => s.trim())</div><div class="cheat-desc">Pecah string jadi array, hapus spasi</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 6</div><div class="cheat-cmd">arr.map((item, idx) => ...)</div><div class="cheat-desc">Transformasi setiap item dalam array</div></div>
+      <div class="cheat-item"><div class="cheat-session">Sesi 6</div><div class="cheat-cmd">str.includes("kata")</div><div class="cheat-desc">Cek apakah string mengandung kata tertentu</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">Modul Praktikum Otomasi Perkantoran Digital &nbsp;•&nbsp; UKWMS Surabaya &nbsp;•&nbsp; 2025/2026</div>
+    <div class="footer-right">Sesi 6 dari 6 — Selesai! 🎉 &nbsp;•&nbsp; Google Apps Script</div>
+  </footer>
+
+</main>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+  });
+
+  const navItems = document.querySelectorAll('.nav-item[href^="#"]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const a = document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+
+  const secObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.section').forEach(s => secObs.observe(s));
+
+  function copyCode(btn, id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Tersalin';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Salin'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+  document.querySelector('.main').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+  });
+</script>
+</body>
+</html>
