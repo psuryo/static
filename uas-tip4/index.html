@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tugas Akhir Individu — Web Tutorial Digital Business Administration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #F0EDE6;
+    --bg-2:    #E8E4DB;
+    --bg-3:    #DDD8CE;
+    --paper:   #FDFBF7;
+    --ink:     #1A1710;
+    --ink-2:   #3A3628;
+    --ink-3:   #6A6456;
+    --ink-4:   #A09880;
+    --gold:    #B8860A;
+    --gold-2:  #D4A020;
+    --gold-bg: #FBF5E0;
+    --gold-ln: #E8D090;
+    --red:     #9A2415;
+    --red-bg:  #FBF0EE;
+    --red-ln:  #DDB0A8;
+    --teal:    #1A6050;
+    --teal-bg: #E8F4F0;
+    --teal-ln: #A0CCC0;
+    --blue:    #1A3A70;
+    --blue-bg: #EAF0FA;
+    --blue-ln: #A8C0E0;
+    --line:    #D4CFC6;
+    --serif:   'Cormorant Garamond', Georgia, serif;
+    --sans:    'Outfit', sans-serif;
+    --mono:    'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* Letterpress texture */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23B8A890' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: .5;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 40px 100px; }
+
+  /* ── Official header ── */
+  .official-header {
+    padding: 40px 0 32px;
+    margin-bottom: 48px;
+    border-bottom: 3px double var(--ink-3);
+    text-align: center;
+  }
+  .uni-name {
+    font-family: var(--serif); font-size: 13px; font-weight: 600;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--ink-3);
+    margin-bottom: 6px;
+  }
+  .course-name {
+    font-family: var(--serif); font-size: 11px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-4); margin-bottom: 24px;
+  }
+  .doc-type {
+    font-family: var(--serif); font-size: 11px; font-weight: 600;
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--ink-4); margin-bottom: 12px;
+  }
+  .doc-title {
+    font-family: var(--serif); font-size: clamp(38px, 5vw, 60px);
+    font-weight: 700; line-height: 1.05; letter-spacing: -.02em;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .doc-title em { font-style: italic; color: var(--gold); }
+  .doc-subtitle {
+    font-family: var(--serif); font-size: 20px; font-style: italic;
+    color: var(--ink-3); margin-bottom: 28px;
+  }
+
+  .meta-strip {
+    display: flex; align-items: center; justify-content: center; gap: 32px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    text-align: center;
+  }
+  .meta-label {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-4); margin-bottom: 3px;
+  }
+  .meta-value {
+    font-size: 13px; font-weight: 500; color: var(--ink-2);
+  }
+  .meta-sep { width: 1px; height: 36px; background: var(--line); }
+
+  /* ── Alert box (tugas singkat) ── */
+  .alert-box {
+    background: var(--gold-bg); border: 1px solid var(--gold-ln);
+    border-left: 4px solid var(--gold); border-radius: 10px;
+    padding: 18px 22px; margin-bottom: 40px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .alert-icon { font-size: 22px; flex-shrink: 0; line-height: 1.3; }
+  .alert-content .alert-title {
+    font-weight: 600; font-size: 14px; color: var(--gold); margin-bottom: 4px;
+  }
+  .alert-content p { font-size: 13.5px; color: var(--ink-3); line-height: 1.7; }
+
+  /* ── Section blocks ── */
+  .section {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 14px; margin-bottom: 24px; overflow: hidden;
+    animation: lift .55s ease both;
+  }
+  @keyframes lift { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .section:nth-child(1){animation-delay:.04s}
+  .section:nth-child(2){animation-delay:.08s}
+  .section:nth-child(3){animation-delay:.12s}
+  .section:nth-child(4){animation-delay:.16s}
+  .section:nth-child(5){animation-delay:.20s}
+  .section:nth-child(6){animation-delay:.24s}
+
+  .sec-hdr {
+    padding: 18px 28px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .sec-num {
+    font-family: var(--serif); font-size: 44px; font-weight: 700;
+    line-height: 1; color: var(--bg-3); letter-spacing: -.04em;
+    user-select: none; flex-shrink: 0; margin-right: 4px;
+  }
+  .sec-meta {}
+  .sec-tag {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-4); margin-bottom: 2px;
+  }
+  .sec-title {
+    font-family: var(--serif); font-size: 22px; font-weight: 600;
+    color: var(--ink); line-height: 1.2;
+  }
+  .sec-body { padding: 28px; }
+
+  /* ── Sub ── */
+  .sub { margin-bottom: 28px; }
+  .sub:last-child { margin-bottom: 0; }
+  .sub-lbl {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-4);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .sub-lbl::after { content:''; flex:1; height:1px; background:var(--line); }
+
+  /* ── Prose ── */
+  .prose { font-size: 14px; color: var(--ink-3); line-height: 1.8; margin-bottom: 12px; }
+  .prose strong { color: var(--ink-2); font-weight: 600; }
+  .prose em { font-style: italic; color: var(--ink-2); }
+  .prose code { font-family: var(--mono); font-size: 12px; background: var(--bg-2); padding: 2px 7px; border-radius: 4px; color: var(--red); }
+
+  /* ── Requirement cards ── */
+  .req-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .req-card {
+    border: 1px solid var(--line); border-radius: 10px; padding: 16px;
+    background: var(--bg); transition: border-color .2s;
+  }
+  .req-card:hover { border-color: var(--gold-ln); }
+  .req-card-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .req-icon {
+    width: 32px; height: 32px; border-radius: 7px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  .ri-gold  { background: var(--gold-bg); border: 1px solid var(--gold-ln); }
+  .ri-teal  { background: var(--teal-bg); border: 1px solid var(--teal-ln); }
+  .ri-blue  { background: var(--blue-bg); border: 1px solid var(--blue-ln); }
+  .ri-red   { background: var(--red-bg);  border: 1px solid var(--red-ln); }
+  .req-card-title { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .req-card-body { font-size: 12.5px; color: var(--ink-3); line-height: 1.65; }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 9px 0; border-bottom: 1px solid var(--line);
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-box {
+    width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0; margin-top: 1px;
+    border: 1.5px solid var(--line); display: flex; align-items: center; justify-content: center;
+    background: white;
+  }
+  .check-box.done { background: var(--teal-bg); border-color: var(--teal-ln); }
+  .check-box.done::after { content: '✓'; font-size: 11px; color: var(--teal); font-weight: 600; }
+  .check-text { font-size: 13.5px; color: var(--ink-3); line-height: 1.6; flex: 1; }
+  .check-text strong { color: var(--ink-2); font-weight: 600; }
+  .check-ref {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .06em;
+    padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .cr-gold { background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold-ln); }
+  .cr-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-ln); }
+  .cr-teal { background: var(--teal-bg); color: var(--teal); border: 1px solid var(--teal-ln); }
+  .cr-red  { background: var(--red-bg);  color: var(--red);  border: 1px solid var(--red-ln); }
+
+  /* ── Site map diagram ── */
+  .sitemap {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+    padding: 24px; margin-bottom: 14px;
+  }
+  .sm-title { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-4); margin-bottom: 20px; }
+  .sm-tree { display: flex; flex-direction: column; gap: 0; }
+
+  .sm-root {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--ink); color: var(--bg); border-radius: 7px;
+    padding: 8px 16px; font-size: 13px; font-weight: 500; margin-bottom: 0;
+    align-self: flex-start;
+  }
+  .sm-connector { width: 2px; height: 20px; background: var(--line); margin-left: 32px; }
+  .sm-branch {
+    display: flex; gap: 0; align-items: flex-start;
+    padding-left: 32px; position: relative;
+  }
+  .sm-branch::before {
+    content: ''; position: absolute; left: 32px; top: 0; bottom: 0;
+    width: 1px; background: var(--line);
+  }
+  .sm-branch-inner { display: flex; flex-direction: column; gap: 8px; padding: 8px 0; }
+  .sm-page {
+    display: flex; align-items: center; gap: 8px; position: relative;
+  }
+  .sm-page::before {
+    content: ''; position: absolute; left: -22px; top: 50%;
+    width: 20px; height: 1px; background: var(--line);
+  }
+  .sm-node {
+    display: inline-flex; align-items: center; gap: 7px;
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 6px 12px; font-size: 12.5px; color: var(--ink-2);
+    background: white; font-weight: 500;
+  }
+  .sn-gold { border-color: var(--gold-ln); background: var(--gold-bg); color: var(--gold); }
+  .sn-blue { border-color: var(--blue-ln); background: var(--blue-bg); color: var(--blue); }
+  .sn-teal { border-color: var(--teal-ln); background: var(--teal-bg); color: var(--teal); }
+  .sn-red  { border-color: var(--red-ln);  background: var(--red-bg);  color: var(--red); }
+  .sm-node-desc { font-size: 11.5px; color: var(--ink-4); }
+
+  /* ── Grading table ── */
+  .grade-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+  .grade-table th {
+    background: var(--ink); color: var(--bg); padding: 10px 16px;
+    text-align: left; font-family: var(--mono); font-size: 9px;
+    letter-spacing: .1em; text-transform: uppercase; font-weight: 500;
+  }
+  .grade-table th:first-child { border-radius: 8px 0 0 0; }
+  .grade-table th:last-child  { border-radius: 0 8px 0 0; text-align: right; }
+  .grade-table td {
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+    vertical-align: top; line-height: 1.55;
+  }
+  .grade-table tr:last-child td { border-bottom: none; }
+  .grade-table tr:hover td { background: var(--bg); }
+  .grade-table tr.total-row td {
+    background: var(--ink); color: var(--bg); font-weight: 600;
+    border-bottom: none;
+  }
+  .grade-table tr.total-row td:first-child { border-radius: 0 0 0 8px; }
+  .grade-table tr.total-row td:last-child  { border-radius: 0 0 8px 0; }
+  .grade-num {
+    font-family: var(--mono); font-size: 13px; font-weight: 600; text-align: right;
+    white-space: nowrap;
+  }
+  .grade-bar-wrap { margin-top: 5px; }
+  .grade-bar { height: 3px; background: var(--line); border-radius: 2px; }
+  .grade-fill { height: 100%; border-radius: 2px; background: var(--gold); }
+
+  .criteria-tag {
+    font-family: var(--mono); font-size: 9px; padding: 2px 7px; border-radius: 4px;
+    margin-right: 4px; display: inline-block; margin-bottom: 2px;
+  }
+  .ct-g { background: var(--teal-bg); color: var(--teal); border: 1px solid var(--teal-ln); }
+  .ct-b { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-ln); }
+  .ct-r { background: var(--red-bg);  color: var(--red);  border: 1px solid var(--red-ln); }
+  .ct-o { background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold-ln); }
+
+  /* ── Timeline ── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+    width: 1.5px; background: var(--line);
+  }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-item:last-child { margin-bottom: 0; }
+  .tl-dot {
+    position: absolute; left: -24px; top: 4px;
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--bg); background: var(--line);
+  }
+  .tl-dot.active { background: var(--gold); border-color: var(--gold-bg); }
+  .tl-dot.final  { background: var(--ink); border-color: var(--bg-3); }
+  .tl-date {
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--ink-4); margin-bottom: 3px;
+  }
+  .tl-title { font-size: 14px; font-weight: 600; color: var(--ink-2); margin-bottom: 3px; }
+  .tl-desc { font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+
+  /* ── Code snippet ── */
+  .code-wrap { background: var(--ink); border-radius: 10px; overflow: hidden; margin-bottom: 14px; }
+  .code-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 16px; background: var(--ink-2); border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .code-lang { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-4); }
+  .copy-btn {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-3); background: none; border: 1px solid rgba(255,255,255,.1); border-radius: 3px;
+    padding: 2px 8px; cursor: pointer; transition: all .2s;
+  }
+  .copy-btn:hover { color: var(--bg); border-color: var(--ink-3); }
+  .copy-btn.copied { color: #6EC896; border-color: #3A8A5C; }
+  pre { padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.85; color: #C8C0B0; }
+  .t { color: #78A8D0; }
+  .a { color: #78C8A0; }
+  .v { color: #D0A050; }
+  .c { color: #5A5248; font-style: italic; }
+  .s { color: #C8C0B0; }
+  .js-k { color: #C080B0; }
+  .js-s { color: #88B870; }
+  .js-n { color: #78B8D8; }
+  .js-c { color: #5A5248; font-style: italic; }
+
+  /* ── Tips ── */
+  .tip {
+    display: flex; gap: 12px; padding: 14px 17px;
+    border-radius: 10px; margin-bottom: 14px;
+  }
+  .tip-gold { background: var(--gold-bg); border-left: 3px solid var(--gold); }
+  .tip-teal { background: var(--teal-bg); border-left: 3px solid var(--teal); }
+  .tip-red  { background: var(--red-bg);  border-left: 3px solid var(--red); }
+  .tip-blue { background: var(--blue-bg); border-left: 3px solid var(--blue); }
+  .tip-icon { font-size: 17px; flex-shrink: 0; line-height: 1.5; }
+  .tip-content .tip-title {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .1em;
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .tip-gold .tip-title { color: var(--gold); }
+  .tip-teal .tip-title { color: var(--teal); }
+  .tip-red  .tip-title { color: var(--red); }
+  .tip-blue .tip-title { color: var(--blue); }
+  .tip-content p { font-size: 13px; color: var(--ink-3); line-height: 1.65; }
+  .tip-content p code { font-family: var(--mono); font-size: 11px; background: rgba(0,0,0,.06); padding: 1px 5px; border-radius: 3px; color: var(--red); }
+
+  /* ── Deliverable box ── */
+  .deliverable {
+    background: var(--ink); color: var(--bg); border-radius: 12px;
+    padding: 28px 32px; margin-bottom: 14px;
+  }
+  .del-title {
+    font-family: var(--serif); font-size: 22px; font-weight: 600;
+    color: white; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .del-title::before {
+    content: ''; width: 28px; height: 2px; background: var(--gold-2); display: inline-block;
+  }
+  .del-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .del-item {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .del-item-icon { font-size: 18px; margin-bottom: 6px; }
+  .del-item-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.9); margin-bottom: 3px; }
+  .del-item-desc { font-size: 12px; color: rgba(255,255,255,.5); line-height: 1.5; }
+  .del-item code { font-family: var(--mono); font-size: 11px; color: var(--gold-2); }
+
+  /* ── Bonus badge ── */
+  .bonus-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-2));
+    color: white; font-family: var(--mono); font-size: 10px;
+    letter-spacing: .08em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  /* ── Footer ── */
+  .doc-footer {
+    margin-top: 60px; padding-top: 24px;
+    border-top: 3px double var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .df-left { font-size: 12px; color: var(--ink-4); line-height: 1.7; }
+  .df-right {
+    font-family: var(--serif); font-size: 32px; font-style: italic;
+    color: var(--bg-3); letter-spacing: -.02em;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 0 20px 80px; }
+    .del-grid { grid-template-columns: 1fr; }
+    .meta-sep { display: none; }
+    .sm-branch { padding-left: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Official Header -->
+  <div class="official-header">
+    <div class="uni-name">Universitas Katolik Widya Mandala Surabaya</div>
+    <div class="course-name">Program Studi Administrasi Bisnis Digital</div>
+
+    <div class="doc-type">Lembar Tugas Akhir</div>
+    <h1 class="doc-title">Website <em>Aplikasi HTML</em></h1>
+    <p class="doc-subtitle">Tugas Individu — dengan Local Storage & Komponen Interaktif</p>
+
+    <div class="meta-strip">
+      <div class="meta-item">
+        <div class="meta-label">Mata Kuliah</div>
+        <div class="meta-value">Web Tutorial for Digital Business Admin</div>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item">
+        <div class="meta-label">Bobot Nilai</div>
+        <div class="meta-value">40% dari total nilai</div>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item">
+        <div class="meta-label">Sifat</div>
+        <div class="meta-value">Individu</div>
+      </div>
+      <div class="meta-sep"></div>
+      <div class="meta-item">
+        <div class="meta-label">Durasi</div>
+        <div class="meta-value">1 Minggu</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert-box">
+    <span class="alert-icon">📋</span>
+    <div class="alert-content">
+      <div class="alert-title">Ringkasan Tugas</div>
+      <p>Buat sebuah <strong>website aplikasi HTML fiktif</strong> yang terdiri dari minimal 4 halaman HTML. Website harus menerapkan seluruh elemen yang dipelajari di Modul 01–09, termasuk penggunaan <strong>localStorage</strong> untuk menyimpan preferensi atau data sederhana pengguna. Pilih <strong>satu dari sembilan tema aplikasi</strong> yang tersedia, kerjakan secara <strong>mandiri</strong>.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 1 — LATAR BELAKANG            -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section">
+    <div class="sec-hdr">
+      <div class="sec-num">01</div>
+      <div class="sec-meta">
+        <div class="sec-tag">Background</div>
+        <div class="sec-title">Latar Belakang & Pilihan Tema Aplikasi</div>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="sub">
+        <div class="sub-lbl">Skenario tugas individu</div>
+        <p class="prose">
+          Kamu diminta membangun sebuah <strong>website aplikasi HTML</strong> secara mandiri — dipilih dari sembilan tema yang tersedia di bawah.
+          Setiap tema memiliki konteks dan kebutuhan konten yang berbeda, namun semua menuntut penerapan
+          elemen HTML yang sama dari Modul 01–09.
+          Website harus berfungsi sebagai <em>aplikasi digital yang lengkap</em> — menampilkan informasi, 
+          data terstruktur, form interaktif, multimedia, dan pengalaman yang dipersonalisasi menggunakan localStorage.
+        </p>
+        <p class="prose">
+          Tugas ini dikerjakan <strong>secara individu</strong> dan dirancang untuk menguji penerapan 
+          <strong>seluruh topik dari Modul 01–09</strong> dalam satu proyek nyata yang terintegrasi.
+        </p>
+      </div>
+
+      <div class="sub">
+        <div class="sub-lbl">Pilih satu dari 9 tema aplikasi berikut</div>
+        <p class="prose">Setiap mahasiswa memilih <strong>satu tema berbeda</strong>. Koordinasikan dengan dosen untuk menghindari tema yang sama di kelas yang sama.</p>
+        <div class="req-grid">
+
+          <div class="req-card">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-gold">☕</div>
+              <div class="req-card-title">1 — Website Kafe / Restoran</div>
+            </div>
+            <div class="req-card-body">Profil bisnis kuliner fiktif di Surabaya. Halaman: Beranda, Menu, Reservasi, Lokasi & Kontak. <em>Fitur localStorage: simpan nama & pesanan favorit.</em></div>
+          </div>
+
+          <div class="req-card">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-teal">💻</div>
+              <div class="req-card-title">2 — Website Jasa IT / Startup</div>
+            </div>
+            <div class="req-card-body">Profil startup teknologi fiktif. Halaman: Beranda, Layanan, Portofolio, Kontak. <em>Fitur localStorage: simpan layanan yang diminati pengunjung.</em></div>
+          </div>
+
+          <div class="req-card">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-blue">🎪</div>
+              <div class="req-card-title">3 — Website Event Organizer</div>
+            </div>
+            <div class="req-card-body">Profil EO fiktif lengkap paket acara dan galeri. Halaman: Beranda, Paket, Galeri, Pemesanan. <em>Fitur localStorage: simpan paket yang dilihat terakhir.</em></div>
+          </div>
+
+          <div class="req-card">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-red">👗</div>
+              <div class="req-card-title">4 — Website Butik / Fashion</div>
+            </div>
+            <div class="req-card-body">Toko fashion fiktif dengan katalog produk. Halaman: Beranda, Katalog, Size Guide, Kontak. <em>Fitur localStorage: simpan produk ke wishlist.</em></div>
+          </div>
+
+          <div class="req-card">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-gold">🏨</div>
+              <div class="req-card-title">5 — Website Kos / Properti</div>
+            </div>
+            <div class="req-card-body">Website kos atau properti sewa fiktif. Halaman: Beranda, Fasilitas, Tarif & Kamar, Pemesanan. <em>Fitur localStorage: simpan pilihan tipe kamar.</em></div>
+          </div>
+
+          <div class="req-card">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-teal">📚</div>
+              <div class="req-card-title">6 — Website Lembaga Kursus</div>
+            </div>
+            <div class="req-card-body">Lembaga kursus atau bimbel fiktif. Halaman: Beranda, Program Kursus, Jadwal, Pendaftaran. <em>Fitur localStorage: simpan kursus yang dipilih.</em></div>
+          </div>
+
+          <div class="req-card">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-blue">🏥</div>
+              <div class="req-card-title">7 — Website Klinik / Apotek</div>
+            </div>
+            <div class="req-card-body">Klinik atau apotek fiktif. Halaman: Beranda, Layanan Medis, Dokter & Jadwal, Kontak & Peta. <em>Fitur localStorage: simpan jadwal dokter favorit.</em></div>
+          </div>
+
+          <div class="req-card">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-red">🌿</div>
+              <div class="req-card-title">8 — Website Wisata / Travel</div>
+            </div>
+            <div class="req-card-body">Agen wisata lokal fiktif. Halaman: Beranda, Destinasi, Paket Wisata, Pemesanan & Kontak. <em>Fitur localStorage: simpan destinasi favorit.</em></div>
+          </div>
+
+          <div class="req-card">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-gold">🎨</div>
+              <div class="req-card-title">9 — Website Portofolio Kreatif</div>
+            </div>
+            <div class="req-card-body">Portofolio personal desainer/fotografer fiktif. Halaman: Beranda, Karya, Tentang Saya, Kontak. <em>Fitur localStorage: simpan nama pengunjung & tema gelap/terang.</em></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 2 — STRUKTUR WEBSITE           -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section">
+    <div class="sec-hdr">
+      <div class="sec-num">02</div>
+      <div class="sec-meta">
+        <div class="sec-tag">Structure</div>
+        <div class="sec-title">Struktur Website yang Diperlukan</div>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="sub">
+        <div class="sub-lbl">Peta halaman (sitemap)</div>
+        <p class="prose">Website harus terdiri dari <strong>minimal 4 halaman HTML</strong> yang saling terhubung melalui navigasi. Nama dan isi halaman disesuaikan dengan tema yang dipilih.</p>
+
+        <div class="sitemap">
+          <div class="sm-title">Struktur navigasi minimum</div>
+          <div class="sm-tree">
+            <div class="sm-root">🏠 index.html — Beranda</div>
+            <div class="sm-connector"></div>
+            <div class="sm-branch">
+              <div class="sm-branch-inner">
+                <div class="sm-page">
+                  <div class="sm-node sn-gold">📄 about.html</div>
+                  <div class="sm-node-desc">Profil bisnis, visi misi, latar belakang</div>
+                </div>
+                <div class="sm-page">
+                  <div class="sm-node sn-blue">🛍️ products.html</div>
+                  <div class="sm-node-desc">Produk / layanan / katalog</div>
+                </div>
+                <div class="sm-page">
+                  <div class="sm-node sn-teal">📬 contact.html</div>
+                  <div class="sm-node-desc">Formulir kontak, peta, jam buka</div>
+                </div>
+                <div class="sm-page">
+                  <div class="sm-node sn-red">+ halaman ke-5</div>
+                  <div class="sm-node-desc">Blog, FAQ, galeri, atau halaman khusus tema (opsional, +5 poin)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub">
+        <div class="sub-lbl">Struktur setiap halaman HTML</div>
+        <p class="prose">Setiap halaman <strong>wajib</strong> menggunakan struktur HTML semantik yang benar:</p>
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lang">HTML — Kerangka wajib setiap halaman</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+          <pre><span class="t">&lt;!DOCTYPE html&gt;</span>
+<span class="t">&lt;html</span> <span class="a">lang=</span><span class="v">"id"</span><span class="t">&gt;</span>
+<span class="t">&lt;head&gt;</span>
+  <span class="t">&lt;meta</span> <span class="a">charset=</span><span class="v">"UTF-8"</span><span class="t">&gt;</span>
+  <span class="t">&lt;meta</span> <span class="a">name=</span><span class="v">"viewport"</span> <span class="a">content=</span><span class="v">"width=device-width, initial-scale=1.0"</span><span class="t">&gt;</span>
+  <span class="t">&lt;title&gt;</span><span class="s">Nama Halaman | Nama Bisnis</span><span class="t">&lt;/title&gt;</span>
+  <span class="t">&lt;meta</span> <span class="a">name=</span><span class="v">"description"</span> <span class="a">content=</span><span class="v">"..."</span><span class="t">&gt;</span>   <span class="c">&lt;!-- Mod 09 --&gt;</span>
+  <span class="c">&lt;!-- Open Graph tags --&gt;</span>                      <span class="c">&lt;!-- Mod 09 --&gt;</span>
+<span class="t">&lt;/head&gt;</span>
+<span class="t">&lt;body&gt;</span>
+
+  <span class="t">&lt;header&gt;</span>                                       <span class="c">&lt;!-- Mod 05 --&gt;</span>
+    <span class="t">&lt;nav&gt;</span>
+      <span class="t">&lt;ul&gt;</span>                                       <span class="c">&lt;!-- Mod 04 --&gt;</span>
+        <span class="t">&lt;li&gt;&lt;a</span> <span class="a">href=</span><span class="v">"index.html"</span><span class="t">&gt;</span><span class="s">Beranda</span><span class="t">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="c">&lt;!-- ... --&gt;</span>
+      <span class="t">&lt;/ul&gt;</span>
+    <span class="t">&lt;/nav&gt;</span>
+  <span class="t">&lt;/header&gt;</span>
+
+  <span class="t">&lt;main&gt;</span>
+    <span class="t">&lt;article&gt;</span>
+      <span class="t">&lt;section&gt;</span>                               <span class="c">&lt;!-- Mod 03, 05 --&gt;</span>
+        <span class="t">&lt;h1&gt;</span><span class="s">Judul Utama</span><span class="t">&lt;/h1&gt;</span>                 <span class="c">&lt;!-- Mod 03 --&gt;</span>
+        <span class="t">&lt;p&gt;</span><span class="s">Konten...</span><span class="t">&lt;/p&gt;</span>                     <span class="c">&lt;!-- Mod 01 --&gt;</span>
+      <span class="t">&lt;/section&gt;</span>
+    <span class="t">&lt;/article&gt;</span>
+    <span class="t">&lt;aside&gt;</span>...<span class="t">&lt;/aside&gt;</span>
+  <span class="t">&lt;/main&gt;</span>
+
+  <span class="t">&lt;footer&gt;</span>...<span class="t">&lt;/footer&gt;</span>
+
+  <span class="t">&lt;script&gt;</span>                                       <span class="c">&lt;!-- localStorage --&gt;</span>
+    <span class="c">// localStorage code here</span>
+  <span class="t">&lt;/script&gt;</span>
+
+<span class="t">&lt;/body&gt;</span>
+<span class="t">&lt;/html&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 3 — PERSYARATAN TEKNIS         -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section">
+    <div class="sec-hdr">
+      <div class="sec-num">03</div>
+      <div class="sec-meta">
+        <div class="sec-tag">Requirements</div>
+        <div class="sec-title">Persyaratan Teknis — Modul 01–09</div>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <div class="sub">
+        <div class="sub-lbl">Elemen wajib per modul</div>
+        <ul class="checklist">
+
+          <li class="check-item">
+            <div class="check-box"></div>
+            <div class="check-text"><strong>Paragraf, gambar, dan tautan</strong> — Minimal 3 paragraf deskriptif, semua gambar punya atribut <code>alt</code>, minimal 3 tautan antar halaman dan 1 tautan eksternal.</div>
+            <span class="check-ref cr-gold">Mod 01</span>
+          </li>
+
+          <li class="check-item">
+            <div class="check-box"></div>
+            <div class="check-text"><strong>Tabel data administrasi</strong> — Minimal 1 tabel dengan <code>&lt;thead&gt;</code> dan <code>&lt;tbody&gt;</code> berisi data nyata sesuai tema (jam buka, daftar harga, jadwal layanan, atau spesifikasi produk).</div>
+            <span class="check-ref cr-gold">Mod 02</span>
+          </li>
+
+          <li class="check-item">
+            <div class="check-box"></div>
+            <div class="check-text"><strong>Heading hierarki</strong> — Setiap halaman punya tepat 1 tag <code>&lt;h1&gt;</code>, dan menggunakan <code>&lt;h2&gt;</code>/<code>&lt;h3&gt;</code> secara berurutan tanpa melewati level. Gunakan <code>&lt;div&gt;</code> dan <code>&lt;span&gt;</code> sebagai container styling.</div>
+            <span class="check-ref cr-gold">Mod 03</span>
+          </li>
+
+          <li class="check-item">
+            <div class="check-box"></div>
+            <div class="check-text"><strong>List & navigasi</strong> — Navigasi utama menggunakan <code>&lt;ul&gt;</code>+<code>&lt;li&gt;</code>+<code>&lt;a&gt;</code>. Minimal 1 unordered list (fitur/menu), 1 ordered list (langkah/prosedur), dan 1 description list (istilah/FAQ).</div>
+            <span class="check-ref cr-gold">Mod 04</span>
+          </li>
+
+          <li class="check-item">
+            <div class="check-box"></div>
+            <div class="check-text"><strong>Semantic HTML5</strong> — Setiap halaman wajib menggunakan: <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;article&gt;</code> atau <code>&lt;section&gt;</code>, <code>&lt;aside&gt;</code> (minimal 1 halaman), dan <code>&lt;footer&gt;</code>.</div>
+            <span class="check-ref cr-gold">Mod 05</span>
+          </li>
+
+          <li class="check-item">
+            <div class="check-box"></div>
+            <div class="check-text"><strong>Form kontak</strong> — Halaman <code>contact.html</code> berisi form dengan minimal: nama (text, required), email (email, required), subjek (select, required), pesan (textarea, required), dan tombol submit. Semua input punya label yang terhubung dengan benar.</div>
+            <span class="check-ref cr-blue">Mod 06</span>
+          </li>
+
+          <li class="check-item">
+            <div class="check-box"></div>
+            <div class="check-text"><strong>Video atau audio</strong> — Minimal 1 elemen multimedia: bisa berupa video promosi bisnis menggunakan <code>&lt;video&gt;</code> dengan atribut <code>controls</code> dan <code>poster</code>, atau embed YouTube menggunakan <code>&lt;iframe&gt;</code> dengan atribut <code>title</code>.</div>
+            <span class="check-ref cr-blue">Mod 07</span>
+          </li>
+
+          <li class="check-item">
+            <div class="check-box"></div>
+            <div class="check-text"><strong>Embed konten eksternal</strong> — Minimal 1 <code>&lt;iframe&gt;</code> Google Maps menampilkan lokasi bisnis pada halaman kontak atau beranda. Wajib ada atribut <code>title</code>, <code>loading="lazy"</code>, dan <code>style="border:0;"</code>.</div>
+            <span class="check-ref cr-blue">Mod 08</span>
+          </li>
+
+          <li class="check-item">
+            <div class="check-box"></div>
+            <div class="check-text"><strong>Meta tags SEO & Open Graph</strong> — Setiap halaman wajib punya: <code>&lt;title&gt;</code> unik (max 60 karakter), <code>meta description</code> (max 160 karakter), dan minimal tag OG: <code>og:title</code>, <code>og:description</code>, <code>og:image</code>, <code>og:url</code>. Halaman beranda tambahkan JSON-LD Organization schema.</div>
+            <span class="check-ref cr-blue">Mod 09</span>
+          </li>
+
+        </ul>
+      </div>
+
+      <div class="sub">
+        <div class="sub-lbl">Persyaratan localStorage (wajib)</div>
+        <p class="prose">
+          Website harus mengimplementasikan <strong>minimal 2 dari 3</strong> fitur localStorage berikut:
+        </p>
+
+        <div class="req-grid">
+          <div class="req-card" style="border-color:var(--gold-ln);">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-gold">👤</div>
+              <div class="req-card-title">Fitur A — Simpan Nama Pengunjung</div>
+            </div>
+            <div class="req-card-body">
+              Form sapaan di beranda: pengunjung mengisi nama, disimpan ke <code>localStorage</code>. Saat kembali ke halaman, nama muncul otomatis: <em>"Selamat datang kembali, [Nama]!"</em>
+            </div>
+          </div>
+
+          <div class="req-card" style="border-color:var(--teal-ln);">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-teal">🌙</div>
+              <div class="req-card-title">Fitur B — Toggle Tema Gelap/Terang</div>
+            </div>
+            <div class="req-card-body">
+              Tombol toggle dark/light mode. Pilihan tema disimpan ke <code>localStorage</code> sehingga tetap aktif saat halaman di-refresh atau pindah halaman.
+            </div>
+          </div>
+
+          <div class="req-card" style="border-color:var(--blue-ln);">
+            <div class="req-card-hdr">
+              <div class="req-icon ri-blue">📋</div>
+              <div class="req-card-title">Fitur C — Simpan Draft Pesan</div>
+            </div>
+            <div class="req-card-body">
+              Form kontak menyimpan isi pesan ke <code>localStorage</code> secara otomatis saat pengguna mengetik. Jika halaman di-refresh sebelum submit, isi form dikembalikan otomatis.
+            </div>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lang">JavaScript — Contoh implementasi localStorage</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+          <pre><span class="js-c">// ── Fitur A: Simpan & tampilkan nama pengunjung ──</span>
+<span class="js-k">const</span> inputNama = document.getElementById(<span class="js-s">'input-nama'</span>);
+<span class="js-k">const</span> sapaan   = document.getElementById(<span class="js-s">'sapaan'</span>);
+
+<span class="js-c">// Cek apakah nama sudah tersimpan</span>
+<span class="js-k">const</span> namaTersimpan = localStorage.getItem(<span class="js-s">'namaPengunjung'</span>);
+<span class="js-k">if</span> (namaTersimpan) {
+  sapaan.textContent = <span class="js-s">`Selamat datang kembali, <span class="js-k">${namaTersimpan}</span>!`</span>;
+}
+
+<span class="js-c">// Simpan nama saat form dikirim</span>
+document.getElementById(<span class="js-s">'form-nama'</span>)
+  .addEventListener(<span class="js-s">'submit'</span>, <span class="js-k">function</span>(e) {
+    e.preventDefault();
+    localStorage.setItem(<span class="js-s">'namaPengunjung'</span>, inputNama.value);
+    sapaan.textContent = <span class="js-s">`Halo, <span class="js-k">${inputNama.value}</span>! 👋`</span>;
+  });
+
+<span class="js-c">// ── Fitur B: Toggle dark/light mode ──</span>
+<span class="js-k">const</span> tema = localStorage.getItem(<span class="js-s">'tema'</span>) || <span class="js-s">'terang'</span>;
+<span class="js-k">if</span> (tema === <span class="js-s">'gelap'</span>) document.body.classList.add(<span class="js-s">'dark'</span>);
+
+document.getElementById(<span class="js-s">'toggle-tema'</span>)
+  .addEventListener(<span class="js-s">'click'</span>, <span class="js-k">function</span>() {
+    document.body.classList.toggle(<span class="js-s">'dark'</span>);
+    <span class="js-k">const</span> temaBaru = document.body.classList.contains(<span class="js-s">'dark'</span>)
+      ? <span class="js-s">'gelap'</span> : <span class="js-s">'terang'</span>;
+    localStorage.setItem(<span class="js-s">'tema'</span>, temaBaru);
+  });
+
+<span class="js-c">// ── Fitur C: Auto-save draft pesan form kontak ──</span>
+<span class="js-k">const</span> textarea = document.getElementById(<span class="js-s">'pesan'</span>);
+
+<span class="js-c">// Pulihkan draft jika ada</span>
+<span class="js-k">const</span> draft = localStorage.getItem(<span class="js-s">'draftPesan'</span>);
+<span class="js-k">if</span> (draft) textarea.value = draft;
+
+<span class="js-c">// Simpan otomatis tiap pengguna mengetik</span>
+textarea.addEventListener(<span class="js-s">'input'</span>, <span class="js-k">function</span>() {
+  localStorage.setItem(<span class="js-s">'draftPesan'</span>, textarea.value);
+});
+
+<span class="js-c">// Hapus draft setelah form berhasil dikirim</span>
+document.getElementById(<span class="js-s">'form-kontak'</span>)
+  .addEventListener(<span class="js-s">'submit'</span>, <span class="js-k">function</span>() {
+    localStorage.removeItem(<span class="js-s">'draftPesan'</span>);
+  });</pre>
+        </div>
+
+        <div class="tip tip-teal">
+          <span class="tip-icon">💡</span>
+          <div class="tip-content">
+            <div class="tip-title">Tips localStorage</div>
+            <p>localStorage hanya menyimpan <strong>string</strong>. Untuk menyimpan objek atau array, gunakan <code>JSON.stringify()</code> saat menyimpan dan <code>JSON.parse()</code> saat membaca. Data yang disimpan <strong>tidak hilang</strong> saat browser ditutup — tetap ada sampai dihapus secara eksplisit.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 4 — RUBRIK PENILAIAN           -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section">
+    <div class="sec-hdr">
+      <div class="sec-num">04</div>
+      <div class="sec-meta">
+        <div class="sec-tag">Grading</div>
+        <div class="sec-title">Rubrik Penilaian</div>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="sub">
+        <div class="sub-lbl">Distribusi nilai (total 100 poin)</div>
+
+        <table class="grade-table">
+          <thead>
+            <tr>
+              <th>Aspek Penilaian</th>
+              <th>Kriteria</th>
+              <th style="text-align:right;">Poin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>Kelengkapan elemen HTML</strong>
+                <div class="grade-bar-wrap">
+                  <div class="grade-bar"><div class="grade-fill" style="width:30%;"></div></div>
+                </div>
+              </td>
+              <td>
+                <span class="criteria-tag ct-g">Mod 01–05</span>
+                Semua elemen dari Modul 01–05 hadir dan digunakan dengan benar: paragraf, gambar (alt), tabel, heading hierarki, list, navigasi, semantic HTML5.
+              </td>
+              <td class="grade-num">30</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Form & validasi</strong>
+                <div class="grade-bar-wrap">
+                  <div class="grade-bar"><div class="grade-fill" style="width:15%;"></div></div>
+                </div>
+              </td>
+              <td>
+                <span class="criteria-tag ct-b">Mod 06</span>
+                Form kontak lengkap, semua input punya label terhubung, validasi HTML5 (<code>required</code>, <code>type</code>, <code>pattern</code>) diterapkan dengan benar.
+              </td>
+              <td class="grade-num">15</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Multimedia & embed</strong>
+                <div class="grade-bar-wrap">
+                  <div class="grade-bar"><div class="grade-fill" style="width:15%;"></div></div>
+                </div>
+              </td>
+              <td>
+                <span class="criteria-tag ct-b">Mod 07–08</span>
+                Video/audio atau embed YouTube hadir. Google Maps ter-embed di halaman kontak. Semua iframe punya atribut <code>title</code>.
+              </td>
+              <td class="grade-num">15</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Meta tags & SEO</strong>
+                <div class="grade-bar-wrap">
+                  <div class="grade-bar"><div class="grade-fill" style="width:15%;"></div></div>
+                </div>
+              </td>
+              <td>
+                <span class="criteria-tag ct-b">Mod 09</span>
+                Setiap halaman punya title unik & meta description. Open Graph tags lengkap di semua halaman. JSON-LD Organization schema di beranda.
+              </td>
+              <td class="grade-num">15</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Implementasi localStorage</strong>
+                <div class="grade-bar-wrap">
+                  <div class="grade-bar"><div class="grade-fill" style="width:20%;background:var(--teal);"></div></div>
+                </div>
+              </td>
+              <td>
+                <span class="criteria-tag ct-g">JS</span>
+                Minimal 2 fitur localStorage berjalan dengan benar: data tersimpan saat interaksi, dipulihkan saat halaman dimuat ulang, dan dihapus pada kondisi yang tepat.
+              </td>
+              <td class="grade-num">20</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Kualitas & konsistensi</strong>
+                <div class="grade-bar-wrap">
+                  <div class="grade-bar"><div class="grade-fill" style="width:5%;background:var(--red);"></div></div>
+                </div>
+              </td>
+              <td>
+                <span class="criteria-tag ct-r">Quality</span>
+                Indentasi HTML konsisten, nama file dan folder rapi, navigasi berfungsi di semua halaman, tidak ada link yang broken, konten bisnis masuk akal dan kohesif.
+              </td>
+              <td class="grade-num">5</td>
+            </tr>
+            <tr class="total-row">
+              <td><strong>TOTAL</strong></td>
+              <td style="color:rgba(255,255,255,.6);font-size:13px;">Semua aspek di atas</td>
+              <td class="grade-num" style="color:var(--gold-2);">100</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="bonus-badge">⭐ Nilai Bonus</div>
+        <table class="grade-table" style="margin-top:0;">
+          <thead>
+            <tr>
+              <th>Bonus</th>
+              <th>Deskripsi</th>
+              <th style="text-align:right;">+Poin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Halaman ke-5</strong></td>
+              <td>Menambah 1 halaman lebih yang relevan dengan tema (blog, galeri, FAQ, atau halaman khusus) yang terintegrasi penuh ke navigasi</td>
+              <td class="grade-num" style="color:var(--gold);">+5</td>
+            </tr>
+            <tr>
+              <td><strong>localStorage ke-3</strong></td>
+              <td>Mengimplementasikan ketiga fitur localStorage (Fitur A + B + C) semuanya berfungsi</td>
+              <td class="grade-num" style="color:var(--gold);">+5</td>
+            </tr>
+            <tr>
+              <td><strong>JSON-LD tambahan</strong></td>
+              <td>Menambahkan schema FAQ, LocalBusiness, atau Article selain Organization schema yang diwajibkan</td>
+              <td class="grade-num" style="color:var(--gold);">+5</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 5 — TIMELINE                   -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section">
+    <div class="sec-hdr">
+      <div class="sec-num">05</div>
+      <div class="sec-meta">
+        <div class="sec-tag">Schedule</div>
+        <div class="sec-title">Jadwal & Milestone</div>
+      </div>
+    </div>
+    <div class="sec-body">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot active"></div>
+          <div class="tl-date">Minggu 1 — Hari 1–3</div>
+          <div class="tl-title">Perencanaan & Wireframe</div>
+          <div class="tl-desc">Tentukan tema yang dipilih dan koordinasikan dengan dosen. Buat nama website, identitas bisnis fiktif, dan sketsa wireframe kasar untuk setiap halaman. Buat struktur folder dan file HTML kosong.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot active"></div>
+          <div class="tl-date">Minggu 1 — Hari 4–7</div>
+          <div class="tl-title">Pembangunan Struktur HTML</div>
+          <div class="tl-desc">Bangun kerangka HTML semua halaman dengan struktur semantik. Pasang navigasi yang terhubung antar halaman. Isi konten teks awal, heading, paragraf, dan list.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">Minggu 2 — Hari 1–4</div>
+          <div class="tl-title">Konten & Komponen Khusus</div>
+          <div class="tl-desc">Lengkapi tabel, gambar dengan alt text, form kontak dengan validasi, embed YouTube dan Google Maps. Pastikan setiap halaman lengkap secara konten.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">Minggu 2 — Hari 5–7</div>
+          <div class="tl-title">localStorage & Meta Tags</div>
+          <div class="tl-desc">Implementasikan minimal 2 fitur localStorage. Lengkapi semua meta tags, Open Graph, dan JSON-LD schema di setiap halaman.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">Minggu 3 — Hari 1–3</div>
+          <div class="tl-title">Review & Perbaikan</div>
+          <div class="tl-desc">Uji semua halaman dan navigasi secara mandiri. Validasi HTML dengan W3C Validator. Cek fungsi localStorage di berbagai browser. Perbaiki semua kesalahan yang ditemukan sebelum dikumpulkan.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot final"></div>
+          <div class="tl-date">Minggu 3 — Hari 7</div>
+          <div class="tl-title">🏁 Pengumpulan Tugas</div>
+          <div class="tl-desc">Submit file ZIP berisi seluruh file proyek ke LMS. Sertakan laporan singkat (1–2 halaman) yang menjelaskan tema yang dipilih, fitur localStorage yang diimplementasikan, dan screenshot setiap halaman.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 6 — DELIVERABLES               -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section">
+    <div class="sec-hdr">
+      <div class="sec-num">06</div>
+      <div class="sec-meta">
+        <div class="sec-tag">Submission</div>
+        <div class="sec-title">Ketentuan Pengumpulan</div>
+      </div>
+    </div>
+    <div class="sec-body">
+
+      <div class="sub">
+        <div class="sub-lbl">Yang harus dikumpulkan</div>
+        <div class="deliverable">
+          <div class="del-title">Paket Pengumpulan</div>
+          <div class="del-grid">
+            <div class="del-item">
+              <div class="del-item-icon">📁</div>
+              <div class="del-item-title">File Proyek (ZIP)</div>
+              <div class="del-item-desc">Semua file HTML, gambar, dan aset lainnya dalam satu folder terstruktur. Nama file ZIP: <code>NIM_NamaLengkap.zip</code></div>
+            </div>
+            <div class="del-item">
+              <div class="del-item-icon">📄</div>
+              <div class="del-item-title">Laporan Singkat (PDF)</div>
+              <div class="del-item-desc">1–2 halaman: deskripsi tema yang dipilih, alasan pemilihan tema, penjelasan fitur localStorage yang diimplementasikan, dan screenshot tiap halaman.</div>
+            </div>
+            <div class="del-item">
+              <div class="del-item-icon">📋</div>
+              <div class="del-item-title">Lembar Self-Assessment</div>
+              <div class="del-item-desc">Isi checklist persyaratan teknis di Seksi 03, tandai setiap item yang sudah selesai, dan sertakan komentar singkat.</div>
+            </div>
+            <div class="del-item">
+              <div class="del-item-icon">🌐</div>
+              <div class="del-item-title">Demo (Opsional, +3 poin)</div>
+              <div class="del-item-desc">Upload ke GitHub Pages, Netlify, atau Vercel dan cantumkan link live website dalam laporan.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub">
+        <div class="sub-lbl">Struktur folder yang direkomendasikan</div>
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lang">Folder structure</span></div>
+          <pre><span class="js-s">NIM_NamaLengkap/</span>
+├── <span class="js-s">index.html</span>          <span class="js-c">← Beranda</span>
+├── <span class="js-s">about.html</span>          <span class="js-c">← Profil bisnis</span>
+├── <span class="js-s">products.html</span>       <span class="js-c">← Produk / layanan</span>
+├── <span class="js-s">contact.html</span>        <span class="js-c">← Kontak + form + peta</span>
+├── <span class="js-s">blog.html</span>           <span class="js-c">← Opsional (halaman ke-5)</span>
+│
+├── <span class="js-k">images/</span>             <span class="js-c">← Semua file gambar</span>
+│   ├── <span class="js-s">logo.png</span>
+│   ├── <span class="js-s">hero.jpg</span>
+│   └── <span class="js-s">og-image.jpg</span>    <span class="js-c">← Gambar Open Graph 1200×630</span>
+│
+└── <span class="js-k">laporan/</span>
+    ├── <span class="js-s">laporan.pdf</span>
+    └── <span class="js-s">self-assessment.pdf</span></pre>
+        </div>
+      </div>
+
+      <div class="sub">
+        <div class="sub-lbl">Aturan penting</div>
+        <div class="tip tip-red">
+          <span class="tip-icon">🚫</span>
+          <div class="tip-content">
+            <div class="tip-title">Larangan</div>
+            <p>Dilarang menggunakan <strong>framework CSS</strong> (Bootstrap, Tailwind) atau <strong>template HTML yang sudah jadi</strong>. Semua HTML harus ditulis sendiri dari awal. Penggunaan framework atau template akan mengurangi nilai sebesar 30 poin. Kemiripan kode antar mahasiswa lebih dari 70% dianggap plagiarisme dan kedua pihak akan mendapat nilai 0.</p>
+          </div>
+        </div>
+        <div class="tip tip-gold">
+          <span class="tip-icon">✅</span>
+          <div class="tip-content">
+            <div class="tip-title">Yang diperbolehkan</div>
+            <p>Menggunakan Google Fonts untuk tipografi, menggunakan gambar dari situs stock photo gratis (Unsplash, Pexels) dengan atribusi yang benar, dan merujuk ke dokumentasi MDN Web Docs atau W3Schools untuk referensi syntax HTML.</p>
+          </div>
+        </div>
+        <div class="tip tip-blue">
+          <span class="tip-icon">🔍</span>
+          <div class="tip-content">
+            <div class="tip-title">Validasi wajib</div>
+            <p>Sebelum mengumpulkan, wajib validasi semua halaman HTML di <code>validator.w3.org</code> dan tangkap screenshot hasilnya (boleh ada warning, tapi tidak boleh ada error). Screenshot validasi dilampirkan dalam laporan.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer dokumen -->
+  <div class="doc-footer">
+    <div class="df-left">
+      <strong>Web Tutorial for Digital Business Administration</strong><br>
+      Universitas Katolik Widya Mandala Surabaya<br>
+      Dokumen ini merupakan lembar tugas resmi. Revisi hanya oleh dosen pengampu.
+    </div>
+    <div class="df-right">WIMA</div>
+  </div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'Tersalin!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Salin'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
