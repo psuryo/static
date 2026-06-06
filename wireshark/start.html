@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireshark — Kursus Pemula 5 Jam</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f14;
+    --surface: #111820;
+    --card: #161e28;
+    --border: #1e2d3d;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --green: #39ff7a;
+    --yellow: #ffe156;
+    --text: #cdd9e5;
+    --muted: #6a8090;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Barlow', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.7; }
+  .hero {
+    background: linear-gradient(135deg, #06111c 0%, #0b1e2e 60%, #0f2a1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,212,255,.04) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,212,255,.04) 40px);
+  }
+  .hero-inner { position: relative; max-width: 900px; margin: 0 auto; }
+  .badge {
+    display: inline-block; background: rgba(0,212,255,.12);
+    border: 1px solid var(--accent); color: var(--accent);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 2px;
+    padding: 4px 12px; border-radius: 2px; margin-bottom: 18px; text-transform: uppercase;
+  }
+  .hero h1 { font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 900; line-height: 1.1; color: #fff; margin-bottom: 14px; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { font-size: 1.1rem; color: var(--muted); max-width: 620px; margin-bottom: 28px; }
+  .stats { display: flex; gap: 32px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat .num { font-family: var(--mono); font-size: 1.6rem; color: var(--accent); display: block; }
+  .stat .lbl { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); border-radius: 4px;
+    padding: 28px 32px; margin: 40px 0;
+  }
+  .toc h2 { font-family: var(--mono); font-size: .9rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 16px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 6px; }
+  .toc a { color: var(--text); text-decoration: none; transition: color .2s; }
+  .toc a:hover { color: var(--accent); }
+  .toc .sub { color: var(--muted); font-size: .9rem; }
+  .session { margin-top: 56px; }
+  .session-header { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 28px; }
+  .session-num {
+    flex-shrink: 0; width: 52px; height: 52px; background: var(--accent); color: #000;
+    font-family: var(--mono); font-size: 1.3rem; font-weight: bold;
+    display: flex; align-items: center; justify-content: center; border-radius: 4px;
+  }
+  .session-meta h2 { font-size: 1.5rem; font-weight: 700; color: #fff; line-height: 1.2; }
+  .session-meta .time { font-family: var(--mono); font-size: .82rem; color: var(--muted); margin-top: 3px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 24px 28px; margin-bottom: 20px; }
+  .card h3 { font-size: 1.05rem; font-weight: 700; color: var(--accent2); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .card h3::before { content: '▸'; color: var(--accent); }
+  .card p, .card li { color: var(--text); font-size: .97rem; }
+  .card ul, .card ol { padding-left: 20px; }
+  .card li { margin-bottom: 4px; }
+  .code-wrap { background: #07101a; border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: 4px; margin: 14px 0; overflow-x: auto; }
+  .code-label { font-family: var(--mono); font-size: .72rem; color: var(--green); letter-spacing: 1px; padding: 6px 14px 0; opacity: .7; }
+  pre { font-family: var(--mono); font-size: .88rem; color: #a8d8a8; padding: 10px 14px 14px; line-height: 1.6; }
+  pre .c { color: var(--muted); font-style: italic; }
+  pre .k { color: var(--accent); }
+  pre .s { color: var(--yellow); }
+  pre .h { color: var(--accent2); }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; margin: 12px 0; }
+  th { background: rgba(0,212,255,.1); color: var(--accent); font-family: var(--mono); font-size: .78rem; letter-spacing: 1px; text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  td { padding: 9px 14px; border-bottom: 1px solid rgba(30,45,61,.8); color: var(--text); vertical-align: top; }
+  td code { font-family: var(--mono); font-size: .85rem; color: var(--green); background: rgba(57,255,122,.07); padding: 1px 6px; border-radius: 3px; }
+  tr:hover td { background: rgba(0,212,255,.03); }
+  .callout { border-radius: 4px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 12px; align-items: flex-start; font-size: .93rem; }
+  .callout .icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+  .callout.warn { background: rgba(255,107,53,.08); border: 1px solid rgba(255,107,53,.3); color: #f0a070; }
+  .callout.tip { background: rgba(57,255,122,.06); border: 1px solid rgba(57,255,122,.25); color: #70d090; }
+  .callout.info { background: rgba(0,212,255,.06); border: 1px solid rgba(0,212,255,.25); color: #80c8d8; }
+  .steps { counter-reset: step; }
+  .step { counter-increment: step; display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start; }
+  .step::before {
+    content: counter(step); flex-shrink: 0; width: 28px; height: 28px;
+    background: var(--border); border: 1px solid var(--accent); color: var(--accent);
+    font-family: var(--mono); font-size: .85rem; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; margin-top: 2px;
+  }
+  .step p { color: var(--text); font-size: .96rem; }
+  .step code { font-family: var(--mono); font-size: .85rem; color: var(--yellow); background: rgba(255,225,86,.07); padding: 1px 6px; border-radius: 3px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+  footer { border-top: 1px solid var(--border); padding: 30px 24px; text-align: center; font-family: var(--mono); font-size: .8rem; color: var(--muted); }
+  footer span { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="badge">// Kursus Analisis Jaringan</div>
+    <h1>Wireshark<br><span>Panduan Lengkap Pemula</span></h1>
+    <p>Kursus hands-on terstruktur 5 jam untuk menangkap, memfilter, dan menganalisis lalu lintas jaringan nyata — dari peluncuran pertama hingga intersepsi data pada koneksi tidak aman.</p>
+    <div class="stats">
+      <div class="stat"><span class="num">5</span><span class="lbl">Jam</span></div>
+      <div class="stat"><span class="num">6</span><span class="lbl">Sesi</span></div>
+      <div class="stat"><span class="num">40+</span><span class="lbl">Contoh</span></div>
+      <div class="stat"><span class="num">Pemula</span><span class="lbl">Level</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <h2>// Daftar Isi</h2>
+    <ol>
+      <li><a href="#s1">Sesi 1 — Apa itu Wireshark? Instalasi &amp; Capture Pertama <span class="sub">(~45 menit)</span></a></li>
+      <li><a href="#s2">Sesi 2 — Memahami Paket &amp; Model OSI <span class="sub">(~50 menit)</span></a></li>
+      <li><a href="#s3">Sesi 3 — Display Filter &amp; Capture Filter <span class="sub">(~50 menit)</span></a></li>
+      <li><a href="#s4">Sesi 4 — Intersepsi Lalu Lintas HTTP pada Website Tidak Aman <span class="sub">(~60 menit)</span></a></li>
+      <li><a href="#s5">Sesi 5 — Analisis Protokol: DNS, ARP, TCP, FTP <span class="sub">(~55 menit)</span></a></li>
+      <li><a href="#s6">Sesi 6 — Skenario Dunia Nyata &amp; Lab Praktik <span class="sub">(~40 menit)</span></a></li>
+    </ol>
+  </div>
+
+  <div class="callout warn">
+    <div class="icon">⚠️</div>
+    <div><strong>Perhatian Hukum:</strong> Penangkapan paket (packet capture) hanya boleh dilakukan pada jaringan yang Anda miliki atau yang telah Anda dapatkan izin tertulis secara eksplisit. Menginterkep lalu lintas pada jaringan publik atau milik pihak ketiga tanpa otorisasi adalah tindakan ilegal berdasarkan UU ITE dan berbagai peraturan perundang-undangan lainnya. Semua contoh dalam panduan ini harus dipraktikkan pada jaringan lokal milik sendiri atau lingkungan laboratorium yang terisolasi.</div>
+  </div>
+
+  <!-- SESI 1 -->
+  <div class="session" id="s1">
+    <div class="session-header">
+      <div class="session-num">01</div>
+      <div class="session-meta">
+        <h2>Apa itu Wireshark? Instalasi &amp; Capture Pertama</h2>
+        <div class="time">⏱ Estimasi waktu: 45 menit</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Apa itu Wireshark?</h3>
+      <p>Wireshark adalah <strong>penganalisis protokol jaringan</strong> (disebut juga packet sniffer) yang gratis dan open-source. Wireshark memungkinkan Anda melihat setiap paket data yang melewati antarmuka jaringan secara real time. Bayangkan seperti mesin X-ray untuk koneksi internet Anda — Anda bisa melihat persis data apa yang sedang dikirim dan diterima.</p>
+      <br>
+      <p><strong>Penggunaan sah yang umum:</strong></p>
+      <ul>
+        <li>Pemecahan masalah jaringan (mengapa koneksi saya lambat?)</li>
+        <li>Analisis keamanan (mendeteksi lalu lintas mencurigakan)</li>
+        <li>Mempelajari cara kerja protokol jaringan</li>
+        <li>Mendeteksi transmisi data yang tidak aman (tidak terenkripsi)</li>
+        <li>Memverifikasi aturan firewall dan konfigurasi jaringan</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Instalasi</h3>
+      <div class="steps">
+        <div class="step"><p>Kunjungi <code>https://www.wireshark.org/download.html</code> dan unduh installer sesuai sistem operasi Anda (Windows, macOS, atau Linux).</p></div>
+        <div class="step"><p><strong>Windows:</strong> Jalankan installer <code>.exe</code>. Saat diminta, install juga <strong>Npcap</strong> — ini diperlukan untuk live packet capture di Windows. Gunakan opsi default.</p></div>
+        <div class="step"><p><strong>macOS:</strong> Buka file <code>.dmg</code>, seret Wireshark ke folder Applications. Anda mungkin perlu menginstall ChmodBPF untuk izin capture.</p></div>
+        <div class="step"><p><strong>Linux (Ubuntu/Debian):</strong> Jalankan <code>sudo apt install wireshark</code> kemudian <code>sudo usermod -aG wireshark $USER</code> lalu restart komputer.</p></div>
+        <div class="step"><p>Buka Wireshark. Anda akan melihat daftar antarmuka jaringan dengan grafik lalu lintas langsung di sebelahnya.</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Antarmuka Wireshark — Orientasi Awal</h3>
+      <p>Saat membuka Wireshark, Anda akan melihat tiga panel utama:</p>
+      <br>
+      <table>
+        <tr><th>Panel</th><th>Yang Ditampilkan</th></tr>
+        <tr><td><strong>Packet List</strong> (atas)</td><td>Satu baris per paket — waktu, IP sumber, IP tujuan, protokol, info</td></tr>
+        <tr><td><strong>Packet Details</strong> (tengah)</td><td>Pohon yang bisa diperluas berisi semua lapisan protokol dari paket yang dipilih</td></tr>
+        <tr><td><strong>Packet Bytes</strong> (bawah)</td><td>Representasi hex dan ASCII mentah dari data paket</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Capture Pertama Anda — Langkah demi Langkah</h3>
+      <div class="steps">
+        <div class="step"><p>Buka Wireshark. Di layar awal, Anda akan melihat daftar antarmuka jaringan. Cari <code>Wi-Fi</code> atau <code>Ethernet</code> — yang memiliki grafik gelombang hidup di sebelahnya berarti sedang aktif.</p></div>
+        <div class="step"><p>Klik dua kali antarmuka aktif Anda (misalnya <code>Wi-Fi</code>). Wireshark langsung mulai menangkap semua lalu lintas.</p></div>
+        <div class="step"><p>Buka browser Anda dan kunjungi <code>http://example.com</code> (perhatikan: HTTP, bukan HTTPS).</p></div>
+        <div class="step"><p>Kembali ke Wireshark. Anda akan melihat puluhan atau ratusan paket bergulir. Tekan <strong>tombol Stop kotak merah</strong> (■) di toolbar untuk menghentikan capture.</p></div>
+        <div class="step"><p>Di bilah filter di bagian atas, ketik <code>http</code> dan tekan Enter. Anda sekarang hanya akan melihat paket HTTP — termasuk permintaan yang dibuat browser Anda ke example.com.</p></div>
+        <div class="step"><p>Klik salah satu paket HTTP tersebut. Di panel tengah, perluas bagian <strong>Hypertext Transfer Protocol</strong> untuk membaca header HTTP lengkapnya.</p></div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <div class="icon">💡</div>
+      <div><strong>Tips:</strong> Simpan file capture Anda dengan <strong>File → Save As</strong> menggunakan format <code>.pcap</code> atau <code>.pcapng</code>. Anda bisa membukanya kapan saja — sangat berguna untuk latihan tanpa perlu melakukan capture ulang.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SESI 2 -->
+  <div class="session" id="s2">
+    <div class="session-header">
+      <div class="session-num">02</div>
+      <div class="session-meta">
+        <h2>Memahami Paket &amp; Model OSI</h2>
+        <div class="time">⏱ Estimasi waktu: 50 menit</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Apa itu Paket?</h3>
+      <p>Data jaringan dipecah menjadi potongan-potongan kecil yang disebut <strong>paket</strong>. Setiap paket berisi:</p>
+      <ul>
+        <li><strong>Header</strong> — metadata (sumber, tujuan, jenis protokol, nomor urut)</li>
+        <li><strong>Payload</strong> — data aktual yang sedang dikirimkan</li>
+      </ul>
+      <br>
+      <p>Saat Anda mengunjungi sebuah website, browser Anda tidak mengirim satu permintaan besar — melainkan memecahnya menjadi banyak paket. Wireshark menampilkan semuanya, satu per satu.</p>
+    </div>
+
+    <div class="card">
+      <h3>Model OSI — Mengapa Penting di Wireshark</h3>
+      <p>Wireshark mengorganisasi informasi paket sesuai dengan model OSI 7 lapisan. Saat Anda mengklik paket dan memperluasnya di panel detail, Anda akan melihat setiap lapisan:</p>
+      <br>
+      <table>
+        <tr><th>Lapisan</th><th>Nama</th><th>Yang Ditampilkan Wireshark</th><th>Contoh Protokol</th></tr>
+        <tr><td>7</td><td>Aplikasi</td><td>Permintaan/respons HTTP, query DNS</td><td>HTTP, DNS, FTP</td></tr>
+        <tr><td>6</td><td>Presentasi</td><td>Enkripsi/encoding (record TLS)</td><td>TLS/SSL</td></tr>
+        <tr><td>5</td><td>Sesi</td><td>Pembentukan sesi</td><td>NetBIOS</td></tr>
+        <tr><td>4</td><td>Transport</td><td>Nomor port, nomor urut</td><td>TCP, UDP</td></tr>
+        <tr><td>3</td><td>Jaringan</td><td>Alamat IP, routing</td><td>IP, ICMP</td></tr>
+        <tr><td>2</td><td>Data Link</td><td>Alamat MAC</td><td>Ethernet, ARP</td></tr>
+        <tr><td>1</td><td>Fisik</td><td>(Tidak terlihat di Wireshark — level hardware)</td><td>—</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Praktik Langsung: Membaca Satu Paket</h3>
+      <p>Buka capture yang sudah Anda simpan (atau lakukan yang baru). Temukan paket HTTP dan klik. Di panel tengah, Anda akan melihat seperti ini:</p>
+      <div class="code-wrap">
+        <div class="code-label">// Pohon Detail Paket</div>
+        <pre>
+<span class="c">▼ Frame 42: 512 byte pada kabel</span>
+<span class="c">▼ Ethernet II, Src: 00:1A:2B:3C:4D:5E, Dst: FF:AA:BB:CC:DD:EE</span>
+    <span class="k">Destination:</span> <span class="h">FF:AA:BB:CC:DD:EE</span>   <span class="c">← MAC Router</span>
+    <span class="k">Source:</span> <span class="h">00:1A:2B:3C:4D:5E</span>        <span class="c">← MAC perangkat Anda</span>
+<span class="c">▼ Internet Protocol Version 4</span>
+    <span class="k">Source IP:</span> <span class="h">192.168.1.100</span>         <span class="c">← Mesin Anda</span>
+    <span class="k">Destination IP:</span> <span class="h">93.184.216.34</span>    <span class="c">← example.com</span>
+<span class="c">▼ Transmission Control Protocol</span>
+    <span class="k">Source Port:</span> <span class="h">54821</span>
+    <span class="k">Destination Port:</span> <span class="h">80</span>             <span class="c">← Port HTTP</span>
+    <span class="k">Sequence Number:</span> <span class="h">1</span>
+<span class="c">▼ Hypertext Transfer Protocol</span>
+    <span class="k">GET / HTTP/1.1\r\n</span>
+    <span class="k">Host: example.com\r\n</span>
+    <span class="k">User-Agent: Mozilla/5.0 ...</span>
+        </pre>
+      </div>
+      <p>Setiap lapisan tersarang di dalam lapisan di bawahnya. Ini disebut <strong>enkapsulasi</strong>.</p>
+    </div>
+
+    <div class="card">
+      <h3>Kode Warna di Wireshark</h3>
+      <table>
+        <tr><th>Warna</th><th>Arti</th></tr>
+        <tr><td>Hijau muda</td><td>Lalu lintas TCP</td></tr>
+        <tr><td>Biru muda</td><td>Lalu lintas UDP</td></tr>
+        <tr><td>Hitam (teks merah)</td><td>Error atau masalah TCP</td></tr>
+        <tr><td>Hijau tua</td><td>Lalu lintas HTTP</td></tr>
+        <tr><td>Kuning</td><td>ARP, OSPF, protokol lainnya</td></tr>
+        <tr><td>Ungu</td><td>TCP SYN/FIN (awal/akhir koneksi)</td></tr>
+      </table>
+      <br>
+      <p>Anda bisa mengkustomisasi warna melalui <strong>View → Coloring Rules</strong>.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SESI 3 -->
+  <div class="session" id="s3">
+    <div class="session-header">
+      <div class="session-num">03</div>
+      <div class="session-meta">
+        <h2>Display Filter &amp; Capture Filter</h2>
+        <div class="time">⏱ Estimasi waktu: 50 menit</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Dua Jenis Filter</h3>
+      <table>
+        <tr><th>Jenis</th><th>Kapan Diterapkan</th><th>Tujuan</th><th>Sintaks</th></tr>
+        <tr><td><strong>Capture Filter</strong></td><td>Sebelum capture dimulai</td><td>Hanya menangkap paket yang cocok (mengurangi ukuran file)</td><td>Sintaks BPF (Berkeley Packet Filter)</td></tr>
+        <tr><td><strong>Display Filter</strong></td><td>Setelah capture</td><td>Tampilkan/sembunyikan paket yang sudah ditangkap</td><td>Sintaks display filter Wireshark</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Display Filter yang Wajib Diketahui</h3>
+      <table>
+        <tr><th>Filter</th><th>Fungsinya</th></tr>
+        <tr><td><code>http</code></td><td>Tampilkan hanya paket HTTP (lalu lintas web tidak terenkripsi)</td></tr>
+        <tr><td><code>dns</code></td><td>Tampilkan pencarian DNS (resolusi nama domain)</td></tr>
+        <tr><td><code>tcp</code></td><td>Tampilkan semua paket TCP</td></tr>
+        <tr><td><code>udp</code></td><td>Tampilkan semua paket UDP</td></tr>
+        <tr><td><code>arp</code></td><td>Tampilkan paket ARP (pemetaan MAC/IP)</td></tr>
+        <tr><td><code>ftp</code></td><td>Tampilkan paket transfer file FTP</td></tr>
+        <tr><td><code>icmp</code></td><td>Tampilkan paket ping</td></tr>
+        <tr><td><code>ip.addr == 192.168.1.1</code></td><td>Semua lalu lintas ke/dari IP tertentu</td></tr>
+        <tr><td><code>ip.src == 192.168.1.100</code></td><td>Lalu lintas yang berasal dari IP tertentu</td></tr>
+        <tr><td><code>ip.dst == 93.184.216.34</code></td><td>Lalu lintas yang menuju ke IP tertentu</td></tr>
+        <tr><td><code>tcp.port == 80</code></td><td>Lalu lintas di port 80 (HTTP)</td></tr>
+        <tr><td><code>tcp.port == 443</code></td><td>Lalu lintas di port 443 (HTTPS/TLS)</td></tr>
+        <tr><td><code>http.request.method == "POST"</code></td><td>Permintaan HTTP POST (pengiriman form, login)</td></tr>
+        <tr><td><code>http contains "password"</code></td><td>Lalu lintas HTTP yang mengandung kata "password"</td></tr>
+        <tr><td><code>frame contains "login"</code></td><td>Paket apapun yang mengandung "login" di lapisan manapun</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Menggabungkan Filter dengan Operator</h3>
+      <table>
+        <tr><th>Operator</th><th>Arti</th><th>Contoh</th></tr>
+        <tr><td><code>&amp;&amp;</code> atau <code>and</code></td><td>Kedua kondisi terpenuhi</td><td><code>http &amp;&amp; ip.src == 192.168.1.5</code></td></tr>
+        <tr><td><code>||</code> atau <code>or</code></td><td>Salah satu kondisi terpenuhi</td><td><code>http || ftp</code></td></tr>
+        <tr><td><code>!</code> atau <code>not</code></td><td>Negasi kondisi</td><td><code>!dns</code> (sembunyikan DNS)</td></tr>
+        <tr><td><code>==</code></td><td>Sama dengan</td><td><code>tcp.port == 21</code></td></tr>
+        <tr><td><code>!=</code></td><td>Tidak sama dengan</td><td><code>ip.addr != 192.168.1.1</code></td></tr>
+        <tr><td><code>contains</code></td><td>Field mengandung string</td><td><code>http.host contains "bank"</code></td></tr>
+        <tr><td><code>matches</code></td><td>Cocok dengan regex</td><td><code>http.host matches ".*\.php"</code></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Capture Filter (Sintaks BPF)</h3>
+      <p>Atur capture filter sebelum memulai dengan memasukkannya di bilah capture filter pada layar awal.</p>
+      <table>
+        <tr><th>Filter BPF</th><th>Apa yang Ditangkap</th></tr>
+        <tr><td><code>port 80</code></td><td>Hanya lalu lintas HTTP</td></tr>
+        <tr><td><code>port 80 or port 443</code></td><td>Lalu lintas HTTP dan HTTPS</td></tr>
+        <tr><td><code>host 192.168.1.5</code></td><td>Lalu lintas ke/dari host tertentu</td></tr>
+        <tr><td><code>not port 22</code></td><td>Semua kecuali SSH</td></tr>
+        <tr><td><code>net 192.168.1.0/24</code></td><td>Semua lalu lintas dalam subnet Anda</td></tr>
+        <tr><td><code>tcp and port 21</code></td><td>Lalu lintas kontrol FTP</td></tr>
+        <tr><td><code>icmp</code></td><td>Hanya paket ping</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Latihan Praktik</h3>
+      <div class="steps">
+        <div class="step"><p>Mulai capture, buka browser dan muat beberapa website. Hentikan capture. Terapkan filter <code>dns</code> — perhatikan bahwa setiap website yang Anda kunjungi memicu DNS lookup terlebih dahulu.</p></div>
+        <div class="step"><p>Hapus filter. Terapkan <code>http.request.method == "GET"</code> untuk melihat semua permintaan GET. Perhatikan berapa banyak permintaan yang dihasilkan oleh satu halaman (gambar, CSS, file JS).</p></div>
+        <div class="step"><p>Terapkan filter gabungan: <code>http &amp;&amp; ip.dst != 192.168.1.1</code> untuk melihat lalu lintas HTTP yang melewati router Anda.</p></div>
+        <div class="step"><p>Klik kanan paket mana pun → <strong>Apply as Filter → Selected</strong> untuk membuat filter cepat berdasarkan IP atau protokol tersebut.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SESI 4 -->
+  <div class="session" id="s4">
+    <div class="session-header">
+      <div class="session-num">04</div>
+      <div class="session-meta">
+        <h2>Intersepsi Lalu Lintas HTTP pada Website Tidak Aman</h2>
+        <div class="time">⏱ Estimasi waktu: 60 menit</div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <div class="icon">🔒</div>
+      <div><strong>Pengingat etika:</strong> Sesi ini mendemonstrasikan mengapa HTTP (bukan HTTPS) sangat berbahaya. Semua contoh di bawah harus dipraktikkan pada server uji milik sendiri atau pada lingkungan pelatihan yang sengaja dibuat rentan seperti <strong>DVWA</strong> (Damn Vulnerable Web Application) yang berjalan di localhost. Jangan pernah melakukan ini pada website yang bukan milik Anda.</div>
+    </div>
+
+    <div class="card">
+      <h3>HTTP vs HTTPS — Perbedaan Utama</h3>
+      <table>
+        <tr><th></th><th>HTTP (Port 80)</th><th>HTTPS (Port 443)</th></tr>
+        <tr><td><strong>Enkripsi</strong></td><td>❌ Tidak ada — teks biasa</td><td>✅ Enkripsi TLS</td></tr>
+        <tr><td><strong>Wireshark bisa membaca?</strong></td><td>✅ Ya, sepenuhnya terbaca</td><td>❌ Hanya ciphertext terenkripsi</td></tr>
+        <tr><td><strong>Form login aman?</strong></td><td>❌ Kredensial terlihat jelas</td><td>✅ Kredensial terenkripsi</td></tr>
+        <tr><td><strong>Tampilan URL bar</strong></td><td>Peringatan "Tidak aman"</td><td>🔒 Ikon gembok</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Contoh 1: Melihat Permintaan HTTP GET</h3>
+      <p>Saat browser Anda memuat halaman melalui HTTP, seluruh permintaan terlihat dengan jelas:</p>
+      <div class="code-wrap">
+        <div class="code-label">// Paket Wireshark — HTTP GET (Teks Biasa)</div>
+        <pre>
+<span class="k">GET /index.html HTTP/1.1</span>
+<span class="k">Host:</span> <span class="h">testphp.vulnweb.com</span>
+<span class="k">User-Agent:</span> Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+<span class="k">Accept:</span> text/html,application/xhtml+xml
+<span class="k">Accept-Language:</span> id-ID,id;q=0.9
+<span class="k">Connection:</span> keep-alive
+        </pre>
+      </div>
+      <p>Anda bisa melihat halaman persis yang diminta, jenis browser, dan sistem operasi yang digunakan.</p>
+    </div>
+
+    <div class="card">
+      <h3>Contoh 2: Mengintersep Form Login melalui HTTP</h3>
+      <p>Ini adalah demonstrasi paling kritis mengapa HTTP sangat berbahaya. Ketika form login dikirim melalui HTTP (tanpa TLS), username dan password berjalan dalam teks biasa:</p>
+      <div class="steps">
+        <div class="step"><p>Siapkan uji lokal. Install DVWA di mesin Anda (via XAMPP/WAMP) atau gunakan halaman login lokal yang Anda buat sendiri. Pastikan menggunakan <code>http://localhost</code> bukan https.</p></div>
+        <div class="step"><p>Mulai capture Wireshark pada antarmuka <code>Loopback (lo)</code> (untuk lalu lintas localhost) atau antarmuka <code>Wi-Fi</code> Anda.</p></div>
+        <div class="step"><p>Di DVWA, navigasi ke halaman login dan masukkan username percobaan (misalnya <code>admin</code>) dan password (misalnya <code>password123</code>). Klik Login.</p></div>
+        <div class="step"><p>Hentikan capture di Wireshark. Di bilah filter, ketik: <code>http.request.method == "POST"</code></p></div>
+        <div class="step"><p>Klik paket POST tersebut. Di panel detail paket, perluas <strong>Hypertext Transfer Protocol</strong> → <strong>HTML Form URL Encoded</strong>.</p></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label">// Yang Diungkap Wireshark — HTTP POST Login</div>
+        <pre>
+<span class="k">POST /login.php HTTP/1.1</span>
+<span class="k">Host:</span> <span class="h">localhost</span>
+<span class="k">Content-Type:</span> application/x-www-form-urlencoded
+<span class="k">Content-Length:</span> 38
+
+<span class="c">▼ HTML Form URL Encoded:</span>
+  <span class="s">username</span> = <span class="h">admin</span>
+  <span class="s">password</span> = <span class="h">password123</span>
+  <span class="s">Login</span>    = Login
+        </pre>
+      </div>
+      <div class="callout warn">
+        <div class="icon">⚠️</div>
+        <div>Username dan password <strong>terlihat sepenuhnya</strong>. Siapa pun di jaringan yang sama yang menjalankan Wireshark bisa melihat ini. Inilah tepatnya mengapa setiap website yang menangani login WAJIB menggunakan HTTPS.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Contoh 3: Mengikuti Seluruh Aliran HTTP</h3>
+      <p>Wireshark dapat merekonstruksi seluruh percakapan HTTP (permintaan + respons) dalam satu tampilan yang mudah dibaca:</p>
+      <div class="steps">
+        <div class="step"><p>Klik kanan pada paket HTTP mana pun di capture Anda.</p></div>
+        <div class="step"><p>Pilih <strong>Follow → HTTP Stream</strong>.</p></div>
+        <div class="step"><p>Jendela baru terbuka menampilkan percakapan lengkap — teks merah adalah permintaan Anda, teks biru adalah respons server.</p></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label">// Follow HTTP Stream — Pertukaran Lengkap</div>
+        <pre>
+<span class="c">→ Permintaan Client (merah):</span>
+<span class="k">POST /login.php HTTP/1.1</span>
+<span class="k">Host:</span> <span class="h">testsite.local</span>
+<span class="k">Content-Type:</span> application/x-www-form-urlencoded
+
+<span class="s">user=admin&amp;pass=rahasia99&amp;submit=Login</span>
+
+<span class="c">← Respons Server (biru):</span>
+<span class="k">HTTP/1.1 302 Found</span>
+<span class="k">Location:</span> /dashboard.php
+<span class="k">Set-Cookie:</span> <span class="h">PHPSESSID=abc123xyz; path=/</span>
+        </pre>
+      </div>
+      <p>Perhatikan respons server menyertakan <strong>cookie sesi</strong>. Siapa pun yang menangkap cookie ini berpotensi menggunakannya untuk menyamar sebagai pengguna yang sudah login — teknik ini disebut <em>session hijacking</em>.</p>
+    </div>
+
+    <div class="card">
+      <h3>Contoh 4: Mengekstrak Cookie dari Lalu Lintas HTTP</h3>
+      <p>Cookie yang dikirim melalui HTTP juga dalam teks biasa. Gunakan filter ini untuk menemukannya:</p>
+      <div class="code-wrap">
+        <div class="code-label">// Display Filter</div>
+        <pre><span class="k">http.cookie</span></pre>
+      </div>
+      <p>Kemudian klik hasil mana pun dan lihat di dalam header HTTP untuk field <code>Cookie:</code>. Melalui HTTP, ini mencakup token sesi, preferensi pengguna, dan terkadang nilai autentikasi — semuanya terbaca.</p>
+    </div>
+
+    <div class="card">
+      <h3>Contoh 5: Tampilan HTTPS sebagai Perbandingan</h3>
+      <p>Sebagai perbandingan, terapkan filter <code>tcp.port == 443</code> pada website HTTPS mana pun. Klik paket dan lihat payload-nya:</p>
+      <div class="code-wrap">
+        <div class="code-label">// Payload Paket HTTPS (Terenkripsi)</div>
+        <pre>
+<span class="c">▼ Transport Layer Security</span>
+  <span class="k">TLS Record Layer: Application Data Protocol</span>
+  <span class="k">Content Type:</span> Application Data (23)
+  <span class="k">Version:</span> TLS 1.3
+  <span class="k">Encrypted Application Data:</span>
+  <span class="h">17 03 03 00 45 a3 f2 8c 1e 4d 22 b9 ...</span>
+  <span class="c">(ciphertext yang sama sekali tidak terbaca)</span>
+        </pre>
+      </div>
+      <p>Tidak ada konten yang terbaca. Payload sepenuhnya terenkripsi. Inilah mengapa ikon gembok di browser Anda sangat penting.</p>
+    </div>
+
+    <div class="card">
+      <h3>Filter Berguna untuk Sesi Ini</h3>
+      <table>
+        <tr><th>Filter</th><th>Tujuan</th></tr>
+        <tr><td><code>http.request.method == "POST"</code></td><td>Temukan pengiriman form dan login</td></tr>
+        <tr><td><code>http contains "password"</code></td><td>Temukan paket yang menyebut "password"</td></tr>
+        <tr><td><code>http contains "username"</code></td><td>Temukan paket yang menyebut "username"</td></tr>
+        <tr><td><code>http.cookie</code></td><td>Tampilkan paket yang mengandung cookie</td></tr>
+        <tr><td><code>http.set_cookie</code></td><td>Tampilkan server yang menetapkan cookie</td></tr>
+        <tr><td><code>http.response.code == 302</code></td><td>Temukan redirect login (sering setelah login berhasil)</td></tr>
+        <tr><td><code>http.response.code == 200</code></td><td>Respons HTTP yang berhasil</td></tr>
+        <tr><td><code>http.request.uri contains "login"</code></td><td>Permintaan ke halaman login</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SESI 5 -->
+  <div class="session" id="s5">
+    <div class="session-header">
+      <div class="session-num">05</div>
+      <div class="session-meta">
+        <h2>Analisis Protokol: DNS, ARP, TCP, FTP</h2>
+        <div class="time">⏱ Estimasi waktu: 55 menit</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Analisis DNS — Sedang Berbicara dengan Siapa?</h3>
+      <p>DNS (Domain Name System) mengubah nama domain menjadi alamat IP. Setiap kunjungan website dimulai dengan query DNS — dan dikirim dalam teks biasa, bahkan di situs HTTPS sekalipun.</p>
+      <div class="code-wrap">
+        <div class="code-label">// Filter: dns</div>
+        <pre>
+<span class="c">Query DNS (PC Anda → server DNS):</span>
+  <span class="k">Name:</span> <span class="h">www.example.com</span>
+  <span class="k">Type:</span> A (Host Address)
+
+<span class="c">Respons DNS (server DNS → PC Anda):</span>
+  <span class="k">Name:</span> <span class="h">www.example.com</span>
+  <span class="k">Address:</span> <span class="h">93.184.216.34</span>
+        </pre>
+      </div>
+      <p><strong>Yang terungkap:</strong> Setiap domain yang pernah dicari oleh perangkat Anda — bahkan jika Anda tidak pernah benar-benar memuat halamannya. Lalu lintas DNS adalah peta aktivitas browsing.</p>
+      <br>
+      <p>Coba filter ini untuk menemukan semua domain yang pernah di-query:</p>
+      <div class="code-wrap">
+        <div class="code-label">// Display Filter</div>
+        <pre><span class="k">dns.flags.response == 0</span>   <span class="c">← Tampilkan hanya query (bukan respons)</span></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Analisis ARP — Memetakan Jaringan Lokal</h3>
+      <p>ARP (Address Resolution Protocol) memetakan alamat IP ke alamat MAC pada jaringan lokal Anda. Beroperasi di Layer 2 dan digunakan setiap kali perangkat Anda berkomunikasi dengan perangkat lain di jaringan yang sama.</p>
+      <div class="code-wrap">
+        <div class="code-label">// Filter: arp</div>
+        <pre>
+<span class="c">Permintaan ARP (broadcast ke semua perangkat):</span>
+  <span class="k">Siapa yang punya</span> <span class="h">192.168.1.1</span><span class="k">? Beritahu</span> <span class="h">192.168.1.100</span>
+
+<span class="c">Balasan ARP:</span>
+  <span class="h">192.168.1.1</span><span class="k"> ada di</span> <span class="h">A4:C3:F0:85:90:01</span>
+        </pre>
+      </div>
+      <p><strong>Catatan keamanan:</strong> ARP spoofing/poisoning melibatkan pengiriman balasan ARP palsu untuk mengalihkan lalu lintas melalui perangkat penyerang — vektor serangan man-in-the-middle yang umum. Melihat balasan ARP berlebihan dari alamat MAC yang tidak dikenal bisa menjadi tanda serangan ini.</p>
+    </div>
+
+    <div class="card">
+      <h3>Analisis Handshake TCP</h3>
+      <p>Koneksi TCP selalu dimulai dengan 3-way handshake. Memahaminya membantu Anda mengidentifikasi masalah koneksi.</p>
+      <div class="code-wrap">
+        <div class="code-label">// Filter: tcp.flags.syn == 1</div>
+        <pre>
+<span class="c">Langkah 1 — SYN (Client → Server):</span>
+  <span class="k">Flags:</span> <span class="h">SYN</span>
+  <span class="k">Seq:</span> 0
+
+<span class="c">Langkah 2 — SYN-ACK (Server → Client):</span>
+  <span class="k">Flags:</span> <span class="h">SYN, ACK</span>
+  <span class="k">Seq:</span> 0, <span class="k">Ack:</span> 1
+
+<span class="c">Langkah 3 — ACK (Client → Server):</span>
+  <span class="k">Flags:</span> <span class="h">ACK</span>
+  <span class="k">Seq:</span> 1, <span class="k">Ack:</span> 1
+
+<span class="c">→ Koneksi terjalin. Transfer data dimulai.</span>
+        </pre>
+      </div>
+      <table>
+        <tr><th>Filter TCP</th><th>Tujuan</th></tr>
+        <tr><td><code>tcp.flags.syn == 1</code></td><td>Inisiasi koneksi (paket SYN)</td></tr>
+        <tr><td><code>tcp.flags.fin == 1</code></td><td>Penutupan koneksi (paket FIN)</td></tr>
+        <tr><td><code>tcp.flags.reset == 1</code></td><td>Reset koneksi mendadak (RST) — sering menandakan koneksi yang ditolak</td></tr>
+        <tr><td><code>tcp.analysis.retransmission</code></td><td>Paket yang dikirim ulang — tanda kehilangan paket</td></tr>
+        <tr><td><code>tcp.analysis.zero_window</code></td><td>Buffer penerima penuh — menyebabkan perlambatan</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Analisis FTP — Kredensial dalam Teks Biasa</h3>
+      <p>FTP (File Transfer Protocol) adalah protokol lain yang mengirimkan kredensial login dan data file dalam teks biasa. Contoh klasik protokol tidak aman yang masih ditemukan di sistem lama.</p>
+      <div class="code-wrap">
+        <div class="code-label">// Filter: ftp</div>
+        <pre>
+<span class="c">Client → Server:</span>
+  <span class="k">USER</span> <span class="h">ftpadmin</span>
+<span class="c">Server → Client:</span>
+  <span class="k">331</span> Password diperlukan untuk ftpadmin.
+<span class="c">Client → Server:</span>
+  <span class="k">PASS</span> <span class="h">passwordrahasia</span>
+<span class="c">Server → Client:</span>
+  <span class="k">230</span> Pengguna ftpadmin berhasil login.
+        </pre>
+      </div>
+      <p>Username dan password terlihat sepenuhnya. Untuk melihat file yang ditransfer, gunakan:</p>
+      <div class="code-wrap">
+        <div class="code-label">// Filter untuk Transfer Data FTP</div>
+        <pre><span class="k">ftp-data</span></pre>
+      </div>
+      <p>Kemudian klik kanan paket data → <strong>Follow → TCP Stream</strong> untuk melihat isi file yang sedang ditransfer.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SESI 6 -->
+  <div class="session" id="s6">
+    <div class="session-header">
+      <div class="session-num">06</div>
+      <div class="session-meta">
+        <h2>Skenario Dunia Nyata &amp; Lab Praktik</h2>
+        <div class="time">⏱ Estimasi waktu: 40 menit</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Skenario 1: Mendiagnosis Halaman yang Lambat Dimuat</h3>
+      <p>Sebuah halaman web lambat dimuat. Gunakan Wireshark untuk mengetahui penyebabnya.</p>
+      <div class="steps">
+        <div class="step"><p>Mulai capture, muat halaman yang lambat, hentikan capture.</p></div>
+        <div class="step"><p>Pergi ke <strong>Statistics → Service Response Time → HTTP</strong> untuk melihat permintaan mana yang paling lama.</p></div>
+        <div class="step"><p>Terapkan <code>tcp.analysis.retransmission</code> — retransmisi berarti kehilangan paket dan masalah jaringan.</p></div>
+        <div class="step"><p>Gunakan <strong>Statistics → IO Graph</strong> untuk memvisualisasikan lalu lintas dari waktu ke waktu dan menemukan lonjakan atau penurunan.</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Skenario 2: Mengidentifikasi Lalu Lintas Tidak Dikenal di Jaringan</h3>
+      <div class="steps">
+        <div class="step"><p>Capture selama 5 menit tanpa aktivitas. Terapkan <code>ip.addr != ip_anda</code> atau cari lalu lintas dari IP yang tidak dikenal.</p></div>
+        <div class="step"><p>Gunakan <strong>Statistics → Endpoints</strong> untuk melihat daftar semua IP yang berkomunikasi. Urutkan berdasarkan paket yang dikirim.</p></div>
+        <div class="step"><p>Gunakan <strong>Statistics → Conversations</strong> untuk melihat dua perangkat mana yang paling banyak berkomunikasi. Selidiki alamat yang tidak dikenal dengan pencarian WHOIS.</p></div>
+        <div class="step"><p>Filter <code>dns</code> untuk melihat domain apa yang di-query oleh perangkat yang tidak dikenal.</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Skenario 3: Mendeteksi Login HTTP pada Halaman yang Dikompromikan</h3>
+      <p>Bayangkan halaman login palsu (halaman phishing) yang berjalan melalui HTTP. Begini tampilan serangan di Wireshark:</p>
+      <div class="code-wrap">
+        <div class="code-label">// Permintaan POST ke halaman phishing</div>
+        <pre>
+<span class="k">POST /secure-login.php HTTP/1.1</span>
+<span class="k">Host:</span> <span class="h">bank-secure-login.example.com</span>   <span class="c">← Domain palsu!</span>
+<span class="k">Content-Type:</span> application/x-www-form-urlencoded
+
+<span class="s">email=korban%40gmail.com&amp;password=PasswordBank99</span>
+        </pre>
+      </div>
+      <p>Di Wireshark, Anda akan melihat: domain terlihat sah sekilas namun bukan domain bank yang sebenarnya, koneksi adalah HTTP (tanpa TLS), dan kredensial terlihat jelas. Inilah mengapa memeriksa bilah URL dan ikon gembok sangat penting sebelum mengetik password apapun.</p>
+    </div>
+
+    <div class="card">
+      <h3>Skenario 4: Memantau Percobaan DNS Poisoning</h3>
+      <p>Dalam serangan DNS spoofing, pelaku mengirim balasan DNS palsu sebelum yang asli tiba, mengalihkan pengguna ke server palsu. Filter untuk menemukan anomali:</p>
+      <div class="code-wrap">
+        <div class="code-label">// Deteksi respons DNS duplikat</div>
+        <pre><span class="k">dns.flags.response == 1 &amp;&amp; dns.count.answers &gt; 0</span></pre>
+      </div>
+      <p>Jika Anda melihat dua respons DNS untuk query yang sama dengan alamat IP berbeda, itu adalah tanda bahaya poisoning. Respons penyerang biasanya tiba lebih dulu dengan IP internal atau mencurigakan.</p>
+    </div>
+
+    <div class="card">
+      <h3>Ringkasan Alat Statistik Wireshark</h3>
+      <table>
+        <tr><th>Jalur Menu</th><th>Yang Ditampilkan</th></tr>
+        <tr><td>Statistics → Capture File Properties</td><td>Durasi, jumlah paket, antarmuka yang digunakan</td></tr>
+        <tr><td>Statistics → Protocol Hierarchy</td><td>Rincian semua protokol dalam capture</td></tr>
+        <tr><td>Statistics → Conversations</td><td>Semua pasangan host yang berkomunikasi beserta jumlah byte</td></tr>
+        <tr><td>Statistics → Endpoints</td><td>Semua host unik, bisa diurutkan berdasarkan volume lalu lintas</td></tr>
+        <tr><td>Statistics → IO Graph</td><td>Laju lalu lintas visual dari waktu ke waktu</td></tr>
+        <tr><td>Statistics → HTTP → Requests</td><td>Ringkasan semua permintaan HTTP yang dibuat</td></tr>
+        <tr><td>Analyze → Expert Information</td><td>Peringatan otomatis Wireshark: error, retransmisi, reset</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Sumber Belajar yang Direkomendasikan</h3>
+      <ul>
+        <li><strong>Contoh capture:</strong> <code>https://wiki.wireshark.org/SampleCaptures</code> — file pcap nyata untuk dianalisis</li>
+        <li><strong>DVWA:</strong> Damn Vulnerable Web Application — lingkungan praktik lokal untuk serangan HTTP</li>
+        <li><strong>Dokumentasi Wireshark:</strong> <code>https://www.wireshark.org/docs/</code> — referensi filter resmi</li>
+        <li><strong>Cheat sheet PacketLife:</strong> Cari "PacketLife Wireshark display filters" di Google untuk referensi yang bisa dicetak</li>
+        <li><strong>PicoCTF / HackTheBox:</strong> Tantangan CTF sering menyertakan teka-teki packet capture (.pcap)</li>
+      </ul>
+    </div>
+
+    <div class="callout tip">
+      <div class="icon">🎓</div>
+      <div><strong>Langkah Selanjutnya setelah kursus ini:</strong> Jelajahi dekripsi TLS menggunakan log pre-master secret, pelajari scripting Lua Wireshark untuk dissector kustom, dan praktikkan dengan kurikulum resmi Wireshark Certified Network Analyst (WCNA). Menggabungkan Wireshark dengan alat seperti nmap dan tcpdump akan memperdalam keterampilan analisis jaringan Anda secara signifikan.</div>
+    </div>
+
+    <div class="callout info">
+      <div class="icon">📋</div>
+      <div><strong>Pintasan Keyboard Cepat:</strong> <strong>Ctrl+E</strong> — Mulai/Hentikan capture &nbsp;|&nbsp; <strong>Ctrl+F</strong> — Cari paket &nbsp;|&nbsp; <strong>Ctrl+G</strong> — Pergi ke paket berdasarkan nomor &nbsp;|&nbsp; <strong>Ctrl+Shift+E</strong> — Ekspor objek &nbsp;|&nbsp; <strong>Ctrl+Alt+Shift+T</strong> — Follow TCP stream</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>Wireshark</span> Kursus Pemula 5 Jam &nbsp;·&nbsp; Hanya untuk penggunaan edukatif pada jaringan yang diizinkan &nbsp;·&nbsp; Selalu praktik dengan bertanggung jawab
+</footer>
+
+</body>
+</html>
