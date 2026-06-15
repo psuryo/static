@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas Microsoft Access: Relasi Database</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #34495e;
+        }
+        h4 {
+            color: #16a085;
+            margin-bottom: 5px;
+        }
+        .important-box {
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .scenario-box {
+            background-color: #ecf0f1;
+            border-left: 5px solid #bdc3c7;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Tugas: Desain Relational Database</h1>
+    <p><strong>Tujuan:</strong> Menunjukkan pemahaman Anda tentang Master Table, Transaction Table, Tipe Data (Data Types), dan Integritas Referensial (Referential Integrity) menggunakan Microsoft Access.</p>
+
+    <div class="important-box">
+        ATURAN PENTING PENGUMPULAN: Anda WAJIB MENUTUP TOTAL aplikasi Microsoft Access sebelum menyalin atau mengunggah file. Jika Anda mengumpulkan file yang masih terkunci (.laccdb), file tersebut tidak akan bisa dibuka saat sesi review langsung di depan kelas dan nilai otomatis dianggap nol. Kumpulkan file format asli .accdb.
+    </div>
+
+    <h2>Skenario: "Toko Buku Kampus"</h2>
+    <div class="scenario-box">
+        <p>Anda telah disewa untuk membangun sistem pelacakan data pada sebuah toko buku kampus. Toko tersebut perlu mencatat data pelanggan (mahasiswa), buku yang tersedia untuk dijual, serta transaksi pembelian yang terjadi secara riil.</p>
+    </div>
+
+    <h2>Instruksi Kerja</h2>
+    <p>Buatlah database baru di Microsoft Access dengan nama file <code>TokoBuku_NamaAnda.accdb</code> dan selesaikan tugas-tugas berikut:</p>
+
+    <h3>Tugas 1: Membuat Master Table</h3>
+    <p>Buatlah dua master table (tabel induk) di bawah ini dengan struktur yang tepat:</p>
+    
+    <h4>1. Nama Tabel: <code>tblMahasiswa</code></h4>
+    <table>
+        <tr>
+            <th>Nama Field</th>
+            <th>Tipe Data (Data Type)</th>
+            <th>Jenis Kunci (Key)</th>
+        </tr>
+        <tr>
+            <td><strong>StudentID</strong></td>
+            <td>AutoNumber</td>
+            <td>Primary Key (PK)</td>
+        </tr>
+        <tr>
+            <td>NamaDepan</td>
+            <td>Short Text</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>NamaBelakang</td>
+            <td>Short Text</td>
+            <td>-</td>
+        </tr>
+    </table>
+
+    <h4>2. Nama Tabel: <code>tblBuku</code></h4>
+    <table>
+        <tr>
+            <th>Nama Field</th>
+            <th>Tipe Data (Data Type)</th>
+            <th>Jenis Kunci (Key)</th>
+        </tr>
+        <tr>
+            <td><strong>BookID</strong></td>
+            <td>AutoNumber</td>
+            <td>Primary Key (PK)</td>
+        </tr>
+        <tr>
+            <td>JudulBuku</td>
+            <td>Short Text</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>Harga</td>
+            <td>Currency</td>
+            <td>-</td>
+        </tr>
+    </table>
+
+    <h3>Tugas 2: Membuat Transaction Table</h3>
+    <p>Buatlah tabel transaksi untuk mencatat aktivitas pembelian. Perhatikan baik-baik perubahan tipe data pada field yang menjadi Foreign Key.</p>
+    
+    <h4>3. Nama Tabel: <code>tblPenjualan</code></h4>
+    <table>
+        <tr>
+            <th>Nama Field</th>
+            <th>Tipe Data (Data Type)</th>
+            <th>Jenis Kunci (Key)</th>
+        </tr>
+        <tr>
+            <td><strong>SaleID</strong></td>
+            <td>AutoNumber</td>
+            <td>Primary Key (PK)</td>
+        </tr>
+        <tr>
+            <td>StudentID</td>
+            <td>Number</td>
+            <td>Foreign Key (FK)</td>
+        </tr>
+        <tr>
+            <td>BookID</td>
+            <td>Number</td>
+            <td>Foreign Key (FK)</td>
+        </tr>
+        <tr>
+            <td>TanggalJual</td>
+            <td>Date/Time</td>
+            <td>-</td>
+        </tr>
+    </table>
+
+    <h3>Tugas 3: Membuat Relasi Antar Tabel</h3>
+    <ul>
+        <li>Buka jendela <strong>Relationships Window</strong> di Access dan masukkan ketiga tabel di atas.</li>
+        <li>Hubungkan field <code>tblMahasiswa.StudentID</code> ke field <code>tblPenjualan.StudentID</code>.</li>
+        <li>Hubungkan field <code>tblBuku.BookID</code> ke field <code>tblPenjualan.BookID</code>.</li>
+        <li><strong>Sangat Penting:</strong> Centang pilihan untuk <strong>"Enforce Referential Integrity"</strong> pada kedua jalur relasi tersebut. Garis relasi Anda harus menampilkan simbol angka 1 dan simbol infinity (&infin;) secara jelas.</li>
+    </ul>
+
+    <h3>Tugas 4: Pengisian Data & Uji Coba Sistem</h3>
+    <ul>
+        <li>Masukkan minimal <strong>5 data mahasiswa</strong> pada tabel <code>tblMahasiswa</code>.</li>
+        <li>Masukkan minimal <strong>5 data buku</strong> pada tabel <code>tblBuku</code>.</li>
+        <li>Catat minimal <strong>10 transaksi</strong> pada tabel <code>tblPenjualan</code> dengan menggunakan ID yang valid (yang memang ada di tabel master).</li>
+        <li><strong>Uji Stres Data (Stress Test):</strong> Cobalah memasukkan data penjualan baru dengan mengisi <code>StudentID</code> angka 99 (sementara mahasiswa dengan ID 99 tidak ada). Pastikan Microsoft Access menolak dan memblokir input tersebut secara otomatis.</li>
+    </ul>
+
+    <h2>Kriteria Penilaian Secara Langsung (Live Review)</h2>
+    <p>Pada pertemuan kelas berikutnya, beberapa file mahasiswa akan dipilih secara acak untuk dibuka di proyektor guna memeriksa:</p>
+    <ul>
+        <li>Ketepatan pemilihan Tipe Data (khususnya Foreign Key yang wajib diset ke 'Number', bukan 'AutoNumber').</li>
+        <li>Aktifnya simbol Integritas Referensial (1 dan &infin;) pada jendela Relationships.</li>
+        <li>Kerapian database dan tidak adanya data "yatim piatu" (orphan records) atau data rusak di dalam sistem.</li>
+    </ul>
+
+    <div class="footer">
+        <p>&copy; 2026 Mata Kuliah Administrasi Basis Data. Hak Cipta Dilindungi Undang-Undang.</p>
+    </div>
+</div>
+
+</body>
+</html>
