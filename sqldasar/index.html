@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial SQL Dasar untuk Pemula</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#ffffff;
+  --bg2:#f6f6f3;
+  --bg3:#eeecea;
+  --text:#181816;
+  --text2:#52524e;
+  --text3:#8a8a82;
+  --border:rgba(0,0,0,.09);
+  --border2:rgba(0,0,0,.16);
+  --green:#1a7f4b;
+  --green-bg:#edfbf3;
+  --green-border:rgba(26,127,75,.25);
+  --blue:#1b4fd8;
+  --blue-bg:#eef2ff;
+  --blue-border:rgba(27,79,216,.22);
+  --amber:#92560a;
+  --amber-bg:#fffbeb;
+  --amber-border:rgba(146,86,10,.25);
+  --red:#b91c1c;
+  --red-bg:#fff1f1;
+  --red-border:rgba(185,28,28,.22);
+  --purple:#5b21b6;
+  --purple-bg:#f3f0ff;
+  --purple-border:rgba(91,33,182,.22);
+  --keyword:#1b4fd8;
+  --string:#1a7f4b;
+  --comment:#8a8a82;
+  --number:#c2410c;
+  --fn:#7c3aed;
+  --radius:8px;
+  --radius-lg:12px;
+  --mono:'Courier New',Courier,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#161614;
+    --bg2:#1f1f1c;
+    --bg3:#282824;
+    --text:#e8e8e0;
+    --text2:#a0a098;
+    --text3:#60605a;
+    --border:rgba(255,255,255,.09);
+    --border2:rgba(255,255,255,.16);
+    --green:#4ade80;
+    --green-bg:#052e16;
+    --green-border:rgba(74,222,128,.2);
+    --blue:#93c5fd;
+    --blue-bg:#0f1f3d;
+    --blue-border:rgba(147,197,253,.2);
+    --amber:#fbbf24;
+    --amber-bg:#2d1f04;
+    --amber-border:rgba(251,191,36,.2);
+    --red:#f87171;
+    --red-bg:#2d0a0a;
+    --red-border:rgba(248,113,113,.2);
+    --purple:#c4b5fd;
+    --purple-bg:#1e1235;
+    --purple-border:rgba(196,181,253,.2);
+    --keyword:#93c5fd;
+    --string:#4ade80;
+    --comment:#60605a;
+    --number:#fb923c;
+    --fn:#c4b5fd;
+  }
+}
+
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.7}
+
+/* ── TOP NAV ── */
+.topnav{
+  position:sticky;top:0;z-index:200;
+  background:var(--bg);
+  border-bottom:.5px solid var(--border);
+  display:flex;align-items:center;gap:0;
+  padding:0 1.5rem;
+  height:52px;
+  overflow-x:auto;
+}
+.topnav-brand{
+  font-weight:700;font-size:14px;
+  white-space:nowrap;margin-right:1.5rem;
+  display:flex;align-items:center;gap:8px;
+  color:var(--text);text-decoration:none;
+}
+.brand-chip{
+  background:var(--blue);color:#fff;
+  font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:20px;letter-spacing:.04em;
+}
+.topnav a.chap{
+  display:flex;align-items:center;gap:5px;
+  font-size:12.5px;color:var(--text3);
+  text-decoration:none;
+  padding:0 12px;
+  height:52px;
+  white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:color .12s,border-color .12s;
+}
+.topnav a.chap:hover{color:var(--text)}
+.topnav a.chap.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.chap-num{
+  width:17px;height:17px;border-radius:50%;
+  background:var(--bg2);
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text3);
+}
+.chap.active .chap-num{background:var(--blue);color:#fff}
+
+/* ── LAYOUT ── */
+.page{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+
+/* ── HERO ── */
+.hero{margin-bottom:3rem}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green-bg);border:.5px solid var(--green-border);
+  color:var(--green);
+  border-radius:20px;padding:3px 12px;
+  font-size:11px;font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;margin-bottom:1rem;
+}
+.hero h1{font-size:32px;font-weight:800;line-height:1.2;margin-bottom:.75rem;letter-spacing:-.02em}
+.hero h1 span{color:var(--blue)}
+.hero .lead{font-size:16px;color:var(--text2);max-width:560px;line-height:1.65}
+.hero-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+  gap:10px;margin-top:1.75rem;
+}
+.hero-card{
+  background:var(--bg2);border:.5px solid var(--border);
+  border-radius:var(--radius);padding:.875rem 1rem;
+}
+.hero-card .hc-icon{font-size:22px;margin-bottom:6px}
+.hero-card .hc-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.hero-card .hc-desc{font-size:12px;color:var(--text3);line-height:1.5}
+
+/* ── CHAPTER HEADER ── */
+.chapter{margin-bottom:3.5rem;scroll-margin-top:64px}
+.ch-header{
+  display:flex;align-items:flex-start;gap:14px;
+  margin-bottom:1.75rem;
+  padding-bottom:1.25rem;
+  border-bottom:.5px solid var(--border);
+}
+.ch-badge{
+  min-width:38px;height:38px;border-radius:10px;
+  background:var(--blue);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:800;color:#fff;
+  flex-shrink:0;margin-top:2px;
+}
+.ch-meta{}
+.ch-eyebrow{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.ch-title{font-size:22px;font-weight:700;line-height:1.2}
+
+/* ── PROSE ── */
+p{margin-bottom:.75rem;font-size:14.5px;color:var(--text2);line-height:1.7}
+p strong{color:var(--text);font-weight:600}
+.intro{font-size:15px;color:var(--text2);margin-bottom:1.25rem}
+
+/* ── SUBHEADING ── */
+h3.sh{font-size:15px;font-weight:700;margin:1.5rem 0 .6rem;color:var(--text)}
+
+/* ── CODE ── */
+code{
+  font-family:var(--mono);font-size:12.5px;
+  background:var(--bg2);border:.5px solid var(--border2);
+  border-radius:4px;padding:1px 5px;color:var(--text);
+}
+.code-wrap{margin:.75rem 0 1.25rem}
+.code-header{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg3);
+  border:.5px solid var(--border2);
+  border-bottom:none;
+  border-radius:var(--radius) var(--radius) 0 0;
+  padding:7px 14px;
+}
+.code-label-tag{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.04em;text-transform:uppercase}
+.copy-btn{
+  font-size:11px;font-family:var(--sans);
+  background:transparent;border:.5px solid var(--border2);
+  border-radius:5px;padding:3px 9px;cursor:pointer;
+  color:var(--text3);transition:all .12s;
+}
+.copy-btn:hover{background:var(--bg);color:var(--text)}
+.copy-btn.copied{color:var(--green);border-color:var(--green-border)}
+pre.sql{
+  font-family:var(--mono);font-size:13px;
+  background:var(--bg2);border:.5px solid var(--border2);
+  border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);
+  padding:1.1rem 1.25rem;
+  overflow-x:auto;white-space:pre;line-height:1.75;
+  color:var(--text);
+}
+.kw{color:var(--keyword);font-weight:700}
+.str{color:var(--string)}
+.cmt{color:var(--comment);font-style:italic}
+.num{color:var(--number)}
+.fn{color:var(--fn)}
+.tbl{color:var(--amber)}
+
+/* ── RESULT TABLE ── */
+.result-wrap{margin:.5rem 0 1.25rem}
+.result-label{
+  font-size:11px;font-weight:600;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.04em;
+  margin-bottom:6px;display:flex;align-items:center;gap:6px;
+}
+.result-label::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green)}
+.result-table{width:100%;border-collapse:collapse;font-size:13px;font-family:var(--mono)}
+.result-table th{
+  background:var(--bg3);text-align:left;
+  padding:7px 12px;font-weight:600;font-family:var(--sans);font-size:12px;
+  color:var(--text2);
+  border:.5px solid var(--border2);
+}
+.result-table td{
+  padding:6px 12px;border:.5px solid var(--border);
+  color:var(--text);vertical-align:top;
+}
+.result-table tr:nth-child(even) td{background:var(--bg2)}
+.null-val{color:var(--text3);font-style:italic}
+
+/* ── CALLOUT BOXES ── */
+.callout{
+  border-radius:var(--radius);padding:.875rem 1.1rem;
+  margin:1rem 0 1.25rem;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.callout-icon{font-size:17px;flex-shrink:0;margin-top:1px;line-height:1}
+.callout p{margin:0;font-size:13.5px;line-height:1.6}
+.callout-info{background:var(--blue-bg);border:.5px solid var(--blue-border)}
+.callout-info p{color:var(--blue)}
+.callout-tip{background:var(--green-bg);border:.5px solid var(--green-border)}
+.callout-tip p{color:var(--green)}
+.callout-warn{background:var(--amber-bg);border:.5px solid var(--amber-border)}
+.callout-warn p{color:var(--amber)}
+.callout-danger{background:var(--red-bg);border:.5px solid var(--red-border)}
+.callout-danger p{color:var(--red)}
+
+/* ── QUIZ ── */
+.quiz{
+  background:var(--purple-bg);border:.5px solid var(--purple-border);
+  border-radius:var(--radius-lg);padding:1.25rem 1.5rem;
+  margin:1.5rem 0;
+}
+.quiz-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--purple);margin-bottom:.75rem;
+  display:flex;align-items:center;gap:6px;
+}
+.quiz-q{font-size:14.5px;font-weight:600;color:var(--text);margin-bottom:.875rem;line-height:1.5}
+.quiz-options{display:flex;flex-direction:column;gap:7px}
+.quiz-opt{
+  display:flex;align-items:flex-start;gap:10px;
+  background:var(--bg);border:.5px solid var(--border2);
+  border-radius:var(--radius);padding:.6rem .875rem;
+  cursor:pointer;font-size:13.5px;color:var(--text2);
+  transition:all .15s;font-family:var(--sans);
+  text-align:left;width:100%;
+}
+.quiz-opt:hover{border-color:var(--purple);color:var(--text)}
+.quiz-opt.correct{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
+.quiz-opt.wrong{background:var(--red-bg);border-color:var(--red-border);color:var(--red)}
+.quiz-opt.disabled{cursor:default;pointer-events:none}
+.opt-badge{
+  min-width:20px;height:20px;border-radius:50%;
+  background:var(--bg2);border:.5px solid var(--border2);
+  font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text3);flex-shrink:0;margin-top:1px;
+}
+.quiz-opt.correct .opt-badge{background:var(--green);border-color:var(--green);color:#fff}
+.quiz-opt.wrong .opt-badge{background:var(--red);border-color:var(--red);color:#fff}
+.quiz-feedback{
+  margin-top:.75rem;font-size:13px;line-height:1.55;
+  padding:.6rem .875rem;border-radius:var(--radius);
+  display:none;
+}
+.quiz-feedback.show{display:block}
+.quiz-feedback.ok{background:var(--green-bg);color:var(--green);border:.5px solid var(--green-border)}
+.quiz-feedback.no{background:var(--red-bg);color:var(--red);border:.5px solid var(--red-border)}
+
+/* ── DIVIDER ── */
+.div{height:.5px;background:var(--border);margin:2.5rem 0}
+
+/* ── CHEATSHEET ── */
+.cheat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:.75rem 0}
+.cheat-card{
+  background:var(--bg2);border:.5px solid var(--border);
+  border-radius:var(--radius);padding:.875rem 1rem;
+}
+.cheat-card .cc-cmd{font-family:var(--mono);font-size:12px;color:var(--keyword);font-weight:700;margin-bottom:3px}
+.cheat-card .cc-desc{font-size:12.5px;color:var(--text2);line-height:1.5}
+
+/* ── PROGRESS BAR ── */
+.progress-bar-wrap{
+  position:fixed;top:0;left:0;width:100%;height:3px;z-index:999;
+}
+.progress-bar{height:3px;background:var(--blue);width:0%;transition:width .1s}
+
+/* ── FOOTER ── */
+.footer{
+  border-top:.5px solid var(--border);
+  padding:1.5rem;text-align:center;
+  font-size:12px;color:var(--text3);
+  background:var(--bg2);
+}
+.footer a{color:var(--blue);text-decoration:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hero h1{font-size:24px}
+  .topnav{padding:0 1rem}
+  .page{padding:1.5rem 1rem 4rem}
+  .ch-title{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar-wrap"><div class="progress-bar" id="prog"></div></div>
+
+<!-- Top Nav -->
+<nav class="topnav">
+  <a class="topnav-brand" href="#hero">
+    <span class="brand-chip">SQL</span>
+    Tutorial Dasar
+  </a>
+  <a class="chap active" href="#ch1"><span class="chap-num">1</span> Pengenalan</a>
+  <a class="chap" href="#ch2"><span class="chap-num">2</span> SELECT</a>
+  <a class="chap" href="#ch3"><span class="chap-num">3</span> Filter & Urutan</a>
+  <a class="chap" href="#ch4"><span class="chap-num">4</span> Manipulasi Data</a>
+  <a class="chap" href="#ch5"><span class="chap-num">5</span> Agregasi</a>
+  <a class="chap" href="#ch6"><span class="chap-num">6</span> JOIN</a>
+  <a class="chap" href="#ch7"><span class="chap-num">7</span> Cheat Sheet</a>
+</nav>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero" id="hero">
+    <div class="hero-pill">🎓 Untuk Pemula</div>
+    <h1>Belajar <span>SQL</span><br>dari Nol</h1>
+    <p class="lead">SQL (Structured Query Language) adalah bahasa untuk berbicara dengan database. Dengan SQL, kamu bisa menyimpan, mengambil, mengubah, dan menghapus data. Panduan ini dirancang agar mudah dipahami, lengkap dengan contoh dan latihan.</p>
+    <div class="hero-cards">
+      <div class="hero-card"><div class="hc-icon">📦</div><div class="hc-title">7 Bab</div><div class="hc-desc">Dari dasar hingga JOIN multi-tabel</div></div>
+      <div class="hero-card"><div class="hc-icon">💻</div><div class="hc-title">30+ Contoh</div><div class="hc-desc">Kode SQL siap pakai dan dapat disalin</div></div>
+      <div class="hero-card"><div class="hc-icon">🧠</div><div class="hc-title">Latihan Soal</div><div class="hc-desc">Quiz interaktif di setiap bab</div></div>
+      <div class="hero-card"><div class="hc-icon">📋</div><div class="hc-title">Cheat Sheet</div><div class="hc-desc">Ringkasan perintah siap cetak</div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ BAB 1 ═══════════════ -->
+  <section class="chapter" id="ch1">
+    <div class="ch-header">
+      <div class="ch-badge">1</div>
+      <div class="ch-meta">
+        <div class="ch-eyebrow">Bab 1</div>
+        <div class="ch-title">Pengenalan SQL & Database</div>
+      </div>
+    </div>
+
+    <p class="intro">Sebelum menulis kode SQL, kita perlu memahami konsep dasarnya terlebih dahulu.</p>
+
+    <h3 class="sh">Apa itu Database?</h3>
+    <p>Database adalah tempat menyimpan data secara terstruktur. Bayangkan database seperti sebuah lemari arsip: di dalam lemari ada banyak laci (<strong>tabel</strong>), di dalam laci ada banyak dokumen (<strong>baris/row</strong>), dan setiap dokumen memiliki kolom informasi (<strong>kolom/column</strong>).</p>
+
+    <h3 class="sh">Anatomi Tabel SQL</h3>
+    <p>Sebuah tabel terdiri dari <strong>kolom</strong> (mendefinisikan jenis data) dan <strong>baris</strong> (data aktual). Contoh tabel <code>mahasiswa</code>:</p>
+
+    <div class="result-wrap">
+      <div class="result-label">Tabel: mahasiswa</div>
+      <table class="result-table">
+        <thead><tr><th>id</th><th>nim</th><th>nama</th><th>prodi</th><th>angkatan</th><th>ipk</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>22001</td><td>Budi Santoso</td><td>Informatika</td><td>2022</td><td>3.75</td></tr>
+          <tr><td>2</td><td>22002</td><td>Sari Dewi</td><td>Sistem Informasi</td><td>2022</td><td>3.82</td></tr>
+          <tr><td>3</td><td>22003</td><td>Ahmad Fauzi</td><td>Informatika</td><td>2023</td><td>3.60</td></tr>
+          <tr><td>4</td><td>22004</td><td>Rina Kusuma</td><td>Sistem Informasi</td><td>2023</td><td>3.91</td></tr>
+          <tr><td>5</td><td>22005</td><td>Doni Prasetyo</td><td>Teknik Elektro</td><td>2022</td><td>3.45</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">Membuat Database & Tabel</h3>
+    <p>Perintah <code>CREATE DATABASE</code> membuat database baru, sedangkan <code>CREATE TABLE</code> membuat tabel di dalamnya.</p>
+
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Membuat database baru</span>
+<span class="kw">CREATE DATABASE</span> kampus;
+
+<span class="cmt">-- Gunakan database tersebut</span>
+<span class="kw">USE</span> kampus; <span class="cmt">-- MySQL/MariaDB</span>
+<span class="cmt">-- atau di PostgreSQL: \c kampus</span>
+
+<span class="cmt">-- Membuat tabel mahasiswa</span>
+<span class="kw">CREATE TABLE</span> <span class="tbl">mahasiswa</span> (
+  id        <span class="fn">SERIAL</span> <span class="kw">PRIMARY KEY</span>,
+  nim       <span class="fn">VARCHAR</span>(<span class="num">20</span>)  <span class="kw">NOT NULL UNIQUE</span>,
+  nama      <span class="fn">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  prodi     <span class="fn">VARCHAR</span>(<span class="num">50</span>),
+  angkatan  <span class="fn">INTEGER</span>,
+  ipk       <span class="fn">DECIMAL</span>(<span class="num">3</span>,<span class="num">2</span>)
+);</pre>
+    </div>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <p><strong>Tipe data umum:</strong> <code>INTEGER</code> untuk bilangan bulat, <code>VARCHAR(n)</code> untuk teks (maks n karakter), <code>DECIMAL(p,s)</code> untuk desimal, <code>DATE</code> untuk tanggal, <code>BOOLEAN</code> untuk benar/salah.</p>
+    </div>
+
+    <h3 class="sh">Perintah SQL: DDL vs DML</h3>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="cc-cmd">DDL — Definisi Struktur</div><div class="cc-desc"><code>CREATE</code> buat tabel/database<br><code>ALTER</code> ubah struktur tabel<br><code>DROP</code> hapus tabel/database</div></div>
+      <div class="cheat-card"><div class="cc-cmd">DML — Manipulasi Data</div><div class="cc-desc"><code>SELECT</code> ambil data<br><code>INSERT</code> tambah data<br><code>UPDATE</code> ubah data<br><code>DELETE</code> hapus data</div></div>
+    </div>
+
+    <!-- Quiz 1 -->
+    <div class="quiz" id="qz1">
+      <div class="quiz-label">🧠 Latihan Soal</div>
+      <div class="quiz-q">Perintah SQL manakah yang digunakan untuk <strong>membuat tabel baru</strong>?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz1')"><span class="opt-badge">A</span> INSERT TABLE mahasiswa</button>
+        <button class="quiz-opt" onclick="answer(this,'correct','qz1')"><span class="opt-badge">B</span> CREATE TABLE mahasiswa</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz1')"><span class="opt-badge">C</span> NEW TABLE mahasiswa</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz1')"><span class="opt-badge">D</span> MAKE TABLE mahasiswa</button>
+      </div>
+      <div class="quiz-feedback ok" id="qz1-ok">✅ Benar! <code>CREATE TABLE</code> adalah perintah DDL untuk membuat tabel baru. Diikuti nama tabel dan definisi kolom dalam kurung.</div>
+      <div class="quiz-feedback no" id="qz1-no">❌ Belum tepat. Perintah yang benar adalah <code>CREATE TABLE nama_tabel</code>. Kata kunci CREATE digunakan untuk membuat objek baru di database.</div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- ═══════════════ BAB 2 ═══════════════ -->
+  <section class="chapter" id="ch2">
+    <div class="ch-header">
+      <div class="ch-badge">2</div>
+      <div class="ch-meta">
+        <div class="ch-eyebrow">Bab 2</div>
+        <div class="ch-title">SELECT — Mengambil Data</div>
+      </div>
+    </div>
+
+    <p class="intro">Perintah <code>SELECT</code> adalah yang paling sering digunakan dalam SQL. Fungsinya untuk mengambil (membaca) data dari tabel.</p>
+
+    <h3 class="sh">SELECT Semua Kolom</h3>
+    <p>Tanda bintang (<code>*</code>) berarti "ambil semua kolom".</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">mahasiswa</span>;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil</div>
+      <table class="result-table">
+        <thead><tr><th>id</th><th>nim</th><th>nama</th><th>prodi</th><th>angkatan</th><th>ipk</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>22001</td><td>Budi Santoso</td><td>Informatika</td><td>2022</td><td>3.75</td></tr>
+          <tr><td>2</td><td>22002</td><td>Sari Dewi</td><td>Sistem Informasi</td><td>2022</td><td>3.82</td></tr>
+          <tr><td>3</td><td>22003</td><td>Ahmad Fauzi</td><td>Informatika</td><td>2023</td><td>3.60</td></tr>
+          <tr><td>4</td><td>22004</td><td>Rina Kusuma</td><td>Sistem Informasi</td><td>2023</td><td>3.91</td></tr>
+          <tr><td>5</td><td>22005</td><td>Doni Prasetyo</td><td>Teknik Elektro</td><td>2022</td><td>3.45</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">SELECT Kolom Tertentu</h3>
+    <p>Sebutkan nama kolom yang ingin ditampilkan, dipisahkan koma.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="kw">SELECT</span> nama, prodi, ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil</div>
+      <table class="result-table">
+        <thead><tr><th>nama</th><th>prodi</th><th>ipk</th></tr></thead>
+        <tbody>
+          <tr><td>Budi Santoso</td><td>Informatika</td><td>3.75</td></tr>
+          <tr><td>Sari Dewi</td><td>Sistem Informasi</td><td>3.82</td></tr>
+          <tr><td>Ahmad Fauzi</td><td>Informatika</td><td>3.60</td></tr>
+          <tr><td>Rina Kusuma</td><td>Sistem Informasi</td><td>3.91</td></tr>
+          <tr><td>Doni Prasetyo</td><td>Teknik Elektro</td><td>3.45</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">Alias Kolom dengan AS</h3>
+    <p>Gunakan <code>AS</code> untuk memberi nama tampilan berbeda pada kolom tanpa mengubah nama aslinya di database.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="kw">SELECT</span>
+  nama            <span class="kw">AS</span> <span class="str">"Nama Mahasiswa"</span>,
+  prodi           <span class="kw">AS</span> <span class="str">"Program Studi"</span>,
+  ipk             <span class="kw">AS</span> <span class="str">"Indeks Prestasi"</span>
+<span class="kw">FROM</span> <span class="tbl">mahasiswa</span>;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil</div>
+      <table class="result-table">
+        <thead><tr><th>Nama Mahasiswa</th><th>Program Studi</th><th>Indeks Prestasi</th></tr></thead>
+        <tbody>
+          <tr><td>Budi Santoso</td><td>Informatika</td><td>3.75</td></tr>
+          <tr><td>Sari Dewi</td><td>Sistem Informasi</td><td>3.82</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">DISTINCT — Nilai Unik</h3>
+    <p>Gunakan <code>DISTINCT</code> untuk menghilangkan duplikat dalam hasil query.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Tampilkan daftar prodi yang ada (tanpa duplikat)</span>
+<span class="kw">SELECT DISTINCT</span> prodi
+<span class="kw">FROM</span> <span class="tbl">mahasiswa</span>;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil</div>
+      <table class="result-table">
+        <thead><tr><th>prodi</th></tr></thead>
+        <tbody>
+          <tr><td>Informatika</td></tr>
+          <tr><td>Sistem Informasi</td></tr>
+          <tr><td>Teknik Elektro</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">LIMIT — Batasi Jumlah Baris</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Tampilkan hanya 3 baris pertama</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">mahasiswa</span>
+<span class="kw">LIMIT</span> <span class="num">3</span>;</pre>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <p>Penulisan SQL tidak case-sensitive. <code>SELECT</code> sama dengan <code>select</code>. Namun, <strong>kebiasaan baik</strong> adalah menulis kata kunci SQL dengan HURUF KAPITAL agar mudah dibedakan dari nama tabel/kolom.</p>
+    </div>
+
+    <!-- Quiz 2 -->
+    <div class="quiz" id="qz2">
+      <div class="quiz-label">🧠 Latihan Soal</div>
+      <div class="quiz-q">Apa fungsi kata kunci <strong>DISTINCT</strong> dalam perintah SELECT?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz2')"><span class="opt-badge">A</span> Mengurutkan hasil dari kecil ke besar</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz2')"><span class="opt-badge">B</span> Membatasi jumlah baris yang ditampilkan</button>
+        <button class="quiz-opt" onclick="answer(this,'correct','qz2')"><span class="opt-badge">C</span> Menghilangkan nilai duplikat dari hasil query</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz2')"><span class="opt-badge">D</span> Menggabungkan dua tabel</button>
+      </div>
+      <div class="quiz-feedback ok" id="qz2-ok">✅ Tepat sekali! <code>DISTINCT</code> menghilangkan baris duplikat sehingga setiap nilai hanya muncul satu kali dalam hasil query.</div>
+      <div class="quiz-feedback no" id="qz2-no">❌ Belum tepat. <code>DISTINCT</code> digunakan untuk menghilangkan nilai duplikat. Misalnya <code>SELECT DISTINCT prodi</code> hanya menampilkan satu baris untuk setiap program studi yang unik.</div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- ═══════════════ BAB 3 ═══════════════ -->
+  <section class="chapter" id="ch3">
+    <div class="ch-header">
+      <div class="ch-badge">3</div>
+      <div class="ch-meta">
+        <div class="ch-eyebrow">Bab 3</div>
+        <div class="ch-title">Filter dengan WHERE & Pengurutan ORDER BY</div>
+      </div>
+    </div>
+
+    <p class="intro">Jarang kita ingin melihat semua data sekaligus. Dengan <code>WHERE</code> kita bisa menyaring data, dan <code>ORDER BY</code> untuk mengurutkannya.</p>
+
+    <h3 class="sh">WHERE — Menyaring Data</h3>
+    <p>Tuliskan kondisi setelah <code>WHERE</code>. Hanya baris yang memenuhi kondisi yang akan ditampilkan.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Tampilkan mahasiswa dari prodi Informatika</span>
+<span class="kw">SELECT</span> nama, prodi, ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>
+<span class="kw">WHERE</span>  prodi = <span class="str">'Informatika'</span>;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil</div>
+      <table class="result-table">
+        <thead><tr><th>nama</th><th>prodi</th><th>ipk</th></tr></thead>
+        <tbody>
+          <tr><td>Budi Santoso</td><td>Informatika</td><td>3.75</td></tr>
+          <tr><td>Ahmad Fauzi</td><td>Informatika</td><td>3.60</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">Operator Perbandingan</h3>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="cc-cmd">=</div><div class="cc-desc">Sama dengan<br><code>WHERE ipk = 3.75</code></div></div>
+      <div class="cheat-card"><div class="cc-cmd">&lt;&gt; atau !=</div><div class="cc-desc">Tidak sama dengan<br><code>WHERE prodi &lt;&gt; 'Informatika'</code></div></div>
+      <div class="cheat-card"><div class="cc-cmd">&gt; dan &lt;</div><div class="cc-desc">Lebih besar / lebih kecil<br><code>WHERE ipk &gt; 3.70</code></div></div>
+      <div class="cheat-card"><div class="cc-cmd">&gt;= dan &lt;=</div><div class="cc-desc">Lebih besar/kecil atau sama<br><code>WHERE angkatan &gt;= 2022</code></div></div>
+    </div>
+
+    <h3 class="sh">AND, OR, NOT</h3>
+    <p>Gabungkan beberapa kondisi dengan operator logika.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- AND: semua kondisi harus terpenuhi</span>
+<span class="kw">SELECT</span> nama, prodi, ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>
+<span class="kw">WHERE</span>  prodi = <span class="str">'Informatika'</span>
+  <span class="kw">AND</span>  ipk > <span class="num">3.60</span>;
+
+<span class="cmt">-- OR: salah satu kondisi terpenuhi</span>
+<span class="kw">SELECT</span> nama, prodi
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>
+<span class="kw">WHERE</span>  prodi = <span class="str">'Informatika'</span>
+  <span class="kw">OR</span>   prodi = <span class="str">'Teknik Elektro'</span>;</pre>
+    </div>
+
+    <h3 class="sh">IN — Cocokkan dari Daftar</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- IN lebih ringkas daripada banyak OR</span>
+<span class="kw">SELECT</span> nama, prodi
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>
+<span class="kw">WHERE</span>  prodi <span class="kw">IN</span> (<span class="str">'Informatika'</span>, <span class="str">'Teknik Elektro'</span>);</pre>
+    </div>
+
+    <h3 class="sh">BETWEEN — Rentang Nilai</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- IPK antara 3.60 dan 3.80 (inklusif)</span>
+<span class="kw">SELECT</span> nama, ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>
+<span class="kw">WHERE</span>  ipk <span class="kw">BETWEEN</span> <span class="num">3.60</span> <span class="kw">AND</span> <span class="num">3.80</span>;</pre>
+    </div>
+
+    <h3 class="sh">LIKE — Pencarian Pola Teks</h3>
+    <p><code>%</code> menggantikan nol atau lebih karakter. <code>_</code> menggantikan tepat satu karakter.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Nama yang diawali huruf 'B'</span>
+<span class="kw">SELECT</span> nama <span class="kw">FROM</span> <span class="tbl">mahasiswa</span>
+<span class="kw">WHERE</span>  nama <span class="kw">LIKE</span> <span class="str">'B%'</span>;
+
+<span class="cmt">-- Nama yang mengandung kata 'Dewi'</span>
+<span class="kw">SELECT</span> nama <span class="kw">FROM</span> <span class="tbl">mahasiswa</span>
+<span class="kw">WHERE</span>  nama <span class="kw">LIKE</span> <span class="str">'%Dewi%'</span>;</pre>
+    </div>
+
+    <h3 class="sh">ORDER BY — Mengurutkan Hasil</h3>
+    <p><code>ASC</code> (ascending = kecil ke besar, default) dan <code>DESC</code> (descending = besar ke kecil).</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Urutkan berdasarkan IPK tertinggi dulu</span>
+<span class="kw">SELECT</span> nama, prodi, ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>
+<span class="kw">ORDER BY</span> ipk <span class="kw">DESC</span>;
+
+<span class="cmt">-- Urutkan berdasarkan prodi (A-Z), lalu IPK tertinggi</span>
+<span class="kw">SELECT</span> nama, prodi, ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>
+<span class="kw">ORDER BY</span> prodi <span class="kw">ASC</span>, ipk <span class="kw">DESC</span>;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil — Urut IPK DESC</div>
+      <table class="result-table">
+        <thead><tr><th>nama</th><th>prodi</th><th>ipk</th></tr></thead>
+        <tbody>
+          <tr><td>Rina Kusuma</td><td>Sistem Informasi</td><td>3.91</td></tr>
+          <tr><td>Sari Dewi</td><td>Sistem Informasi</td><td>3.82</td></tr>
+          <tr><td>Budi Santoso</td><td>Informatika</td><td>3.75</td></tr>
+          <tr><td>Ahmad Fauzi</td><td>Informatika</td><td>3.60</td></tr>
+          <tr><td>Doni Prasetyo</td><td>Teknik Elektro</td><td>3.45</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Quiz 3 -->
+    <div class="quiz" id="qz3">
+      <div class="quiz-label">🧠 Latihan Soal</div>
+      <div class="quiz-q">Query manakah yang menampilkan mahasiswa dengan IPK <strong>di atas 3.70</strong> dari prodi <strong>Informatika</strong>?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz3')"><span class="opt-badge">A</span> SELECT * FROM mahasiswa WHERE ipk > 3.70 OR prodi = 'Informatika'</button>
+        <button class="quiz-opt" onclick="answer(this,'correct','qz3')"><span class="opt-badge">B</span> SELECT * FROM mahasiswa WHERE ipk > 3.70 AND prodi = 'Informatika'</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz3')"><span class="opt-badge">C</span> SELECT * FROM mahasiswa WHERE ipk > 3.70 BETWEEN prodi = 'Informatika'</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz3')"><span class="opt-badge">D</span> SELECT * FROM mahasiswa HAVING ipk > 3.70 AND prodi = 'Informatika'</button>
+      </div>
+      <div class="quiz-feedback ok" id="qz3-ok">✅ Benar! Gunakan <code>AND</code> ketika kedua kondisi harus terpenuhi secara bersamaan. <code>OR</code> dipakai jika salah satu kondisi sudah cukup.</div>
+      <div class="quiz-feedback no" id="qz3-no">❌ Kurang tepat. Karena kedua kondisi harus terpenuhi sekaligus (IPK &gt; 3.70 <em>dan</em> prodi Informatika), gunakan operator <code>AND</code>. <code>OR</code> akan menampilkan mahasiswa yang memenuhi salah satu kondisi saja.</div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- ═══════════════ BAB 4 ═══════════════ -->
+  <section class="chapter" id="ch4">
+    <div class="ch-header">
+      <div class="ch-badge">4</div>
+      <div class="ch-meta">
+        <div class="ch-eyebrow">Bab 4</div>
+        <div class="ch-title">Manipulasi Data: INSERT, UPDATE, DELETE</div>
+      </div>
+    </div>
+
+    <p class="intro">Tiga perintah inti untuk mengubah isi data di dalam tabel.</p>
+
+    <h3 class="sh">INSERT INTO — Menambah Data</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Menyebutkan kolom (disarankan)</span>
+<span class="kw">INSERT INTO</span> <span class="tbl">mahasiswa</span> (nim, nama, prodi, angkatan, ipk)
+<span class="kw">VALUES</span> (<span class="str">'22006'</span>, <span class="str">'Fitri Amalia'</span>, <span class="str">'Informatika'</span>, <span class="num">2022</span>, <span class="num">3.88</span>);
+
+<span class="cmt">-- Insert banyak baris sekaligus</span>
+<span class="kw">INSERT INTO</span> <span class="tbl">mahasiswa</span> (nim, nama, prodi, angkatan, ipk)
+<span class="kw">VALUES</span>
+  (<span class="str">'22007'</span>, <span class="str">'Hendra Wijaya'</span>, <span class="str">'Teknik Elektro'</span>, <span class="num">2023</span>, <span class="num">3.55</span>),
+  (<span class="str">'22008'</span>, <span class="str">'Maya Putri'</span>,    <span class="str">'Informatika'</span>,    <span class="num">2023</span>, <span class="num">3.72</span>);</pre>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <p>Selalu sebutkan nama kolom saat INSERT. Jika urutan kolom di tabel berubah di kemudian hari, query INSERT yang menyebutkan kolom tetap bekerja dengan benar.</p>
+    </div>
+
+    <h3 class="sh">UPDATE — Mengubah Data</h3>
+    <p>Selalu sertakan <code>WHERE</code> saat UPDATE, agar tidak mengubah semua baris secara tidak sengaja!</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Update IPK mahasiswa dengan NIM 22001</span>
+<span class="kw">UPDATE</span> <span class="tbl">mahasiswa</span>
+<span class="kw">SET</span>    ipk = <span class="num">3.80</span>
+<span class="kw">WHERE</span>  nim = <span class="str">'22001'</span>;
+
+<span class="cmt">-- Update beberapa kolom sekaligus</span>
+<span class="kw">UPDATE</span> <span class="tbl">mahasiswa</span>
+<span class="kw">SET</span>    prodi = <span class="str">'Informatika'</span>,
+       angkatan = <span class="num">2023</span>
+<span class="kw">WHERE</span>  id = <span class="num">5</span>;</pre>
+    </div>
+
+    <div class="callout callout-danger">
+      <span class="callout-icon">⛔</span>
+      <p><strong>Berbahaya!</strong> Jika kamu menulis <code>UPDATE mahasiswa SET ipk = 0</code> tanpa <code>WHERE</code>, semua baris di tabel mahasiswa akan ter-update! Selalu cek kondisi WHERE sebelum menjalankan UPDATE.</p>
+    </div>
+
+    <h3 class="sh">DELETE — Menghapus Data</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Hapus satu baris berdasarkan id</span>
+<span class="kw">DELETE FROM</span> <span class="tbl">mahasiswa</span>
+<span class="kw">WHERE</span>  id = <span class="num">5</span>;
+
+<span class="cmt">-- Hapus semua mahasiswa angkatan 2020</span>
+<span class="kw">DELETE FROM</span> <span class="tbl">mahasiswa</span>
+<span class="kw">WHERE</span>  angkatan = <span class="num">2020</span>;</pre>
+    </div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚠️</span>
+      <p><strong>Tips aman:</strong> Sebelum menjalankan DELETE atau UPDATE, ubah dulu jadi SELECT dengan kondisi WHERE yang sama untuk memastikan baris yang akan terpengaruh sudah benar. Setelah yakin, baru ganti SELECT ke DELETE/UPDATE.</p>
+    </div>
+
+    <h3 class="sh">ALTER TABLE — Mengubah Struktur Tabel</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Menambah kolom baru</span>
+<span class="kw">ALTER TABLE</span> <span class="tbl">mahasiswa</span>
+<span class="kw">ADD COLUMN</span> email <span class="fn">VARCHAR</span>(<span class="num">100</span>);
+
+<span class="cmt">-- Mengubah tipe data kolom</span>
+<span class="kw">ALTER TABLE</span> <span class="tbl">mahasiswa</span>
+<span class="kw">ALTER COLUMN</span> angkatan <span class="fn">TYPE</span> <span class="fn">SMALLINT</span>; <span class="cmt">-- PostgreSQL</span>
+
+<span class="cmt">-- Menghapus kolom</span>
+<span class="kw">ALTER TABLE</span> <span class="tbl">mahasiswa</span>
+<span class="kw">DROP COLUMN</span> email;</pre>
+    </div>
+
+    <!-- Quiz 4 -->
+    <div class="quiz" id="qz4">
+      <div class="quiz-label">🧠 Latihan Soal</div>
+      <div class="quiz-q">Perintah SQL manakah yang <strong>aman</strong> untuk mengubah IPK menjadi 3.95 hanya untuk mahasiswa bernama Sari Dewi?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz4')"><span class="opt-badge">A</span> UPDATE mahasiswa SET ipk = 3.95</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz4')"><span class="opt-badge">B</span> INSERT INTO mahasiswa SET ipk = 3.95 WHERE nama = 'Sari Dewi'</button>
+        <button class="quiz-opt" onclick="answer(this,'correct','qz4')"><span class="opt-badge">C</span> UPDATE mahasiswa SET ipk = 3.95 WHERE nama = 'Sari Dewi'</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz4')"><span class="opt-badge">D</span> CHANGE mahasiswa SET ipk = 3.95 WHERE nama = 'Sari Dewi'</button>
+      </div>
+      <div class="quiz-feedback ok" id="qz4-ok">✅ Benar! <code>UPDATE ... SET ... WHERE</code> adalah pola yang tepat. Klausa WHERE memastikan hanya baris Sari Dewi yang berubah, bukan seluruh tabel.</div>
+      <div class="quiz-feedback no" id="qz4-no">❌ Belum tepat. Jawaban A berbahaya karena mengubah semua baris. Pola yang benar adalah <code>UPDATE tabel SET kolom = nilai WHERE kondisi</code>. Tidak ada perintah CHANGE di SQL standar.</div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- ═══════════════ BAB 5 ═══════════════ -->
+  <section class="chapter" id="ch5">
+    <div class="ch-header">
+      <div class="ch-badge">5</div>
+      <div class="ch-meta">
+        <div class="ch-eyebrow">Bab 5</div>
+        <div class="ch-title">Fungsi Agregasi & GROUP BY</div>
+      </div>
+    </div>
+
+    <p class="intro">Fungsi agregasi melakukan perhitungan pada sekumpulan baris dan mengembalikan satu nilai. Sering dipakai bersama <code>GROUP BY</code>.</p>
+
+    <h3 class="sh">Fungsi Agregasi Dasar</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- COUNT: hitung jumlah baris</span>
+<span class="kw">SELECT</span> <span class="fn">COUNT</span>(*) <span class="kw">AS</span> total_mahasiswa
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>;
+
+<span class="cmt">-- SUM: jumlah total (biasanya untuk angka)</span>
+<span class="kw">SELECT</span> <span class="fn">SUM</span>(ipk) <span class="kw">AS</span> jumlah_ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>;
+
+<span class="cmt">-- AVG: rata-rata</span>
+<span class="kw">SELECT</span> <span class="fn">ROUND</span>(<span class="fn">AVG</span>(ipk), <span class="num">2</span>) <span class="kw">AS</span> rata_ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>;
+
+<span class="cmt">-- MIN dan MAX</span>
+<span class="kw">SELECT</span>
+  <span class="fn">MIN</span>(ipk) <span class="kw">AS</span> ipk_terendah,
+  <span class="fn">MAX</span>(ipk) <span class="kw">AS</span> ipk_tertinggi
+<span class="kw">FROM</span> <span class="tbl">mahasiswa</span>;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil COUNT, AVG, MIN, MAX</div>
+      <table class="result-table">
+        <thead><tr><th>total_mahasiswa</th><th>rata_ipk</th><th>ipk_terendah</th><th>ipk_tertinggi</th></tr></thead>
+        <tbody><tr><td>5</td><td>3.71</td><td>3.45</td><td>3.91</td></tr></tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">GROUP BY — Kelompokkan Data</h3>
+    <p>Gunakan <code>GROUP BY</code> untuk mengelompokkan baris berdasarkan nilai kolom tertentu, lalu jalankan fungsi agregasi per kelompok.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Hitung jumlah mahasiswa dan rata-rata IPK per prodi</span>
+<span class="kw">SELECT</span>
+  prodi,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> jumlah,
+  <span class="fn">ROUND</span>(<span class="fn">AVG</span>(ipk), <span class="num">2</span>) <span class="kw">AS</span> rata_ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>
+<span class="kw">GROUP BY</span> prodi
+<span class="kw">ORDER BY</span> jumlah <span class="kw">DESC</span>;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil</div>
+      <table class="result-table">
+        <thead><tr><th>prodi</th><th>jumlah</th><th>rata_ipk</th></tr></thead>
+        <tbody>
+          <tr><td>Informatika</td><td>2</td><td>3.68</td></tr>
+          <tr><td>Sistem Informasi</td><td>2</td><td>3.87</td></tr>
+          <tr><td>Teknik Elektro</td><td>1</td><td>3.45</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">HAVING — Filter Setelah GROUP BY</h3>
+    <p><code>WHERE</code> tidak bisa dipakai untuk memfilter hasil agregasi. Gunakan <code>HAVING</code> sebagai gantinya.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Tampilkan prodi yang rata-rata IPK-nya > 3.70</span>
+<span class="kw">SELECT</span>
+  prodi,
+  <span class="fn">ROUND</span>(<span class="fn">AVG</span>(ipk), <span class="num">2</span>) <span class="kw">AS</span> rata_ipk
+<span class="kw">FROM</span>   <span class="tbl">mahasiswa</span>
+<span class="kw">GROUP BY</span> prodi
+<span class="kw">HAVING</span>   <span class="fn">AVG</span>(ipk) > <span class="num">3.70</span>
+<span class="kw">ORDER BY</span> rata_ipk <span class="kw">DESC</span>;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil</div>
+      <table class="result-table">
+        <thead><tr><th>prodi</th><th>rata_ipk</th></tr></thead>
+        <tbody>
+          <tr><td>Sistem Informasi</td><td>3.87</td></tr>
+          <tr><td>Informatika</td><td>3.68</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <p><strong>Urutan eksekusi SQL:</strong> FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. Ini menjelaskan mengapa HAVING (setelah GROUP BY) bisa memfilter hasil agregasi, sedangkan WHERE tidak bisa.</p>
+    </div>
+
+    <!-- Quiz 5 -->
+    <div class="quiz" id="qz5">
+      <div class="quiz-label">🧠 Latihan Soal</div>
+      <div class="quiz-q">Kamu ingin menampilkan prodi yang memiliki <strong>lebih dari 1 mahasiswa</strong>. Klausa mana yang tepat digunakan?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz5')"><span class="opt-badge">A</span> WHERE COUNT(*) > 1</button>
+        <button class="quiz-opt" onclick="answer(this,'correct','qz5')"><span class="opt-badge">B</span> HAVING COUNT(*) > 1</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz5')"><span class="opt-badge">C</span> ORDER BY COUNT(*) > 1</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz5')"><span class="opt-badge">D</span> LIMIT COUNT(*) > 1</button>
+      </div>
+      <div class="quiz-feedback ok" id="qz5-ok">✅ Benar! <code>HAVING COUNT(*) &gt; 1</code> memfilter hasil GROUP BY. WHERE tidak bisa digunakan untuk fungsi agregasi seperti COUNT.</div>
+      <div class="quiz-feedback no" id="qz5-no">❌ Belum tepat. <code>WHERE</code> tidak bisa digunakan untuk memfilter hasil fungsi agregasi. Gunakan <code>HAVING</code> setelah GROUP BY untuk memfilter berdasarkan nilai COUNT, AVG, SUM, dll.</div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- ═══════════════ BAB 6 ═══════════════ -->
+  <section class="chapter" id="ch6">
+    <div class="ch-header">
+      <div class="ch-badge">6</div>
+      <div class="ch-meta">
+        <div class="ch-eyebrow">Bab 6</div>
+        <div class="ch-title">JOIN — Menggabungkan Tabel</div>
+      </div>
+    </div>
+
+    <p class="intro">Data nyata disimpan di beberapa tabel yang saling terhubung. <code>JOIN</code> menggabungkan baris dari dua tabel atau lebih berdasarkan kolom yang berelasi.</p>
+
+    <h3 class="sh">Contoh: Dua Tabel Berelasi</h3>
+    <p>Misalnya kita memiliki tabel <code>nilai</code> yang menyimpan nilai mata kuliah mahasiswa:</p>
+
+    <div class="result-wrap">
+      <div class="result-label">Tabel: nilai</div>
+      <table class="result-table">
+        <thead><tr><th>id</th><th>mahasiswa_id</th><th>matkul</th><th>sks</th><th>nilai</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>1</td><td>Pemrograman Web</td><td>3</td><td>A</td></tr>
+          <tr><td>2</td><td>1</td><td>Basis Data</td><td>3</td><td>A-</td></tr>
+          <tr><td>3</td><td>2</td><td>Pemrograman Web</td><td>3</td><td>A</td></tr>
+          <tr><td>4</td><td>3</td><td>Basis Data</td><td>3</td><td>B+</td></tr>
+          <tr><td>5</td><td>4</td><td>Jaringan Komputer</td><td>2</td><td>A</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">INNER JOIN — Baris yang Cocok di Kedua Tabel</h3>
+    <p>Menampilkan hanya baris yang memiliki pasangan di kedua tabel.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="kw">SELECT</span>
+  m.nama,
+  m.prodi,
+  n.matkul,
+  n.nilai
+<span class="kw">FROM</span>       <span class="tbl">mahasiswa</span> m
+<span class="kw">INNER JOIN</span> <span class="tbl">nilai</span>     n <span class="kw">ON</span> m.id = n.mahasiswa_id
+<span class="kw">ORDER BY</span>   m.nama;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil INNER JOIN</div>
+      <table class="result-table">
+        <thead><tr><th>nama</th><th>prodi</th><th>matkul</th><th>nilai</th></tr></thead>
+        <tbody>
+          <tr><td>Ahmad Fauzi</td><td>Informatika</td><td>Basis Data</td><td>B+</td></tr>
+          <tr><td>Budi Santoso</td><td>Informatika</td><td>Pemrograman Web</td><td>A</td></tr>
+          <tr><td>Budi Santoso</td><td>Informatika</td><td>Basis Data</td><td>A-</td></tr>
+          <tr><td>Rina Kusuma</td><td>Sistem Informasi</td><td>Jaringan Komputer</td><td>A</td></tr>
+          <tr><td>Sari Dewi</td><td>Sistem Informasi</td><td>Pemrograman Web</td><td>A</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sh">LEFT JOIN — Semua dari Tabel Kiri</h3>
+    <p>Menampilkan semua baris dari tabel kiri, meski tidak ada pasangan di tabel kanan. Nilai kolom kanan akan <code>NULL</code>.</p>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Tampilkan SEMUA mahasiswa, termasuk yang belum ada nilai</span>
+<span class="kw">SELECT</span>
+  m.nama,
+  n.matkul,
+  n.nilai
+<span class="kw">FROM</span>      <span class="tbl">mahasiswa</span> m
+<span class="kw">LEFT JOIN</span> <span class="tbl">nilai</span>     n <span class="kw">ON</span> m.id = n.mahasiswa_id;</pre>
+    </div>
+    <div class="result-wrap">
+      <div class="result-label">Hasil LEFT JOIN</div>
+      <table class="result-table">
+        <thead><tr><th>nama</th><th>matkul</th><th>nilai</th></tr></thead>
+        <tbody>
+          <tr><td>Budi Santoso</td><td>Pemrograman Web</td><td>A</td></tr>
+          <tr><td>Budi Santoso</td><td>Basis Data</td><td>A-</td></tr>
+          <tr><td>Sari Dewi</td><td>Pemrograman Web</td><td>A</td></tr>
+          <tr><td>Ahmad Fauzi</td><td>Basis Data</td><td>B+</td></tr>
+          <tr><td>Rina Kusuma</td><td>Jaringan Komputer</td><td>A</td></tr>
+          <tr><td>Doni Prasetyo</td><td class="null-val">NULL</td><td class="null-val">NULL</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <p>Doni Prasetyo muncul dengan nilai <code>NULL</code> karena ia belum memiliki data di tabel nilai. INNER JOIN tidak akan menampilkan Doni sama sekali. Gunakan LEFT JOIN jika kamu butuh "semua data dari tabel utama, meski tidak ada relasi".</p>
+    </div>
+
+    <h3 class="sh">JOIN dengan WHERE dan GROUP BY</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="cmt">-- Hitung jumlah mata kuliah per mahasiswa</span>
+<span class="kw">SELECT</span>
+  m.nama,
+  m.prodi,
+  <span class="fn">COUNT</span>(n.id) <span class="kw">AS</span> jumlah_matkul
+<span class="kw">FROM</span>       <span class="tbl">mahasiswa</span> m
+<span class="kw">LEFT JOIN</span>  <span class="tbl">nilai</span>     n <span class="kw">ON</span> m.id = n.mahasiswa_id
+<span class="kw">GROUP BY</span>   m.id, m.nama, m.prodi
+<span class="kw">ORDER BY</span>   jumlah_matkul <span class="kw">DESC</span>;</pre>
+    </div>
+
+    <!-- Quiz 6 -->
+    <div class="quiz" id="qz6">
+      <div class="quiz-label">🧠 Latihan Soal</div>
+      <div class="quiz-q">Kamu ingin menampilkan semua mahasiswa termasuk yang <strong>belum punya nilai</strong>. JOIN mana yang tepat?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz6')"><span class="opt-badge">A</span> INNER JOIN — hanya baris yang cocok di kedua tabel</button>
+        <button class="quiz-opt" onclick="answer(this,'correct','qz6')"><span class="opt-badge">B</span> LEFT JOIN — semua dari tabel mahasiswa, meski tidak ada nilai</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz6')"><span class="opt-badge">C</span> RIGHT JOIN — semua dari tabel nilai</button>
+        <button class="quiz-opt" onclick="answer(this,'wrong','qz6')"><span class="opt-badge">D</span> CROSS JOIN — perkalian kartesian semua baris</button>
+      </div>
+      <div class="quiz-feedback ok" id="qz6-ok">✅ Tepat! <code>LEFT JOIN</code> mempertahankan semua baris dari tabel kiri (mahasiswa), dan mengisi kolom dari tabel kanan (nilai) dengan NULL jika tidak ada kecocokan.</div>
+      <div class="quiz-feedback no" id="qz6-no">❌ Belum tepat. <code>INNER JOIN</code> hanya menampilkan baris yang ada di kedua tabel, sehingga mahasiswa tanpa nilai tidak akan muncul. Gunakan <code>LEFT JOIN</code> untuk mempertahankan semua baris dari tabel kiri.</div>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- ═══════════════ BAB 7 CHEAT SHEET ═══════════════ -->
+  <section class="chapter" id="ch7">
+    <div class="ch-header">
+      <div class="ch-badge">📋</div>
+      <div class="ch-meta">
+        <div class="ch-eyebrow">Referensi Cepat</div>
+        <div class="ch-title">SQL Cheat Sheet</div>
+      </div>
+    </div>
+
+    <p class="intro">Ringkasan semua perintah SQL yang sudah dipelajari. Simpan halaman ini untuk referensi cepat.</p>
+
+    <h3 class="sh">Struktur Query SELECT Lengkap</h3>
+    <div class="code-wrap">
+      <div class="code-header"><span class="code-label-tag">Urutan Penulisan</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre class="sql"><span class="kw">SELECT</span>   kolom1, <span class="fn">COUNT</span>(*), <span class="fn">AVG</span>(kolom2)   <span class="cmt">-- 1. Pilih kolom / fungsi</span>
+<span class="kw">FROM</span>     nama_tabel                         <span class="cmt">-- 2. Dari tabel mana</span>
+<span class="kw">JOIN</span>     tabel_lain <span class="kw">ON</span> kondisi_join        <span class="cmt">-- 3. Gabungkan tabel (opsional)</span>
+<span class="kw">WHERE</span>    kondisi_baris                      <span class="cmt">-- 4. Filter sebelum group</span>
+<span class="kw">GROUP BY</span> kolom1                            <span class="cmt">-- 5. Kelompokkan (opsional)</span>
+<span class="kw">HAVING</span>   kondisi_agregat                   <span class="cmt">-- 6. Filter setelah group</span>
+<span class="kw">ORDER BY</span> kolom1 <span class="kw">ASC</span>, kolom2 <span class="kw">DESC</span>          <span class="cmt">-- 7. Urutan hasil</span>
+<span class="kw">LIMIT</span>    <span class="num">10</span>;                               <span class="cmt">-- 8. Batas jumlah baris</span></pre>
+    </div>
+
+    <h3 class="sh">Perintah DDL</h3>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="cc-cmd">CREATE TABLE tabel (...)</div><div class="cc-desc">Buat tabel baru dengan definisi kolom</div></div>
+      <div class="cheat-card"><div class="cc-cmd">ALTER TABLE tabel ADD COLUMN ...</div><div class="cc-desc">Tambah kolom ke tabel yang sudah ada</div></div>
+      <div class="cheat-card"><div class="cc-cmd">ALTER TABLE tabel DROP COLUMN ...</div><div class="cc-desc">Hapus kolom dari tabel</div></div>
+      <div class="cheat-card"><div class="cc-cmd">DROP TABLE tabel</div><div class="cc-desc">Hapus tabel beserta semua datanya</div></div>
+      <div class="cheat-card"><div class="cc-cmd">TRUNCATE TABLE tabel</div><div class="cc-desc">Kosongkan semua data tapi struktur tetap ada</div></div>
+    </div>
+
+    <h3 class="sh">Perintah DML</h3>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="cc-cmd">SELECT kolom FROM tabel</div><div class="cc-desc">Ambil data dari tabel</div></div>
+      <div class="cheat-card"><div class="cc-cmd">INSERT INTO tabel VALUES (...)</div><div class="cc-desc">Tambah baris baru ke tabel</div></div>
+      <div class="cheat-card"><div class="cc-cmd">UPDATE tabel SET kol=val WHERE ...</div><div class="cc-desc">Ubah nilai pada baris tertentu</div></div>
+      <div class="cheat-card"><div class="cc-cmd">DELETE FROM tabel WHERE ...</div><div class="cc-desc">Hapus baris yang memenuhi kondisi</div></div>
+    </div>
+
+    <h3 class="sh">Operator WHERE</h3>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="cc-cmd">= / &lt;&gt; / != </div><div class="cc-desc">Sama dengan / tidak sama dengan</div></div>
+      <div class="cheat-card"><div class="cc-cmd">&gt; / &lt; / &gt;= / &lt;=</div><div class="cc-desc">Perbandingan numerik</div></div>
+      <div class="cheat-card"><div class="cc-cmd">AND / OR / NOT</div><div class="cc-desc">Operator logika untuk gabung kondisi</div></div>
+      <div class="cheat-card"><div class="cc-cmd">IN (val1, val2, ...)</div><div class="cc-desc">Cocokkan dari daftar nilai</div></div>
+      <div class="cheat-card"><div class="cc-cmd">BETWEEN val1 AND val2</div><div class="cc-desc">Nilai dalam rentang (inklusif)</div></div>
+      <div class="cheat-card"><div class="cc-cmd">LIKE 'pola%'</div><div class="cc-desc">Pencocokan pola teks (% = wildcard)</div></div>
+      <div class="cheat-card"><div class="cc-cmd">IS NULL / IS NOT NULL</div><div class="cc-desc">Cek apakah nilai kosong/ada</div></div>
+    </div>
+
+    <h3 class="sh">Fungsi Agregasi</h3>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="cc-cmd">COUNT(*)</div><div class="cc-desc">Hitung jumlah baris</div></div>
+      <div class="cheat-card"><div class="cc-cmd">SUM(kolom)</div><div class="cc-desc">Jumlahkan nilai kolom</div></div>
+      <div class="cheat-card"><div class="cc-cmd">AVG(kolom)</div><div class="cc-desc">Rata-rata nilai kolom</div></div>
+      <div class="cheat-card"><div class="cc-cmd">MIN(kolom)</div><div class="cc-desc">Nilai terkecil</div></div>
+      <div class="cheat-card"><div class="cc-cmd">MAX(kolom)</div><div class="cc-desc">Nilai terbesar</div></div>
+      <div class="cheat-card"><div class="cc-cmd">ROUND(angka, desimal)</div><div class="cc-desc">Bulatkan angka ke n desimal</div></div>
+    </div>
+
+    <h3 class="sh">Jenis JOIN</h3>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="cc-cmd">INNER JOIN</div><div class="cc-desc">Hanya baris yang cocok di kedua tabel</div></div>
+      <div class="cheat-card"><div class="cc-cmd">LEFT JOIN</div><div class="cc-desc">Semua dari tabel kiri + yang cocok dari kanan</div></div>
+      <div class="cheat-card"><div class="cc-cmd">RIGHT JOIN</div><div class="cc-desc">Semua dari tabel kanan + yang cocok dari kiri</div></div>
+      <div class="cheat-card"><div class="cc-cmd">FULL OUTER JOIN</div><div class="cc-desc">Semua baris dari kedua tabel</div></div>
+    </div>
+
+    <div class="callout callout-tip" style="margin-top:1.5rem">
+      <span class="callout-icon">🎉</span>
+      <p><strong>Selamat!</strong> Kamu sudah menyelesaikan tutorial SQL Dasar. Langkah selanjutnya: coba praktikkan di Neon.tech, MySQL Workbench, atau DBeaver dengan database nyata. Semakin banyak berlatih, semakin mahir!</p>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  Tutorial SQL Dasar untuk Pemula &nbsp;·&nbsp;
+  Dibuat untuk kebutuhan pembelajaran &nbsp;·&nbsp;
+  <a href="https://www.postgresql.org/docs/" target="_blank">Dokumentasi PostgreSQL →</a>
+</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100;
+  document.getElementById('prog').style.width = pct + '%';
+});
+
+// Active nav highlight
+const chapters = document.querySelectorAll('.chapter');
+const chapLinks = document.querySelectorAll('.topnav a.chap');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      chapLinks.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.topnav a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-25% 0px -65% 0px' });
+chapters.forEach(c => io.observe(c));
+
+// Copy code
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '✓ Disalin';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Salin'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+// Quiz
+function answer(btn, result, qzId) {
+  const quiz = document.getElementById(qzId);
+  const opts = quiz.querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  btn.classList.add(result);
+  quiz.querySelector(`#${qzId}-ok`).classList.toggle('show', result === 'correct');
+  quiz.querySelector(`#${qzId}-no`).classList.toggle('show', result === 'wrong');
+}
+</script>
+</body>
+</html>
