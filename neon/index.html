@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Neon.tech — Database, Upload Data & DBeaver</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f7f7f5;
+    --bg-tertiary: #f0efec;
+    --text: #1a1a18;
+    --text-secondary: #5a5a56;
+    --text-tertiary: #8a8a84;
+    --border: rgba(0,0,0,0.10);
+    --border-md: rgba(0,0,0,0.18);
+    --accent: #3b5bdb;
+    --accent-bg: #eef2ff;
+    --accent-text: #2f4ac9;
+    --warn-bg: #fff8e1;
+    --warn-border: #f59f00;
+    --warn-text: #7d4e00;
+    --success-bg: #ebfbee;
+    --success-text: #1d6b37;
+    --mono: 'Courier New', Courier, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg-secondary: #252522;
+      --bg-tertiary: #2e2e2b;
+      --text: #e8e8e2;
+      --text-secondary: #a0a09a;
+      --text-tertiary: #6a6a64;
+      --border: rgba(255,255,255,0.10);
+      --border-md: rgba(255,255,255,0.18);
+      --accent: #748ffc;
+      --accent-bg: #1e244a;
+      --accent-text: #9db0ff;
+      --warn-bg: #2d2208;
+      --warn-border: #e8a000;
+      --warn-text: #ffd066;
+      --success-bg: #0e2d1a;
+      --success-text: #69db7c;
+    }
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--bg);
+    border-bottom: 0.5px solid var(--border);
+    padding: 1.25rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .site-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .logo-icon {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { fill: #fff; width: 16px; height: 16px; }
+  .header-badge {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    background: var(--bg-secondary);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px;
+  }
+
+  /* ── Layout ── */
+  .wrapper {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    max-width: 1040px;
+    margin: 0 auto;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    padding: 2rem 1.25rem 2rem 0;
+    border-right: 0.5px solid var(--border);
+    position: sticky;
+    top: 61px;
+    height: calc(100vh - 61px);
+    overflow-y: auto;
+  }
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: .75rem;
+    padding-left: .25rem;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 13.5px;
+    transition: background .12s, color .12s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: var(--bg-secondary); color: var(--text); }
+  .nav-item.active { background: var(--accent-bg); color: var(--accent-text); font-weight: 500; }
+  .nav-item .nav-num {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--bg-tertiary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: var(--text-tertiary);
+    flex-shrink: 0;
+  }
+  .nav-item.active .nav-num { background: var(--accent); color: #fff; }
+
+  /* ── Main content ── */
+  .main {
+    padding: 2.5rem 2rem 4rem;
+    max-width: 720px;
+  }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 2.5rem; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+    background: var(--accent-bg);
+    border-radius: 20px;
+    padding: 3px 10px;
+    margin-bottom: 1rem;
+  }
+  .hero h1 { font-size: 28px; font-weight: 700; line-height: 1.25; margin-bottom: .6rem; }
+  .hero .sub { font-size: 15px; color: var(--text-secondary); max-width: 520px; }
+  .hero-meta {
+    display: flex; gap: 16px; margin-top: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; color: var(--text-secondary);
+    background: var(--bg-secondary);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+  }
+  .meta-pill svg { width: 12px; height: 12px; opacity: .6; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 3rem; scroll-margin-top: 80px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .section-num-badge {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 20px; font-weight: 600; }
+
+  /* ── Steps ── */
+  .steps { display: flex; flex-direction: column; gap: 1.25rem; }
+  .step { display: flex; gap: 14px; }
+  .step-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent-bg);
+    border: 1.5px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    color: var(--accent-text);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body {}
+  .step-body strong { font-weight: 600; display: block; margin-bottom: 3px; font-size: 14.5px; }
+  .step-body p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+  /* ── Code ── */
+  code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: var(--bg-secondary);
+    border: 0.5px solid var(--border-md);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--text);
+  }
+  .code-block {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: var(--bg-secondary);
+    border: 0.5px solid var(--border-md);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin: .75rem 0;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .code-label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+  }
+
+  /* ── Cards ── */
+  .info-card, .warn-card, .tip-card {
+    border-radius: var(--radius);
+    padding: .875rem 1rem;
+    margin: 1rem 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .info-card {
+    background: var(--accent-bg);
+    border: 0.5px solid rgba(59,91,219,.3);
+  }
+  .info-card .card-icon { color: var(--accent-text); font-size: 16px; flex-shrink:0; margin-top:1px; }
+  .info-card p { font-size: 13px; color: var(--accent-text); line-height: 1.6; }
+  .warn-card {
+    background: var(--warn-bg);
+    border: 0.5px solid rgba(245,159,0,.35);
+  }
+  .warn-card .card-icon { color: var(--warn-border); font-size: 16px; flex-shrink:0; margin-top:1px; }
+  .warn-card p { font-size: 13px; color: var(--warn-text); line-height: 1.6; }
+
+  /* ── Connection params grid ── */
+  .param-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    margin: 1rem 0;
+  }
+  .param-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border-md);
+    border-radius: var(--radius);
+    padding: .75rem 1rem;
+  }
+  .param-label { font-size: 11px; color: var(--text-tertiary); font-weight: 500; margin-bottom: 3px; }
+  .param-val { font-family: var(--mono); font-size: 12.5px; color: var(--text); font-weight: 600; word-break: break-all; }
+
+  /* ── Tabs ── */
+  .tab-container { margin: 1rem 0; }
+  .tab-bar { display: flex; gap: 4px; border-bottom: 0.5px solid var(--border-md); margin-bottom: 0; }
+  .tab-btn {
+    padding: 7px 16px;
+    font-size: 13px; font-family: var(--sans);
+    background: transparent;
+    border: 0.5px solid transparent;
+    border-bottom: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all .12s;
+  }
+  .tab-btn:hover { background: var(--bg-secondary); color: var(--text); }
+  .tab-btn.active {
+    background: var(--bg);
+    border-color: var(--border-md);
+    border-bottom-color: var(--bg);
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: -0.5px;
+  }
+  .tab-pane { display: none; padding: 1.25rem 0; }
+  .tab-pane.active { display: block; }
+
+  /* ── Tip cards grid ── */
+  .tips-grid { display: flex; flex-direction: column; gap: 10px; }
+  .tip-item {
+    background: var(--bg-secondary);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: .875rem 1rem;
+  }
+  .tip-item .tip-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .tip-item .tip-title svg { width: 16px; height: 16px; color: var(--text-secondary); flex-shrink: 0; }
+  .tip-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ── Inline SVG icons ── */
+  .icon { display: inline-block; vertical-align: middle; }
+
+  /* ── Divider ── */
+  .divider { height: 0.5px; background: var(--border); margin: 2.5rem 0; }
+
+  /* ── Footer ── */
+  .footer {
+    background: var(--bg-secondary);
+    border-top: 0.5px solid var(--border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    grid-column: 1 / -1;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 680px) {
+    .wrapper { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main { padding: 1.5rem 1rem 3rem; }
+    .site-header { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="#">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2c0 .55.22 1.05.59 1.41L10 15v5l4-2v-3l5.41-5.59c.37-.36.59-.86.59-1.41V6z"/>
+      </svg>
+    </div>
+    Panduan Neon.tech
+  </a>
+  <span class="header-badge">PostgreSQL Serverless</span>
+</header>
+
+<div class="wrapper">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Daftar Isi</div>
+    <a href="#s1" class="nav-item active"><span class="nav-num">1</span> Registrasi & Project</a>
+    <a href="#s2" class="nav-item"><span class="nav-num">2</span> Buat Database & Tabel</a>
+    <a href="#s3" class="nav-item"><span class="nav-num">3</span> Upload Data</a>
+    <a href="#s4" class="nav-item"><span class="nav-num">4</span> Koneksi ke DBeaver</a>
+    <a href="#s5" class="nav-item"><span class="nav-num">5</span> Tips & Troubleshoot</a>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-eyebrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+        Panduan Lengkap
+      </div>
+      <h1>Memulai dengan Neon.tech</h1>
+      <p class="sub">Serverless PostgreSQL di cloud — gratis, cepat, dan mudah diintegrasikan. Panduan ini mencakup registrasi, pembuatan database, upload data, dan koneksi ke DBeaver.</p>
+      <div class="hero-meta">
+        <span class="meta-pill">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Free Tier tersedia
+        </span>
+        <span class="meta-pill">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+          PostgreSQL 16
+        </span>
+        <span class="meta-pill">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          SSL required
+        </span>
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="section" id="s1">
+      <div class="section-header">
+        <div class="section-num-badge">1</div>
+        <h2 class="section-title">Registrasi & Membuat Project</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">1</div>
+          <div class="step-body">
+            <strong>Buka halaman Neon.tech</strong>
+            <p>Kunjungi <code>neon.tech</code> lalu klik tombol <strong>Sign Up</strong>. Kamu bisa mendaftar menggunakan akun Google atau GitHub — tidak perlu kartu kredit untuk plan gratis (Free Tier).</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-dot">2</div>
+          <div class="step-body">
+            <strong>Buat project baru</strong>
+            <p>Setelah login, klik <strong>New Project</strong>. Isi nama project dan pilih region terdekat. Untuk pengguna Indonesia, pilih <code>Asia Pacific (Singapore)</code> agar latensi lebih rendah. Klik <strong>Create Project</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <span class="card-icon">ℹ️</span>
+        <p><strong>Free Tier Neon</strong> menyediakan 0.5 GB storage, 1 compute unit, database branching, dan akses penuh ke fitur PostgreSQL. Cocok untuk development, tugas kuliah, dan prototyping.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">3</div>
+          <div class="step-body">
+            <strong>Simpan Connection String</strong>
+            <p>Setelah project dibuat, Neon langsung menampilkan <strong>connection string</strong>. Salin dan simpan di tempat yang aman — kamu akan membutuhkannya untuk koneksi ke DBeaver maupun aplikasi.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-label">Contoh format connection string</div>
+      <div class="code-block">postgresql://username:password@ep-xxxxx.ap-southeast-1.aws.neon.tech/neondb?sslmode=require</div>
+
+      <div class="param-grid">
+        <div class="param-card"><div class="param-label">Host</div><div class="param-val">ep-xxxxx.ap-southeast-1.aws.neon.tech</div></div>
+        <div class="param-card"><div class="param-label">Port</div><div class="param-val">5432</div></div>
+        <div class="param-card"><div class="param-label">Database</div><div class="param-val">neondb</div></div>
+        <div class="param-card"><div class="param-label">SSL Mode</div><div class="param-val">require</div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Section 2 -->
+    <section class="section" id="s2">
+      <div class="section-header">
+        <div class="section-num-badge">2</div>
+        <h2 class="section-title">Membuat Database dan Tabel</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">1</div>
+          <div class="step-body">
+            <strong>Buka SQL Editor di dashboard</strong>
+            <p>Di sidebar kiri Neon Dashboard, klik <strong>SQL Editor</strong>. Ini adalah query editor berbasis web yang langsung terhubung ke database kamu — tanpa perlu install software apapun.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-dot">2</div>
+          <div class="step-body">
+            <strong>Buat tabel baru</strong>
+            <p>Ketik perintah SQL berikut lalu klik tombol <strong>Run</strong> atau tekan <code>Ctrl+Enter</code>:</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-label">SQL — Membuat tabel mahasiswa</div>
+      <div class="code-block">CREATE TABLE mahasiswa (
+  id        SERIAL PRIMARY KEY,
+  nim       VARCHAR(20)    NOT NULL UNIQUE,
+  nama      VARCHAR(100)   NOT NULL,
+  prodi     VARCHAR(50),
+  angkatan  INTEGER,
+  ipk       DECIMAL(3,2)
+);</div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">3</div>
+          <div class="step-body">
+            <strong>Verifikasi tabel berhasil dibuat</strong>
+            <p>Jalankan query berikut untuk memastikan tabel sudah terdaftar dalam schema public:</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">SELECT table_name
+FROM   information_schema.tables
+WHERE  table_schema = 'public';</div>
+
+      <div class="info-card">
+        <span class="card-icon">💡</span>
+        <p>Neon mendukung semua fitur PostgreSQL standar: views, functions, triggers, foreign keys, dan extensions seperti <code>pgvector</code> untuk kebutuhan AI/ML, <code>postgis</code> untuk geospasial, dll.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Section 3 -->
+    <section class="section" id="s3">
+      <div class="section-header">
+        <div class="section-num-badge">3</div>
+        <h2 class="section-title">Upload Data ke Neon</h2>
+      </div>
+
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:1rem">Ada tiga cara untuk mengimpor data ke Neon. Pilih metode yang paling sesuai dengan kebutuhanmu:</p>
+
+      <div class="tab-container">
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab(this,'tab-insert')">INSERT SQL</button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-csv')">CSV via psql</button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-restore')">pg_restore</button>
+        </div>
+
+        <!-- Tab 1: INSERT -->
+        <div class="tab-pane active" id="tab-insert">
+          <div class="steps">
+            <div class="step">
+              <div class="step-dot">1</div>
+              <div class="step-body">
+                <strong>Insert data via SQL Editor</strong>
+                <p>Cara paling sederhana — cocok untuk jumlah data kecil. Buka SQL Editor di dashboard Neon dan jalankan:</p>
+              </div>
+            </div>
+          </div>
+          <div class="code-label">SQL — INSERT data</div>
+          <div class="code-block">INSERT INTO mahasiswa (nim, nama, prodi, angkatan, ipk) VALUES
+  ('22001', 'Budi Santoso',   'Informatika',       2022, 3.75),
+  ('22002', 'Sari Dewi',      'Sistem Informasi',  2022, 3.82),
+  ('22003', 'Ahmad Fauzi',    'Informatika',       2022, 3.60),
+  ('22004', 'Rina Kusuma',    'Sistem Informasi',  2022, 3.91);</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-dot">2</div>
+              <div class="step-body">
+                <strong>Verifikasi data masuk</strong>
+                <p>Setelah INSERT berhasil, jalankan query SELECT untuk mengecek data:</p>
+              </div>
+            </div>
+          </div>
+          <div class="code-block">SELECT * FROM mahasiswa ORDER BY nim;</div>
+        </div>
+
+        <!-- Tab 2: CSV -->
+        <div class="tab-pane" id="tab-csv">
+          <div class="steps">
+            <div class="step">
+              <div class="step-dot">1</div>
+              <div class="step-body">
+                <strong>Siapkan file CSV</strong>
+                <p>Buat file <code>mahasiswa.csv</code> dengan format berikut. Baris pertama adalah header yang harus sama persis dengan nama kolom tabel:</p>
+              </div>
+            </div>
+          </div>
+          <div class="code-label">mahasiswa.csv</div>
+          <div class="code-block">nim,nama,prodi,angkatan,ipk
+22001,Budi Santoso,Informatika,2022,3.75
+22002,Sari Dewi,Sistem Informasi,2022,3.82
+22003,Ahmad Fauzi,Informatika,2022,3.60
+22004,Rina Kusuma,Sistem Informasi,2022,3.91</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-dot">2</div>
+              <div class="step-body">
+                <strong>Install psql di komputer lokal</strong>
+                <p>Pastikan PostgreSQL client sudah terinstall. Di <strong>Windows</strong>: download installer dari <code>postgresql.org</code>. Di <strong>Ubuntu/WSL</strong>:</p>
+              </div>
+            </div>
+          </div>
+          <div class="code-block">sudo apt install postgresql-client</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-dot">3</div>
+              <div class="step-body">
+                <strong>Jalankan perintah \COPY via psql</strong>
+                <p>Ganti connection string dengan milikmu, lalu jalankan di terminal/command prompt:</p>
+              </div>
+            </div>
+          </div>
+          <div class="code-block">psql "postgresql://user:password@host/neondb?sslmode=require" \
+  -c "\COPY mahasiswa(nim,nama,prodi,angkatan,ipk) \
+      FROM 'mahasiswa.csv' CSV HEADER DELIMITER ',';"</div>
+          <div class="warn-card">
+            <span class="card-icon">⚠️</span>
+            <p>Gunakan <code>\COPY</code> (dengan backslash) — <strong>bukan</strong> <code>COPY</code>. Perintah <code>\COPY</code> membaca file dari komputer lokal (sisi client), sedangkan <code>COPY</code> akan mencari file di server Neon yang tidak kita miliki aksesnya.</p>
+          </div>
+          <div class="info-card">
+            <span class="card-icon">💡</span>
+            <p><strong>Alternatif via DBeaver:</strong> Klik kanan tabel → <strong>Import Data</strong> → pilih file CSV. DBeaver akan memetakan kolom secara otomatis — cara termudah tanpa perlu command line.</p>
+          </div>
+        </div>
+
+        <!-- Tab 3: pg_restore -->
+        <div class="tab-pane" id="tab-restore">
+          <div class="steps">
+            <div class="step">
+              <div class="step-dot">1</div>
+              <div class="step-body">
+                <strong>Ekspor database lama dengan pg_dump</strong>
+                <p>Jika ingin migrasi dari PostgreSQL lain (lokal, Supabase, Railway, dsb.), buat dump file terlebih dahulu:</p>
+              </div>
+            </div>
+          </div>
+          <div class="code-block">pg_dump "postgresql://user:pass@old-host/dbname" \
+  --no-acl --no-owner -Fc -f backup.dump</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-dot">2</div>
+              <div class="step-body">
+                <strong>Restore ke Neon menggunakan pg_restore</strong>
+                <p>Gunakan connection string Neon sebagai target restore:</p>
+              </div>
+            </div>
+          </div>
+          <div class="code-block">pg_restore \
+  -d "postgresql://user:pass@neon-host/neondb?sslmode=require" \
+  --no-acl --no-owner -Fc backup.dump</div>
+          <div class="info-card">
+            <span class="card-icon">ℹ️</span>
+            <p>Metode ini ideal untuk migrasi database berukuran besar. Neon mendukung pg_restore versi 14 ke atas. Neon saat ini menjalankan <strong>PostgreSQL 16</strong> — pastikan versi pg_dump tidak lebih baru dari versi Neon.</p>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-dot">3</div>
+              <div class="step-body">
+                <strong>Verifikasi hasil restore</strong>
+                <p>Setelah restore selesai, cek semua tabel sudah ada dengan perintah:</p>
+              </div>
+            </div>
+          </div>
+          <div class="code-block">psql "postgresql://user:pass@neon-host/neondb?sslmode=require" -c "\dt"</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Section 4 -->
+    <section class="section" id="s4">
+      <div class="section-header">
+        <div class="section-num-badge">4</div>
+        <h2 class="section-title">Koneksi ke DBeaver</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">1</div>
+          <div class="step-body">
+            <strong>Install DBeaver Community</strong>
+            <p>Download DBeaver Community Edition (gratis) dari <code>dbeaver.io</code>. Tersedia untuk Windows, macOS, dan Linux. Versi Community sudah cukup untuk semua kebutuhan PostgreSQL.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-dot">2</div>
+          <div class="step-body">
+            <strong>Buat koneksi baru</strong>
+            <p>Buka DBeaver → klik ikon <strong>plug</strong> (New Database Connection) di toolbar, atau gunakan menu <strong>Database → New Database Connection</strong>, atau tekan <code>Ctrl+Shift+N</code>. Pilih <strong>PostgreSQL</strong> dari daftar, lalu klik <strong>Next</strong>.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-dot">3</div>
+          <div class="step-body">
+            <strong>Isi parameter koneksi</strong>
+            <p>Salin detail berikut dari halaman <strong>Connection Details</strong> di Neon Dashboard project kamu:</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="param-grid">
+        <div class="param-card"><div class="param-label">🖥 Host</div><div class="param-val">ep-xxxxx.ap-southeast-1.aws.neon.tech</div></div>
+        <div class="param-card"><div class="param-label"># Port</div><div class="param-val">5432</div></div>
+        <div class="param-card"><div class="param-label">🗄 Database</div><div class="param-val">neondb</div></div>
+        <div class="param-card"><div class="param-label">👤 Username</div><div class="param-val">[nama_user_neon]</div></div>
+        <div class="param-card"><div class="param-label">🔑 Password</div><div class="param-val">••••••••••••••</div></div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">4</div>
+          <div class="step-body">
+            <strong>Aktifkan SSL — LANGKAH WAJIB</strong>
+            <p>Di jendela koneksi DBeaver, klik tab <strong>SSL</strong> (di sebelah tab Main). Centang opsi <strong>Use SSL</strong>, lalu ubah <strong>SSL Mode</strong> menjadi <code>require</code>. Tanpa langkah ini koneksi pasti gagal.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="warn-card">
+        <span class="card-icon">⚠️</span>
+        <p><strong>SSL wajib diaktifkan.</strong> Jika kamu melewati langkah ini, DBeaver akan menampilkan error <em>"SSL connection is required"</em> atau <em>"connection refused"</em>. Pastikan SSL Mode sudah diset ke <code>require</code> sebelum klik Test Connection.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">5</div>
+          <div class="step-body">
+            <strong>Test Connection & Finish</strong>
+            <p>Klik tombol <strong>Test Connection...</strong> di bagian bawah. Jika muncul pop-up hijau dengan tanda centang dan tulisan "Connected", berarti berhasil. Klik <strong>Finish</strong> untuk menyimpan konfigurasi koneksi.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-dot">6</div>
+          <div class="step-body">
+            <strong>Download driver PostgreSQL (jika diminta)</strong>
+            <p>Jika ini pertama kali menggunakan PostgreSQL di DBeaver, akan muncul dialog untuk men-download driver JDBC. Klik <strong>Download</strong> dan tunggu selesai — ini otomatis dan hanya perlu dilakukan sekali.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-dot">7</div>
+          <div class="step-body">
+            <strong>Jelajahi database</strong>
+            <p>Di panel <strong>Database Navigator</strong> (kiri), expand koneksi kamu → <strong>Databases</strong> → <strong>neondb</strong> → <strong>Schemas</strong> → <strong>public</strong> → <strong>Tables</strong>. Klik dua kali pada tabel untuk melihat data, atau klik kanan untuk opsi edit, export, import, dan lain-lain.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <span class="card-icon">💡</span>
+        <p><strong>Import CSV via DBeaver:</strong> Klik kanan tabel → <strong>Import Data</strong> → pilih format CSV → pilih file → petakan kolom → klik <strong>Start</strong>. Ini cara termudah untuk upload data tanpa perlu command line sama sekali.</p>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Section 5 -->
+    <section class="section" id="s5">
+      <div class="section-header">
+        <div class="section-num-badge">5</div>
+        <h2 class="section-title">Tips & Troubleshooting</h2>
+      </div>
+
+      <div class="tips-grid">
+        <div class="tip-item">
+          <div class="tip-title">⏸ Compute auto-suspend (cold start)</div>
+          <p>Neon Free Tier mematikan compute secara otomatis setelah 5 menit tidak ada aktivitas. Koneksi pertama setelah idle akan terasa lambat (~1–3 detik) karena compute perlu "bangun". Ini normal dan disebut <em>cold start</em> — tidak ada yang rusak.</p>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">🔌 Error: "endpoint is disabled"</div>
+          <p>Buka Neon Dashboard → Project → <strong>Settings</strong> → <strong>Compute</strong> → pastikan compute tidak di-disable secara manual. Jika melampaui kuota Free Tier, compute bisa terkunci hingga bulan berikutnya.</p>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">🔀 Gunakan Branching untuk dev vs prod</div>
+          <p>Neon mendukung database branching seperti Git. Buat branch <code>dev</code> dari branch <code>main</code> untuk eksperimen tanpa risiko merusak data produksi. Branch dibuat secara instan (copy-on-write) tanpa menyalin data secara fisik.</p>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">🔗 Connection Pooling untuk aplikasi web</div>
+          <p>Neon menyediakan URL khusus dengan PgBouncer untuk connection pooling. Di dashboard pilih <strong>Pooled connection</strong> — lebih efisien untuk aplikasi Next.js/Node.js yang membuka banyak koneksi paralel. Untuk DBeaver, selalu gunakan URL direct (non-pooled).</p>
+        </div>
+        <div class="tip-item">
+          <div class="tip-title">⏰ Timeout koneksi di DBeaver</div>
+          <p>Jika DBeaver sering disconnect setelah idle, buka <strong>Edit Connection → Connection settings → Connection → Keep-Alive</strong> dan centang <strong>Keep-Alive</strong>. Set interval ke 60 detik untuk menjaga koneksi tetap aktif.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem">
+        <div class="code-label">Perintah psql berguna untuk Neon</div>
+        <div class="code-block"># Simpan connection string sebagai variabel (Linux/Mac)
+export NEON="postgresql://user:pass@host/neondb?sslmode=require"
+
+# Cek semua tabel dalam schema public
+psql "$NEON" -c "\dt"
+
+# Cek ukuran database
+psql "$NEON" -c "SELECT pg_size_pretty(pg_database_size(current_database()));"
+
+# Cek semua ekstensi yang terpasang
+psql "$NEON" -c "\dx"
+
+# Export tabel ke file CSV
+psql "$NEON" -c "\COPY mahasiswa TO 'output.csv' CSV HEADER;"
+
+# Import CSV ke tabel yang sudah ada
+psql "$NEON" -c "\COPY mahasiswa FROM 'input.csv' CSV HEADER;"</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="footer" style="display:block;border-top:0.5px solid var(--border);padding:1.5rem 2rem;text-align:center;font-size:12px;color:var(--text-tertiary);background:var(--bg-secondary)">
+  Panduan Neon.tech · Dibuat untuk kebutuhan pembelajaran dan pengembangan · <a href="https://neon.tech/docs" style="color:var(--accent-text);text-decoration:none">Dokumentasi resmi →</a>
+</footer>
+
+<script>
+  function switchTab(btn, paneId) {
+    const container = btn.closest('.tab-container');
+    container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    container.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(paneId).classList.add('active');
+  }
+
+  // Highlight active nav item on scroll
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const active = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
