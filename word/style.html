@@ -262,7 +262,7 @@
 
   /* ── COMPARE GRID ── */
   .cmp { display: grid; grid-template-columns: 1fr 1fr; }
-  .cmp-col { padding: 22px; }
+  .cmp-col { padding: 22px; overflow: hidden; min-width: 0; }
   .cmp-col:first-child { border-right: 1px solid var(--border); }
   .cmp-label {
     display: inline-flex;
@@ -300,7 +300,7 @@
 
   /* ── MENU PATH ── */
   .menu-path {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 3px;
@@ -312,6 +312,8 @@
     font-family: 'JetBrains Mono', monospace;
     margin: 8px 0;
     line-height: 1.5;
+    max-width: 100%;
+    word-break: break-word;
   }
   .mp-sep { color: var(--muted); }
 
@@ -321,16 +323,18 @@
     padding: 11px 14px;
     font-size: 13px;
     display: flex;
-    gap: 9px;
+    flex-wrap: wrap;
+    gap: 4px 9px;
     align-items: flex-start;
     margin-top: 12px;
-    line-height: 1.55;
+    line-height: 1.65;
   }
   .note-tip { background: var(--accent-light); border-left: 3px solid var(--accent); color: #4C1D95; }
   .note-warn { background: var(--warn-light); border-left: 3px solid #F59E0B; color: #78350F; }
   .note-diff { background: #FFF1F2; border-left: 3px solid #F43F5E; color: #881337; }
   .note-good { background: var(--green-light); border-left: 3px solid var(--green); color: #14532D; }
   .note-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .note-text { flex: 1; min-width: 180px; }
 
   kbd {
     display: inline-block;
@@ -341,7 +345,9 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 11.5px;
     color: var(--text);
+    white-space: nowrap;
   }
+  .steps li { flex-wrap: wrap; }
 
   /* ── STYLE PREVIEW CARDS ── */
   .style-preview-grid {
@@ -585,7 +591,7 @@
             <li><span class="sn sn-w">5</span>Untuk melihat semua style: klik tombol <strong>▼</strong> di pojok kanan grup Styles.</li>
           </ol>
           <div class="menu-path">Home <span class="mp-sep">→</span> Styles <span class="mp-sep">→</span> Heading 1 / 2 / 3</div>
-          <div class="note note-tip"><span class="note-icon">💡</span>Gunakan shortcut: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> untuk Heading 1, <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd> untuk Heading 2.</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Gunakan shortcut: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> untuk Heading 1, <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd> untuk Heading 2.</span></div>
         </div>
         <div class="cmp-col">
           <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
@@ -596,7 +602,7 @@
             <li><span class="sn sn-g">4</span>Style langsung diterapkan.</li>
           </ol>
           <div class="menu-path">Dropdown "Normal text" <span class="mp-sep">→</span> Pilih Heading</div>
-          <div class="note note-tip"><span class="note-icon">💡</span>Shortcut: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> (Heading 1), <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd> (Heading 2) — sama seperti Word!</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Shortcut: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> (Heading 1), <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd> (Heading 2) — sama seperti Word!</span></div>
         </div>
       </div>
     </div>
@@ -620,7 +626,7 @@
             <li><span class="sn sn-w">4</span>Centang <em>"Automatically update"</em> agar semua heading yang sama ikut berubah.</li>
             <li><span class="sn sn-w">5</span>Klik <strong>OK</strong>.</li>
           </ol>
-          <div class="note note-good"><span class="note-icon">✅</span>Mengubah style otomatis memperbarui <strong>semua teks</strong> dengan style tersebut di seluruh dokumen — jauh lebih efisien dari format manual satu per satu.</div>
+          <div class="note note-good"><span class="note-icon">✅</span><span class="note-text">Mengubah style otomatis memperbarui <strong>semua teks</strong> dengan style tersebut di seluruh dokumen — jauh lebih efisien dari format manual satu per satu.</span></div>
         </div>
         <div class="cmp-col">
           <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
@@ -631,7 +637,7 @@
             <li><span class="sn sn-g">4</span>Klik tombol panah <strong>→</strong> di sebelah kanannya.</li>
             <li><span class="sn sn-g">5</span>Pilih <strong>"Update 'Heading 1' to match"</strong>.</li>
           </ol>
-          <div class="note note-warn"><span class="note-icon">⚠️</span>Di Google Docs, perubahan style hanya berlaku untuk dokumen saat ini, bukan semua dokumen baru. Untuk menyimpan ke default, pilih <em>Options → Save as my default styles</em>.</div>
+          <div class="note note-warn"><span class="note-icon">⚠️</span><span class="note-text">Di Google Docs, perubahan style hanya berlaku untuk dokumen saat ini, bukan semua dokumen baru. Untuk menyimpan ke default, pilih <em>Options → Save as my default styles</em>.</span></div>
         </div>
       </div>
     </div>
@@ -663,7 +669,7 @@
             <li><span class="sn sn-g">3</span>Klik judul di panel untuk navigasi cepat.</li>
           </ol>
           <div class="menu-path">View <span class="mp-sep">→</span> Show document outline</div>
-          <div class="note note-tip"><span class="note-icon">💡</span>Heading yang konsisten juga menjadi dasar pembuatan <strong>Daftar Isi otomatis</strong> (dibahas di Modul 3).</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Heading yang konsisten juga menjadi dasar pembuatan <strong>Daftar Isi otomatis</strong> (dibahas di Modul 3).</span></div>
         </div>
       </div>
     </div>
@@ -721,7 +727,7 @@
             <li><span class="sn sn-g">5</span>Atur juga <em>Space before paragraph</em> dan <em>Space after paragraph</em>.</li>
           </ol>
           <div class="menu-path">Format <span class="mp-sep">→</span> Line & paragraph spacing</div>
-          <div class="note note-tip"><span class="note-icon">💡</span>Shortcut cepat di Google Docs: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>1</kbd> (Single), <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>2</kbd> (Double), <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>5</kbd> (1.5).</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Shortcut cepat di Google Docs: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>1</kbd> (Single), <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>2</kbd> (Double), <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>5</kbd> (1.5).</span></div>
         </div>
       </div>
     </div>
@@ -766,7 +772,7 @@
             <li><span class="sn sn-g">1</span>Klik ikon <strong>Increase/Decrease indent</strong> di toolbar.</li>
             <li><span class="sn sn-g">2</span>Atau: <strong>Format → Align & indent → Indentation options</strong> untuk mengatur nilai spesifik dan <em>first line indent</em>.</li>
           </ol>
-          <div class="note note-tip"><span class="note-icon">💡</span>Untuk indentasi awal paragraf (first line), pilih <em>Special indent → First line</em> dengan nilai 1.25 cm (standar akademik Indonesia).</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Untuk indentasi awal paragraf (first line), pilih <em>Special indent → First line</em> dengan nilai 1.25 cm (standar akademik Indonesia).</span></div>
         </div>
       </div>
     </div>
@@ -788,7 +794,7 @@
             <li><span class="sn sn-w">3</span>Untuk sub-list: tekan <kbd>Tab</kbd> di awal baris (naik level) atau <kbd>Shift</kbd>+<kbd>Tab</kbd> (turun level).</li>
             <li><span class="sn sn-w">4</span>List bertingkat (Multilevel): klik <strong>Multilevel List</strong> → pilih format.</li>
           </ol>
-          <div class="note note-tip"><span class="note-icon">💡</span>Gunakan Multilevel List untuk daftar bertingkat seperti: 1. → 1.1. → 1.1.1. yang sering dipakai di laporan akademik.</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Gunakan Multilevel List untuk daftar bertingkat seperti: 1. → 1.1. → 1.1.1. yang sering dipakai di laporan akademik.</span></div>
         </div>
         <div class="cmp-col">
           <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
@@ -797,7 +803,7 @@
             <li><span class="sn sn-g">2</span>Klik panah kecil ▼ di sebelah ikon untuk memilih gaya yang berbeda.</li>
             <li><span class="sn sn-g">3</span>Tekan <kbd>Tab</kbd> untuk membuat sub-list, <kbd>Shift</kbd>+<kbd>Tab</kbd> untuk naik level.</li>
           </ol>
-          <div class="note note-diff"><span class="note-icon">⚠️</span>Google Docs tidak punya fitur <em>Multilevel List</em> bawaan seperti Word. List bertingkat hanya bisa dibuat dengan <kbd>Tab</kbd> secara manual.</div>
+          <div class="note note-diff"><span class="note-icon">⚠️</span><span class="note-text">Google Docs tidak punya fitur <em>Multilevel List</em> bawaan seperti Word. List bertingkat hanya bisa dibuat dengan <kbd>Tab</kbd> secara manual.</span></div>
         </div>
       </div>
     </div>
@@ -830,7 +836,7 @@
             <li><span class="sn sn-w">4</span>Klik ikon <strong>A▼</strong> (Font Color) → pilih warna dari color picker.</li>
             <li><span class="sn sn-w">5</span>Klik ikon <strong>penanda kuning</strong> (Text Highlight Color) untuk highlight.</li>
           </ol>
-          <div class="note note-tip"><span class="note-icon">💡</span>Tekan <kbd>Ctrl</kbd>+<kbd>D</kbd> untuk membuka dialog <em>Font</em> lengkap dengan semua opsi termasuk efek seperti strikethrough, superscript, subscript, dan small caps.</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Tekan <kbd>Ctrl</kbd>+<kbd>D</kbd> untuk membuka dialog <em>Font</em> lengkap dengan semua opsi termasuk efek seperti strikethrough, superscript, subscript, dan small caps.</span></div>
         </div>
         <div class="cmp-col">
           <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
@@ -840,7 +846,7 @@
             <li><span class="sn sn-g">3</span>Ubah ukuran di kotak angka di sebelah nama font.</li>
             <li><span class="sn sn-g">4</span>Klik ikon <strong>A▼</strong> untuk warna teks, atau ikon <strong>highlight</strong> untuk warna latar teks.</li>
           </ol>
-          <div class="note note-tip"><span class="note-icon">💡</span>Klik <strong>More fonts</strong> di dropdown font untuk mengakses ratusan Google Fonts tambahan yang bisa ditambahkan ke daftar.</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Klik <strong>More fonts</strong> di dropdown font untuk mengakses ratusan Google Fonts tambahan yang bisa ditambahkan ke daftar.</span></div>
         </div>
       </div>
     </div>
@@ -929,7 +935,7 @@
             <li><span class="sn sn-w">3</span>Kursor berubah menjadi kuas — drag ke teks tujuan.</li>
             <li><span class="sn sn-w">4</span>Format disalin seketika.</li>
           </ol>
-          <div class="note note-tip"><span class="note-icon">💡</span><strong>Double-click</strong> Format Painter untuk mengunci mode kuas — bisa menerapkan ke banyak bagian sekaligus. Tekan <kbd>Esc</kbd> untuk berhenti.</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text"><strong>Double-click</strong> Format Painter untuk mengunci mode kuas — bisa menerapkan ke banyak bagian sekaligus. Tekan <kbd>Esc</kbd> untuk berhenti.</span></div>
         </div>
         <div class="cmp-col">
           <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
@@ -938,7 +944,7 @@
             <li><span class="sn sn-g">2</span>Klik ikon <strong>Paint format</strong> (ikon roller cat 🎨) di toolbar.</li>
             <li><span class="sn sn-g">3</span>Drag ke teks tujuan untuk menerapkan format.</li>
           </ol>
-          <div class="note note-tip"><span class="note-icon">💡</span>Sama seperti Word, double-click ikon Paint format untuk mengunci mode dan menerapkan ke banyak bagian berturut-turut.</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Sama seperti Word, double-click ikon Paint format untuk mengunci mode dan menerapkan ke banyak bagian berturut-turut.</span></div>
         </div>
       </div>
     </div>
@@ -972,7 +978,7 @@
             <li><span class="sn sn-w">5</span>Untuk ubah hanya warna atau font: klik <strong>Colors</strong> atau <strong>Fonts</strong> di sebelah kanan galeri tema.</li>
           </ol>
           <div class="menu-path">Design <span class="mp-sep">→</span> Document Formatting <span class="mp-sep">→</span> Pilih tema</div>
-          <div class="note note-good"><span class="note-icon">✅</span>Tema Word mengubah font Heading, warna aksen, dan style seluruh dokumen sekaligus — perubahan yang konsisten tanpa format manual.</div>
+          <div class="note note-good"><span class="note-icon">✅</span><span class="note-text">Tema Word mengubah font Heading, warna aksen, dan style seluruh dokumen sekaligus — perubahan yang konsisten tanpa format manual.</span></div>
         </div>
         <div class="cmp-col">
           <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
@@ -981,8 +987,8 @@
             <li><span class="sn sn-g">2</span>Google Docs tidak memiliki tema bawaan sebanyak Word, namun Anda bisa mengubah font default dan warna heading secara global.</li>
             <li><span class="sn sn-g">3</span>Setelah mengubah semua style heading sesuai keinginan, klik dropdown Styles → <strong>Options → Save as my default styles</strong>.</li>
           </ol>
-          <div class="note note-diff"><span class="note-icon">⚠️</span>Google Docs tidak memiliki tab <em>Design</em> seperti Word. Kustomisasi tema harus dilakukan manual per style, lalu disimpan sebagai default.</div>
-          <div class="note note-tip"><span class="note-icon">💡</span>Add-on pihak ketiga seperti <strong>Docs Paragraph Styles+</strong> dapat menambahkan fitur tema yang lebih lengkap ke Google Docs.</div>
+          <div class="note note-diff"><span class="note-icon">⚠️</span><span class="note-text">Google Docs tidak memiliki tab <em>Design</em> seperti Word. Kustomisasi tema harus dilakukan manual per style, lalu disimpan sebagai default.</span></div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Add-on pihak ketiga seperti <strong>Docs Paragraph Styles+</strong> dapat menambahkan fitur tema yang lebih lengkap ke Google Docs.</span></div>
         </div>
       </div>
     </div>
@@ -1003,7 +1009,7 @@
             <li><span class="sn sn-w">2</span><strong>Watermark:</strong> Tab <strong>Design</strong> → <strong>Watermark</strong> → pilih template (DRAFT, CONFIDENTIAL, dll.) atau buat kustom.</li>
             <li><span class="sn sn-w">3</span>Untuk hapus watermark: <strong>Watermark → Remove Watermark</strong>.</li>
           </ol>
-          <div class="note note-warn"><span class="note-icon">⚠️</span>Warna halaman tidak ikut tercetak jika opsi <em>"Background colors and images"</em> tidak diaktifkan di pengaturan print.</div>
+          <div class="note note-warn"><span class="note-icon">⚠️</span><span class="note-text">Warna halaman tidak ikut tercetak jika opsi <em>"Background colors and images"</em> tidak diaktifkan di pengaturan print.</span></div>
         </div>
         <div class="cmp-col">
           <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
@@ -1012,7 +1018,7 @@
             <li><span class="sn sn-g">2</span><strong>Watermark:</strong> <strong>Insert → Watermark</strong> → ketik teks atau pilih gambar sebagai watermark.</li>
             <li><span class="sn sn-g">3</span>Atur transparansi, ukuran, dan sudut rotasi watermark.</li>
           </ol>
-          <div class="note note-tip"><span class="note-icon">💡</span>Fitur Watermark di Google Docs (tersedia sejak 2022) lebih sederhana dari Word, namun sudah cukup untuk kebutuhan umum seperti cap "DRAFT" atau "RAHASIA".</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Fitur Watermark di Google Docs (tersedia sejak 2022) lebih sederhana dari Word, namun sudah cukup untuk kebutuhan umum seperti cap "DRAFT" atau "RAHASIA".</span></div>
         </div>
       </div>
     </div>
@@ -1046,7 +1052,7 @@
             <li><span class="sn sn-w">5</span>Untuk menggunakan: <strong>File → New → Personal</strong> → pilih template yang disimpan.</li>
           </ol>
           <div class="menu-path">File <span class="mp-sep">→</span> Save As <span class="mp-sep">→</span> Word Template (.dotx)</div>
-          <div class="note note-tip"><span class="note-icon">💡</span>Format <strong>.dotx</strong> (bukan .docx) adalah file template Word. Saat dibuka, Word membuat salinan baru dokumen sehingga template asli tidak pernah tertimpa.</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Format <strong>.dotx</strong> (bukan .docx) adalah file template Word. Saat dibuka, Word membuat salinan baru dokumen sehingga template asli tidak pernah tertimpa.</span></div>
         </div>
         <div class="cmp-col">
           <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
@@ -1056,7 +1062,7 @@
             <li><span class="sn sn-g">3</span>Simpan di Google Drive dengan nama jelas, misal: <em>"Template Laporan PKL 2024"</em>.</li>
             <li><span class="sn sn-g">4</span>Setiap kali butuh dokumen baru: buka template → <strong>File → Make a copy</strong> → isi konten di salinan baru.</li>
           </ol>
-          <div class="note note-tip"><span class="note-icon">💡</span>Untuk template tim/organisasi, gunakan <strong>Google Workspace Templates</strong> (tersedia di <em>docs.google.com → Template gallery</em>) — bisa upload template kustom untuk seluruh organisasi (butuh akun Google Workspace).</div>
+          <div class="note note-tip"><span class="note-icon">💡</span><span class="note-text">Untuk template tim/organisasi, gunakan <strong>Google Workspace Templates</strong> (tersedia di <em>docs.google.com → Template gallery</em>) — bisa upload template kustom untuk seluruh organisasi (butuh akun Google Workspace).</span></div>
         </div>
       </div>
     </div>
@@ -1078,7 +1084,7 @@
             <li><span class="sn sn-w">3</span>Orientasi: tab <strong>Layout</strong> → <strong>Orientation</strong> → <em>Portrait</em> atau <em>Landscape</em>.</li>
             <li><span class="sn sn-w">4</span>Ukuran kertas: tab <strong>Layout</strong> → <strong>Size</strong> → pilih A4, Letter, dll.</li>
           </ol>
-          <div class="note note-good"><span class="note-icon">✅</span>Standar akademik UKWMS umumnya: margin Kiri 4 cm, Kanan/Atas/Bawah 3 cm. Simpan di template agar tidak perlu atur ulang setiap kali.</div>
+          <div class="note note-good"><span class="note-icon">✅</span><span class="note-text">Standar akademik UKWMS umumnya: margin Kiri 4 cm, Kanan/Atas/Bawah 3 cm. Simpan di template agar tidak perlu atur ulang setiap kali.</span></div>
         </div>
         <div class="cmp-col">
           <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
