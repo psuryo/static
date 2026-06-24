@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul 2: Style & Formatting — Word & Google Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Merriweather:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F0F2F8;
+    --surface: #FFFFFF;
+    --border: #E2E6F0;
+    --text: #0F1221;
+    --muted: #64698A;
+    --word: #2B579A;
+    --word-light: #EEF3FB;
+    --word-mid: #C7D8F5;
+    --gdocs: #1A73E8;
+    --gdocs-light: #E8F0FE;
+    --gdocs-mid: #B3CFFA;
+    --accent: #7C3AED;
+    --accent-light: #F3EEFF;
+    --accent-mid: #C4B5FD;
+    --green: #1A8C4A;
+    --green-light: #E6F4EC;
+    --warn: #B45309;
+    --warn-light: #FEF3C7;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: #0F1221;
+    color: rgba(255,255,255,0.45);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 10px 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar a {
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .topbar a:hover { color: #fff; }
+  .topbar .sep { color: rgba(255,255,255,0.2); }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #2D1B69 0%, #4C1D95 50%, #7C3AED 100%);
+    padding: 52px 32px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Signature: live "mini document" preview floating in hero */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 40px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: clamp(24px, 4.5vw, 38px);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.18;
+    margin-bottom: 12px;
+  }
+  .hero h1 em { font-style: normal; color: #C4B5FD; }
+  .hero-desc {
+    color: rgba(255,255,255,0.6);
+    font-size: 14.5px;
+    max-width: 440px;
+    margin-bottom: 24px;
+  }
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+  .pill-word { background: var(--word-light); color: var(--word); }
+  .pill-gdocs { background: var(--gdocs-light); color: var(--gdocs); }
+
+  /* Mini document preview — signature element */
+  .mini-doc {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.2);
+    padding: 20px 18px;
+    font-family: 'Merriweather', Georgia, serif;
+    position: relative;
+    transform: rotate(1.5deg);
+  }
+  .mini-doc-bar {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+  .mini-doc-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .mini-doc .h1 { font-size: 13px; font-weight: 700; color: #1A1D2E; margin-bottom: 6px; border-bottom: 2px solid #7C3AED; padding-bottom: 4px; }
+  .mini-doc .h2 { font-size: 11px; font-weight: 700; color: #2B579A; margin: 8px 0 4px; }
+  .mini-doc .body-line {
+    height: 5px; border-radius: 3px; background: #E8E8E8; margin-bottom: 4px;
+  }
+  .mini-doc .body-line.short { width: 70%; }
+  .mini-doc .body-line.med { width: 85%; }
+  .mini-doc .body-line.full { width: 100%; }
+  .mini-doc .styled-para {
+    background: #F3EEFF;
+    border-left: 3px solid #7C3AED;
+    padding: 6px 8px;
+    margin: 8px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .mini-doc .styled-para .body-line { background: #C4B5FD; }
+  .mini-doc-label {
+    position: absolute;
+    bottom: -12px;
+    right: 12px;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── NAV TABS ── */
+  .nav-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+  }
+  .nav-tabs {
+    display: flex;
+    gap: 2px;
+    padding: 0 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .nav-tab {
+    padding: 13px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border: none;
+    background: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .tab-section { display: none; padding: 36px 0 52px; }
+  .tab-section.active { display: block; }
+
+  .sec-header { margin-bottom: 28px; }
+  .sec-header h2 { font-size: 21px; font-weight: 800; margin-bottom: 5px; }
+  .sec-header p { color: var(--muted); font-size: 14px; }
+
+  /* ── ACCORDION CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .card-header h3 { font-size: 15px; font-weight: 700; flex: 1; }
+  .card-chevron { color: var(--muted); font-size: 11px; transition: transform 0.25s; }
+  .card.open .card-chevron { transform: rotate(180deg); }
+  .card-body { display: none; border-top: 1px solid var(--border); }
+  .card.open .card-body { display: block; }
+
+  /* ── COMPARE GRID ── */
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; }
+  .cmp-col { padding: 22px; }
+  .cmp-col:first-child { border-right: 1px solid var(--border); }
+  .cmp-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .lbl-word { background: var(--word-light); color: var(--word); }
+  .lbl-gdocs { background: var(--gdocs-light); color: var(--gdocs); }
+
+  /* ── STEPS ── */
+  .steps { list-style: none; }
+  .steps li {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 9px;
+    font-size: 14px;
+    line-height: 1.55;
+    align-items: flex-start;
+  }
+  .sn {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .sn-w { background: var(--word-light); color: var(--word); }
+  .sn-g { background: var(--gdocs-light); color: var(--gdocs); }
+
+  /* ── MENU PATH ── */
+  .menu-path {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 3px;
+    background: #F5F6FA;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 8px 0;
+    line-height: 1.5;
+  }
+  .mp-sep { color: var(--muted); }
+
+  /* ── NOTE BOXES ── */
+  .note {
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    font-size: 13px;
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    margin-top: 12px;
+    line-height: 1.55;
+  }
+  .note-tip { background: var(--accent-light); border-left: 3px solid var(--accent); color: #4C1D95; }
+  .note-warn { background: var(--warn-light); border-left: 3px solid #F59E0B; color: #78350F; }
+  .note-diff { background: #FFF1F2; border-left: 3px solid #F43F5E; color: #881337; }
+  .note-good { background: var(--green-light); border-left: 3px solid var(--green); color: #14532D; }
+  .note-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  kbd {
+    display: inline-block;
+    background: #F0F0F5;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text);
+  }
+
+  /* ── STYLE PREVIEW CARDS ── */
+  .style-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 20px;
+  }
+  .style-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .style-card-preview {
+    background: #FAFBFF;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+  }
+  .style-card-label {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    background: var(--surface);
+  }
+  /* The actual style previews */
+  .prev-h1 { font-family: 'Merriweather', serif; font-size: 20px; font-weight: 700; color: #0F1221; }
+  .prev-h2 { font-family: 'Merriweather', serif; font-size: 16px; font-weight: 700; color: #2B579A; }
+  .prev-h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; color: #0F1221; }
+  .prev-body { font-size: 13px; color: #333; line-height: 1.6; }
+  .prev-quote { font-style: italic; font-size: 13px; color: #555; border-left: 3px solid #C4B5FD; padding-left: 10px; }
+  .prev-strong { font-size: 13px; font-weight: 800; color: #0F1221; }
+  .prev-emphasis { font-size: 13px; font-style: italic; color: #444; }
+
+  /* ── FORMAT TABLE ── */
+  .fmt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .fmt-table th {
+    background: #F5F6FA;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border-bottom: 2px solid var(--border);
+  }
+  .fmt-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .fmt-table tr:last-child td { border-bottom: none; }
+  .fmt-table tr:hover td { background: #FAFBFF; }
+
+  /* ── PARA FORMAT DEMO ── */
+  .para-demo {
+    background: #FAFBFF;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 10px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #333;
+    position: relative;
+  }
+  .para-demo-label {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* ── QUICK REF TABLE ── */
+  .quick-wrap { overflow-x: auto; }
+
+  /* ── TIPS GRID ── */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 14px;
+  }
+  .tip-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .tip-icon { font-size: 26px; margin-bottom: 10px; }
+  .tip-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+  .tip-card p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+  @media (max-width: 640px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .mini-doc { display: none; }
+    .cmp { grid-template-columns: 1fr; }
+    .cmp-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero { padding: 36px 20px 36px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html">🏠 Beranda</a>
+  <span class="sep">/</span>
+  Modul 2 — Style & Formatting
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">🎨 Modul 2 dari 5</div>
+      <h1>Style &<br><em>Formatting</em></h1>
+      <p class="hero-desc">Buat dokumen terlihat profesional dan konsisten menggunakan Heading Styles, paragraph formatting, themes, dan template.</p>
+      <div class="hero-pills">
+        <span class="hero-pill pill-word">⬛ Microsoft Word</span>
+        <span class="hero-pill pill-gdocs">🔵 Google Docs</span>
+      </div>
+    </div>
+
+    <!-- Signature: mini document preview -->
+    <div style="position:relative; padding-bottom: 24px;">
+      <div class="mini-doc">
+        <div class="mini-doc-bar">
+          <div class="mini-doc-dot" style="background:#FF5F57"></div>
+          <div class="mini-doc-dot" style="background:#FFBD2E"></div>
+          <div class="mini-doc-dot" style="background:#28C840"></div>
+        </div>
+        <div class="h1">Laporan Kerja Praktek</div>
+        <div class="h2">1. Pendahuluan</div>
+        <div class="body-line full"></div>
+        <div class="body-line med"></div>
+        <div class="body-line full"></div>
+        <div class="styled-para">
+          <div class="body-line med"></div>
+          <div class="body-line short"></div>
+        </div>
+        <div class="h2">2. Metodologi</div>
+        <div class="body-line full"></div>
+        <div class="body-line short"></div>
+        <div class="mini-doc-label">Styled ✓</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('heading')">📝 Heading Styles</button>
+    <button class="nav-tab" onclick="showTab('paragraph')">¶ Paragraph Format</button>
+    <button class="nav-tab" onclick="showTab('font')">🔤 Font & Karakter</button>
+    <button class="nav-tab" onclick="showTab('theme')">🎨 Theme & Warna</button>
+    <button class="nav-tab" onclick="showTab('template')">📄 Template</button>
+    <button class="nav-tab" onclick="showTab('quickref')">⚡ Referensi Cepat</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — HEADING STYLES
+══════════════════════════════════════════════ -->
+<div class="tab-section active" id="tab-heading">
+  <div class="sec-header">
+    <h2>📝 Heading Styles</h2>
+    <p>Menggunakan gaya judul bawaan untuk struktur dokumen yang konsisten dan profesional.</p>
+  </div>
+
+  <!-- Preview Styles -->
+  <div class="card open" style="margin-bottom:16px;">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--accent-light)">👁</div>
+      <h3>Tampilan Heading Styles</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="style-preview-grid">
+        <div class="style-card">
+          <div class="style-card-preview"><span class="prev-h1">Judul Utama</span></div>
+          <div class="style-card-label">Heading 1</div>
+        </div>
+        <div class="style-card">
+          <div class="style-card-preview"><span class="prev-h2">Sub Judul</span></div>
+          <div class="style-card-label">Heading 2</div>
+        </div>
+        <div class="style-card">
+          <div class="style-card-preview"><span class="prev-h3">Sub Sub Judul</span></div>
+          <div class="style-card-label">Heading 3</div>
+        </div>
+        <div class="style-card">
+          <div class="style-card-preview"><span class="prev-body">Ini adalah teks isi dokumen biasa yang panjang dan mengalir.</span></div>
+          <div class="style-card-label">Normal / Body</div>
+        </div>
+        <div class="style-card">
+          <div class="style-card-preview"><span class="prev-quote">"Ini adalah kutipan penting dari sumber tertentu."</span></div>
+          <div class="style-card-label">Quote</div>
+        </div>
+        <div class="style-card">
+          <div class="style-card-preview"><span class="prev-strong">Teks sangat penting</span></div>
+          <div class="style-card-label">Strong / Bold</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menerapkan Heading -->
+  <div class="card open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--word-light)">✏️</div>
+      <h3>Menerapkan Heading Style</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik pada baris teks yang ingin dijadikan heading, atau seleksi teksnya.</li>
+            <li><span class="sn sn-w">2</span>Di tab <strong>Home</strong>, temukan grup <em>Styles</em> di Ribbon.</li>
+            <li><span class="sn sn-w">3</span>Klik salah satu: <strong>Heading 1</strong>, <strong>Heading 2</strong>, <strong>Heading 3</strong>, atau <strong>Normal</strong>.</li>
+            <li><span class="sn sn-w">4</span>Style langsung diterapkan ke teks tersebut.</li>
+            <li><span class="sn sn-w">5</span>Untuk melihat semua style: klik tombol <strong>▼</strong> di pojok kanan grup Styles.</li>
+          </ol>
+          <div class="menu-path">Home <span class="mp-sep">→</span> Styles <span class="mp-sep">→</span> Heading 1 / 2 / 3</div>
+          <div class="note note-tip"><span class="note-icon">💡</span>Gunakan shortcut: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> untuk Heading 1, <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd> untuk Heading 2.</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik pada baris teks yang ingin dijadikan heading.</li>
+            <li><span class="sn sn-g">2</span>Klik dropdown <strong>Normal text</strong> di toolbar kiri atas (default menampilkan "Normal text").</li>
+            <li><span class="sn sn-g">3</span>Pilih: <strong>Heading 1</strong>, <strong>Heading 2</strong>, <strong>Heading 3</strong>, atau <strong>Normal text</strong>.</li>
+            <li><span class="sn sn-g">4</span>Style langsung diterapkan.</li>
+          </ol>
+          <div class="menu-path">Dropdown "Normal text" <span class="mp-sep">→</span> Pilih Heading</div>
+          <div class="note note-tip"><span class="note-icon">💡</span>Shortcut: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> (Heading 1), <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd> (Heading 2) — sama seperti Word!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modifikasi Style -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--accent-light)">🖌</div>
+      <h3>Memodifikasi Style (Mengubah Tampilan Heading)</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Di grup <strong>Styles</strong> (tab Home), klik kanan pada style yang ingin diubah (misal: <em>Heading 1</em>).</li>
+            <li><span class="sn sn-w">2</span>Pilih <strong>Modify…</strong></li>
+            <li><span class="sn sn-w">3</span>Di jendela Modify Style, ubah: font, ukuran, warna, bold/italic, spacing.</li>
+            <li><span class="sn sn-w">4</span>Centang <em>"Automatically update"</em> agar semua heading yang sama ikut berubah.</li>
+            <li><span class="sn sn-w">5</span>Klik <strong>OK</strong>.</li>
+          </ol>
+          <div class="note note-good"><span class="note-icon">✅</span>Mengubah style otomatis memperbarui <strong>semua teks</strong> dengan style tersebut di seluruh dokumen — jauh lebih efisien dari format manual satu per satu.</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Format salah satu teks Heading sesuai keinginan (font, ukuran, warna).</li>
+            <li><span class="sn sn-g">2</span>Dengan teks itu masih terseleksi, klik dropdown style di toolbar.</li>
+            <li><span class="sn sn-g">3</span>Arahkan kursor ke style yang ingin diperbarui (misal <em>Heading 1</em>).</li>
+            <li><span class="sn sn-g">4</span>Klik tombol panah <strong>→</strong> di sebelah kanannya.</li>
+            <li><span class="sn sn-g">5</span>Pilih <strong>"Update 'Heading 1' to match"</strong>.</li>
+          </ol>
+          <div class="note note-warn"><span class="note-icon">⚠️</span>Di Google Docs, perubahan style hanya berlaku untuk dokumen saat ini, bukan semua dokumen baru. Untuk menyimpan ke default, pilih <em>Options → Save as my default styles</em>.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Pane -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--green-light)">🗂</div>
+      <h3>Manfaat Heading: Navigation Pane & Outline</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Tab <strong>View</strong> → centang <strong>Navigation Pane</strong>.</li>
+            <li><span class="sn sn-w">2</span>Panel kiri menampilkan seluruh struktur dokumen berdasarkan Heading.</li>
+            <li><span class="sn sn-w">3</span>Klik judul di panel untuk langsung loncat ke bagian tersebut.</li>
+          </ol>
+          <div class="menu-path">View <span class="mp-sep">→</span> Navigation Pane</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik <strong>View</strong> → <strong>Show document outline</strong>.</li>
+            <li><span class="sn sn-g">2</span>Panel kiri menampilkan outline berdasarkan Heading yang ada.</li>
+            <li><span class="sn sn-g">3</span>Klik judul di panel untuk navigasi cepat.</li>
+          </ol>
+          <div class="menu-path">View <span class="mp-sep">→</span> Show document outline</div>
+          <div class="note note-tip"><span class="note-icon">💡</span>Heading yang konsisten juga menjadi dasar pembuatan <strong>Daftar Isi otomatis</strong> (dibahas di Modul 3).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — PARAGRAPH FORMAT
+══════════════════════════════════════════════ -->
+<div class="tab-section" id="tab-paragraph">
+  <div class="sec-header">
+    <h2>¶ Paragraph Formatting</h2>
+    <p>Mengatur spasi baris, indentasi, alignment, dan list untuk keterbacaan dokumen yang optimal.</p>
+  </div>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:#E6F4EC">↕️</div>
+      <h3>Spasi Baris & Spasi Antar Paragraf</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Seleksi paragraf atau klik di dalam paragraf.</li>
+            <li><span class="sn sn-w">2</span>Tab <strong>Home</strong> → grup <em>Paragraph</em> → klik ikon <strong>Line and Paragraph Spacing</strong> (ikon baris dengan panah).</li>
+            <li><span class="sn sn-w">3</span>Pilih nilai: <strong>1.0</strong>, <strong>1.5</strong>, <strong>2.0</strong>, atau klik <em>Line Spacing Options…</em> untuk pengaturan manual.</li>
+            <li><span class="sn sn-w">4</span>Di <em>Line Spacing Options</em>: atur juga <em>Space Before</em> dan <em>Space After</em> paragraf (dalam pt).</li>
+          </ol>
+          <div class="menu-path">Home <span class="mp-sep">→</span> Paragraph <span class="mp-sep">→</span> Line Spacing</div>
+
+          <!-- Demo spasi -->
+          <div class="para-demo" style="line-height:1.0; margin-top:16px;">
+            <div class="para-demo-label">Spasi 1.0 (Single)</div>
+            Ini contoh teks dengan spasi baris 1.0. Terasa rapat dan padat, cocok untuk catatan singkat atau tabel.
+          </div>
+          <div class="para-demo" style="line-height:1.5;">
+            <div class="para-demo-label">Spasi 1.5</div>
+            Ini contoh teks dengan spasi baris 1.5. Lebih nyaman dibaca dan umum digunakan untuk laporan dan skripsi.
+          </div>
+          <div class="para-demo" style="line-height:2.0;">
+            <div class="para-demo-label">Spasi 2.0 (Double)</div>
+            Ini contoh teks dengan spasi baris 2.0. Memberikan ruang untuk anotasi atau revisi tulisan tangan.
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Seleksi paragraf yang ingin diubah.</li>
+            <li><span class="sn sn-g">2</span>Klik menu <strong>Format</strong> → <strong>Line & paragraph spacing</strong>.</li>
+            <li><span class="sn sn-g">3</span>Pilih nilai spasi: <strong>Single</strong>, <strong>1.15</strong>, <strong>1.5</strong>, <strong>Double</strong>.</li>
+            <li><span class="sn sn-g">4</span>Untuk spasi kustom: klik <em>Custom spacing…</em> dan isi nilai.</li>
+            <li><span class="sn sn-g">5</span>Atur juga <em>Space before paragraph</em> dan <em>Space after paragraph</em>.</li>
+          </ol>
+          <div class="menu-path">Format <span class="mp-sep">→</span> Line & paragraph spacing</div>
+          <div class="note note-tip"><span class="note-icon">💡</span>Shortcut cepat di Google Docs: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>1</kbd> (Single), <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>2</kbd> (Double), <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>5</kbd> (1.5).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--word-light)">⬅️</div>
+      <h3>Indentasi & Alignment</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <p style="font-size:13.5px; color:var(--muted); margin-bottom:12px;"><strong style="color:var(--text)">Alignment:</strong></p>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Seleksi paragraf → tab <strong>Home</strong> → grup Paragraph.</li>
+            <li><span class="sn sn-w">2</span>Pilih ikon alignment: ⬅ Kiri, ↔ Tengah, ➡ Kanan, ☰ Justify.</li>
+          </ol>
+          <table style="font-size:12.5px; margin:8px 0; border-collapse:collapse; width:100%;">
+            <tr><td style="padding:4px 8px; border:1px solid var(--border);"><kbd>Ctrl</kbd>+<kbd>L</kbd></td><td style="padding:4px 8px; border:1px solid var(--border);">Rata kiri</td></tr>
+            <tr><td style="padding:4px 8px; border:1px solid var(--border);"><kbd>Ctrl</kbd>+<kbd>E</kbd></td><td style="padding:4px 8px; border:1px solid var(--border);">Tengah</td></tr>
+            <tr><td style="padding:4px 8px; border:1px solid var(--border);"><kbd>Ctrl</kbd>+<kbd>R</kbd></td><td style="padding:4px 8px; border:1px solid var(--border);">Rata kanan</td></tr>
+            <tr><td style="padding:4px 8px; border:1px solid var(--border);"><kbd>Ctrl</kbd>+<kbd>J</kbd></td><td style="padding:4px 8px; border:1px solid var(--border);">Justify</td></tr>
+          </table>
+          <p style="font-size:13.5px; color:var(--muted); margin:12px 0 8px;"><strong style="color:var(--text)">Indentasi:</strong></p>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Gunakan tombol <strong>Increase/Decrease Indent</strong> di grup Paragraph.</li>
+            <li><span class="sn sn-w">2</span>Atau atur manual lewat <em>Paragraph → Indentation → Left/Right/Special (First line)</em>.</li>
+          </ol>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <p style="font-size:13.5px; color:var(--muted); margin-bottom:12px;"><strong style="color:var(--text)">Alignment:</strong></p>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Seleksi teks → ikon alignment di toolbar (⬅ ↔ ➡ ☰).</li>
+            <li><span class="sn sn-g">2</span>Shortcut sama persis dengan Word: <kbd>Ctrl</kbd>+<kbd>L/E/R/J</kbd>.</li>
+          </ol>
+          <p style="font-size:13.5px; color:var(--muted); margin:12px 0 8px;"><strong style="color:var(--text)">Indentasi:</strong></p>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik ikon <strong>Increase/Decrease indent</strong> di toolbar.</li>
+            <li><span class="sn sn-g">2</span>Atau: <strong>Format → Align & indent → Indentation options</strong> untuk mengatur nilai spesifik dan <em>first line indent</em>.</li>
+          </ol>
+          <div class="note note-tip"><span class="note-icon">💡</span>Untuk indentasi awal paragraf (first line), pilih <em>Special indent → First line</em> dengan nilai 1.25 cm (standar akademik Indonesia).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--gdocs-light)">📋</div>
+      <h3>Membuat List (Bullets & Numbering)</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Tab <strong>Home</strong> → grup Paragraph → klik ikon <strong>Bulleted List</strong> atau <strong>Numbered List</strong>.</li>
+            <li><span class="sn sn-w">2</span>Untuk memilih gaya bullet/angka: klik panah kecil ▼ di sebelah ikon.</li>
+            <li><span class="sn sn-w">3</span>Untuk sub-list: tekan <kbd>Tab</kbd> di awal baris (naik level) atau <kbd>Shift</kbd>+<kbd>Tab</kbd> (turun level).</li>
+            <li><span class="sn sn-w">4</span>List bertingkat (Multilevel): klik <strong>Multilevel List</strong> → pilih format.</li>
+          </ol>
+          <div class="note note-tip"><span class="note-icon">💡</span>Gunakan Multilevel List untuk daftar bertingkat seperti: 1. → 1.1. → 1.1.1. yang sering dipakai di laporan akademik.</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik ikon <strong>Bulleted list</strong> atau <strong>Numbered list</strong> di toolbar.</li>
+            <li><span class="sn sn-g">2</span>Klik panah kecil ▼ di sebelah ikon untuk memilih gaya yang berbeda.</li>
+            <li><span class="sn sn-g">3</span>Tekan <kbd>Tab</kbd> untuk membuat sub-list, <kbd>Shift</kbd>+<kbd>Tab</kbd> untuk naik level.</li>
+          </ol>
+          <div class="note note-diff"><span class="note-icon">⚠️</span>Google Docs tidak punya fitur <em>Multilevel List</em> bawaan seperti Word. List bertingkat hanya bisa dibuat dengan <kbd>Tab</kbd> secara manual.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — FONT & KARAKTER
+══════════════════════════════════════════════ -->
+<div class="tab-section" id="tab-font">
+  <div class="sec-header">
+    <h2>🔤 Font & Format Karakter</h2>
+    <p>Mengatur jenis font, ukuran, warna, highlight, dan efek teks untuk penekanan yang tepat.</p>
+  </div>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--accent-light)">🔤</div>
+      <h3>Mengubah Font, Ukuran & Warna</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Seleksi teks → tab <strong>Home</strong> → grup <em>Font</em>.</li>
+            <li><span class="sn sn-w">2</span>Klik dropdown nama font → ketik nama font atau scroll pilih.</li>
+            <li><span class="sn sn-w">3</span>Klik dropdown ukuran → ketik angka atau pilih dari daftar.</li>
+            <li><span class="sn sn-w">4</span>Klik ikon <strong>A▼</strong> (Font Color) → pilih warna dari color picker.</li>
+            <li><span class="sn sn-w">5</span>Klik ikon <strong>penanda kuning</strong> (Text Highlight Color) untuk highlight.</li>
+          </ol>
+          <div class="note note-tip"><span class="note-icon">💡</span>Tekan <kbd>Ctrl</kbd>+<kbd>D</kbd> untuk membuka dialog <em>Font</em> lengkap dengan semua opsi termasuk efek seperti strikethrough, superscript, subscript, dan small caps.</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Seleksi teks → di toolbar atas temukan dropdown nama font.</li>
+            <li><span class="sn sn-g">2</span>Klik nama font → cari atau scroll pilih font yang diinginkan.</li>
+            <li><span class="sn sn-g">3</span>Ubah ukuran di kotak angka di sebelah nama font.</li>
+            <li><span class="sn sn-g">4</span>Klik ikon <strong>A▼</strong> untuk warna teks, atau ikon <strong>highlight</strong> untuk warna latar teks.</li>
+          </ol>
+          <div class="note note-tip"><span class="note-icon">💡</span>Klik <strong>More fonts</strong> di dropdown font untuk mengakses ratusan Google Fonts tambahan yang bisa ditambahkan ke daftar.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--word-light)">✨</div>
+      <h3>Format Bold, Italic, Underline & Efek Lainnya</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div style="overflow-x:auto; padding: 20px;">
+        <table class="fmt-table">
+          <thead>
+            <tr>
+              <th>Format</th>
+              <th>Tampilan</th>
+              <th>Word</th>
+              <th>Google Docs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Bold</strong></td>
+              <td><strong>Teks tebal</strong></td>
+              <td><kbd>Ctrl</kbd>+<kbd>B</kbd></td>
+              <td><kbd>Ctrl</kbd>+<kbd>B</kbd></td>
+            </tr>
+            <tr>
+              <td><em>Italic</em></td>
+              <td><em>Teks miring</em></td>
+              <td><kbd>Ctrl</kbd>+<kbd>I</kbd></td>
+              <td><kbd>Ctrl</kbd>+<kbd>I</kbd></td>
+            </tr>
+            <tr>
+              <td><u>Underline</u></td>
+              <td><u>Teks garis bawah</u></td>
+              <td><kbd>Ctrl</kbd>+<kbd>U</kbd></td>
+              <td><kbd>Ctrl</kbd>+<kbd>U</kbd></td>
+            </tr>
+            <tr>
+              <td><s>Strikethrough</s></td>
+              <td><s>Teks dicoret</s></td>
+              <td>Home → Font → abc</td>
+              <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>5</kbd></td>
+            </tr>
+            <tr>
+              <td>Superscript</td>
+              <td>x<sup>2</sup></td>
+              <td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>+</kbd></td>
+              <td><kbd>Ctrl</kbd>+<kbd>.</kbd></td>
+            </tr>
+            <tr>
+              <td>Subscript</td>
+              <td>H<sub>2</sub>O</td>
+              <td><kbd>Ctrl</kbd>+<kbd>=</kbd></td>
+              <td><kbd>Ctrl</kbd>+<kbd>,</kbd></td>
+            </tr>
+            <tr>
+              <td>UPPERCASE</td>
+              <td>TEKS KAPITAL</td>
+              <td><kbd>Shift</kbd>+<kbd>F3</kbd> (toggle)</td>
+              <td>Format → Text → Uppercase</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note note-good" style="margin:0 20px 20px;"><span class="note-icon">✅</span>Sebagian besar shortcut format karakter <strong>identik</strong> antara Word dan Google Docs — belajar satu, bisa langsung pakai di keduanya!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--gdocs-light)">🔄</div>
+      <h3>Format Painter — Salin Format Cepat</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Seleksi teks yang formatnya ingin disalin.</li>
+            <li><span class="sn sn-w">2</span>Tab <strong>Home</strong> → klik ikon <strong>Format Painter</strong> (ikon kuas cat 🖌).</li>
+            <li><span class="sn sn-w">3</span>Kursor berubah menjadi kuas — drag ke teks tujuan.</li>
+            <li><span class="sn sn-w">4</span>Format disalin seketika.</li>
+          </ol>
+          <div class="note note-tip"><span class="note-icon">💡</span><strong>Double-click</strong> Format Painter untuk mengunci mode kuas — bisa menerapkan ke banyak bagian sekaligus. Tekan <kbd>Esc</kbd> untuk berhenti.</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Seleksi teks sumber (yang formatnya ingin disalin).</li>
+            <li><span class="sn sn-g">2</span>Klik ikon <strong>Paint format</strong> (ikon roller cat 🎨) di toolbar.</li>
+            <li><span class="sn sn-g">3</span>Drag ke teks tujuan untuk menerapkan format.</li>
+          </ol>
+          <div class="note note-tip"><span class="note-icon">💡</span>Sama seperti Word, double-click ikon Paint format untuk mengunci mode dan menerapkan ke banyak bagian berturut-turut.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — THEME & WARNA
+══════════════════════════════════════════════ -->
+<div class="tab-section" id="tab-theme">
+  <div class="sec-header">
+    <h2>🎨 Theme & Warna Dokumen</h2>
+    <p>Menerapkan tema warna dan font yang konsisten ke seluruh dokumen dalam satu klik.</p>
+  </div>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--accent-light)">🎨</div>
+      <h3>Menerapkan Document Theme</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik tab <strong>Design</strong> di Ribbon.</li>
+            <li><span class="sn sn-w">2</span>Di bagian <em>Document Formatting</em>, scroll dan pilih salah satu tema dari galeri.</li>
+            <li><span class="sn sn-w">3</span>Pratinjau tema langsung muncul di dokumen saat hover.</li>
+            <li><span class="sn sn-w">4</span>Klik tema untuk menerapkan.</li>
+            <li><span class="sn sn-w">5</span>Untuk ubah hanya warna atau font: klik <strong>Colors</strong> atau <strong>Fonts</strong> di sebelah kanan galeri tema.</li>
+          </ol>
+          <div class="menu-path">Design <span class="mp-sep">→</span> Document Formatting <span class="mp-sep">→</span> Pilih tema</div>
+          <div class="note note-good"><span class="note-icon">✅</span>Tema Word mengubah font Heading, warna aksen, dan style seluruh dokumen sekaligus — perubahan yang konsisten tanpa format manual.</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik menu <strong>Format</strong> → <strong>Document styles…</strong> (atau klik nama style di toolbar → <em>Options</em>).</li>
+            <li><span class="sn sn-g">2</span>Google Docs tidak memiliki tema bawaan sebanyak Word, namun Anda bisa mengubah font default dan warna heading secara global.</li>
+            <li><span class="sn sn-g">3</span>Setelah mengubah semua style heading sesuai keinginan, klik dropdown Styles → <strong>Options → Save as my default styles</strong>.</li>
+          </ol>
+          <div class="note note-diff"><span class="note-icon">⚠️</span>Google Docs tidak memiliki tab <em>Design</em> seperti Word. Kustomisasi tema harus dilakukan manual per style, lalu disimpan sebagai default.</div>
+          <div class="note note-tip"><span class="note-icon">💡</span>Add-on pihak ketiga seperti <strong>Docs Paragraph Styles+</strong> dapat menambahkan fitur tema yang lebih lengkap ke Google Docs.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--green-light)">🖼</div>
+      <h3>Page Color & Watermark</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span><strong>Page Color:</strong> Tab <strong>Design</strong> → <strong>Page Color</strong> → pilih warna latar halaman.</li>
+            <li><span class="sn sn-w">2</span><strong>Watermark:</strong> Tab <strong>Design</strong> → <strong>Watermark</strong> → pilih template (DRAFT, CONFIDENTIAL, dll.) atau buat kustom.</li>
+            <li><span class="sn sn-w">3</span>Untuk hapus watermark: <strong>Watermark → Remove Watermark</strong>.</li>
+          </ol>
+          <div class="note note-warn"><span class="note-icon">⚠️</span>Warna halaman tidak ikut tercetak jika opsi <em>"Background colors and images"</em> tidak diaktifkan di pengaturan print.</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span><strong>Page Color:</strong> <strong>File → Page setup</strong> → klik kotak <em>Page color</em> → pilih warna.</li>
+            <li><span class="sn sn-g">2</span><strong>Watermark:</strong> <strong>Insert → Watermark</strong> → ketik teks atau pilih gambar sebagai watermark.</li>
+            <li><span class="sn sn-g">3</span>Atur transparansi, ukuran, dan sudut rotasi watermark.</li>
+          </ol>
+          <div class="note note-tip"><span class="note-icon">💡</span>Fitur Watermark di Google Docs (tersedia sejak 2022) lebih sederhana dari Word, namun sudah cukup untuk kebutuhan umum seperti cap "DRAFT" atau "RAHASIA".</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 5 — TEMPLATE
+══════════════════════════════════════════════ -->
+<div class="tab-section" id="tab-template">
+  <div class="sec-header">
+    <h2>📄 Membuat & Menggunakan Template</h2>
+    <p>Menyimpan format dokumen sebagai template agar bisa digunakan berulang kali tanpa setting ulang.</p>
+  </div>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--word-light)">💾</div>
+      <h3>Menyimpan Dokumen sebagai Template</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Buat dokumen dengan semua style, margin, dan format yang diinginkan.</li>
+            <li><span class="sn sn-w">2</span>Klik <strong>File → Save As</strong>.</li>
+            <li><span class="sn sn-w">3</span>Di dropdown <em>Save as type</em>, pilih <strong>Word Template (*.dotx)</strong>.</li>
+            <li><span class="sn sn-w">4</span>Word otomatis mengarahkan ke folder <em>Custom Office Templates</em>. Beri nama file → <strong>Save</strong>.</li>
+            <li><span class="sn sn-w">5</span>Untuk menggunakan: <strong>File → New → Personal</strong> → pilih template yang disimpan.</li>
+          </ol>
+          <div class="menu-path">File <span class="mp-sep">→</span> Save As <span class="mp-sep">→</span> Word Template (.dotx)</div>
+          <div class="note note-tip"><span class="note-icon">💡</span>Format <strong>.dotx</strong> (bukan .docx) adalah file template Word. Saat dibuka, Word membuat salinan baru dokumen sehingga template asli tidak pernah tertimpa.</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Buat dokumen dengan semua style yang diinginkan.</li>
+            <li><span class="sn sn-g">2</span>Klik <strong>File → Make a copy</strong> untuk menduplikasi dokumen sebagai "master template".</li>
+            <li><span class="sn sn-g">3</span>Simpan di Google Drive dengan nama jelas, misal: <em>"Template Laporan PKL 2024"</em>.</li>
+            <li><span class="sn sn-g">4</span>Setiap kali butuh dokumen baru: buka template → <strong>File → Make a copy</strong> → isi konten di salinan baru.</li>
+          </ol>
+          <div class="note note-tip"><span class="note-icon">💡</span>Untuk template tim/organisasi, gunakan <strong>Google Workspace Templates</strong> (tersedia di <em>docs.google.com → Template gallery</em>) — bisa upload template kustom untuk seluruh organisasi (butuh akun Google Workspace).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--gdocs-light)">📐</div>
+      <h3>Mengatur Margin & Orientasi Halaman</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="cmp-label lbl-word">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Tab <strong>Layout</strong> → klik <strong>Margins</strong> → pilih preset (Normal, Narrow, Wide) atau <em>Custom Margins…</em></li>
+            <li><span class="sn sn-w">2</span>Di dialog Custom Margins: atur nilai Top, Bottom, Left, Right (dalam cm).</li>
+            <li><span class="sn sn-w">3</span>Orientasi: tab <strong>Layout</strong> → <strong>Orientation</strong> → <em>Portrait</em> atau <em>Landscape</em>.</li>
+            <li><span class="sn sn-w">4</span>Ukuran kertas: tab <strong>Layout</strong> → <strong>Size</strong> → pilih A4, Letter, dll.</li>
+          </ol>
+          <div class="note note-good"><span class="note-icon">✅</span>Standar akademik UKWMS umumnya: margin Kiri 4 cm, Kanan/Atas/Bawah 3 cm. Simpan di template agar tidak perlu atur ulang setiap kali.</div>
+        </div>
+        <div class="cmp-col">
+          <div class="cmp-label lbl-gdocs">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik <strong>File → Page setup</strong>.</li>
+            <li><span class="sn sn-g">2</span>Atur <em>Paper size</em>: A4, Letter, dll.</li>
+            <li><span class="sn sn-g">3</span>Atur <em>Orientation</em>: Portrait / Landscape.</li>
+            <li><span class="sn sn-g">4</span>Atur margin: Top, Bottom, Left, Right (dalam cm atau inci).</li>
+            <li><span class="sn sn-g">5</span>Klik <strong>"Set as default"</strong> untuk menyimpan ke semua dokumen baru.</li>
+          </ol>
+          <div class="menu-path">File <span class="mp-sep">→</span> Page setup <span class="mp-sep">→</span> Set as default</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6 — QUICK REF
+══════════════════════════════════════════════ -->
+<div class="tab-section" id="tab-quickref">
+  <div class="sec-header">
+    <h2>⚡ Referensi Cepat</h2>
+    <p>Ringkasan semua shortcut dan jalur menu penting dalam satu tempat.</p>
+  </div>
+
+  <div class="card open" style="margin-bottom:20px;">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--word-light)">⬛</div>
+      <h3>Microsoft Word — Shortcut Style & Formatting</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="quick-wrap">
+        <table class="fmt-table">
+          <thead><tr><th>Fungsi</th><th>Shortcut</th><th>Lokasi Menu</th></tr></thead>
+          <tbody>
+            <tr><td>Heading 1</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd></td><td>Home → Styles → Heading 1</td></tr>
+            <tr><td>Heading 2</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd></td><td>Home → Styles → Heading 2</td></tr>
+            <tr><td>Heading 3</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>3</kbd></td><td>Home → Styles → Heading 3</td></tr>
+            <tr><td>Normal / Body</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd></td><td>Home → Styles → Normal</td></tr>
+            <tr><td>Bold</td><td><kbd>Ctrl</kbd>+<kbd>B</kbd></td><td>Home → Font</td></tr>
+            <tr><td>Italic</td><td><kbd>Ctrl</kbd>+<kbd>I</kbd></td><td>Home → Font</td></tr>
+            <tr><td>Underline</td><td><kbd>Ctrl</kbd>+<kbd>U</kbd></td><td>Home → Font</td></tr>
+            <tr><td>Font dialog lengkap</td><td><kbd>Ctrl</kbd>+<kbd>D</kbd></td><td>Home → Font → launcher</td></tr>
+            <tr><td>Line spacing 1.0</td><td><kbd>Ctrl</kbd>+<kbd>1</kbd></td><td>Home → Paragraph</td></tr>
+            <tr><td>Line spacing 1.5</td><td><kbd>Ctrl</kbd>+<kbd>5</kbd></td><td>Home → Paragraph</td></tr>
+            <tr><td>Line spacing 2.0</td><td><kbd>Ctrl</kbd>+<kbd>2</kbd></td><td>Home → Paragraph</td></tr>
+            <tr><td>Justify</td><td><kbd>Ctrl</kbd>+<kbd>J</kbd></td><td>Home → Paragraph</td></tr>
+            <tr><td>Format Painter</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> (salin) / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> (tempel)</td><td>Home → Clipboard</td></tr>
+            <tr><td>Hapus semua format</td><td><kbd>Ctrl</kbd>+<kbd>Space</kbd></td><td>Home → Font → Clear All Formatting</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card open" style="margin-bottom:32px;">
+    <div class="card-header" onclick="toggleCard(this)">
+      <div class="card-icon" style="background:var(--gdocs-light)">🔵</div>
+      <h3>Google Docs — Shortcut Style & Formatting</h3>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="quick-wrap">
+        <table class="fmt-table">
+          <thead><tr><th>Fungsi</th><th>Shortcut</th><th>Lokasi Menu</th></tr></thead>
+          <tbody>
+            <tr><td>Heading 1</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd></td><td>Dropdown "Normal text" → Heading 1</td></tr>
+            <tr><td>Heading 2</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd></td><td>Dropdown "Normal text" → Heading 2</td></tr>
+            <tr><td>Heading 3</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>3</kbd></td><td>Dropdown "Normal text" → Heading 3</td></tr>
+            <tr><td>Normal text</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>0</kbd></td><td>Dropdown "Normal text"</td></tr>
+            <tr><td>Bold / Italic / Underline</td><td><kbd>Ctrl</kbd>+<kbd>B/I/U</kbd></td><td>Format → Text</td></tr>
+            <tr><td>Strikethrough</td><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>5</kbd></td><td>Format → Text → Strikethrough</td></tr>
+            <tr><td>Superscript</td><td><kbd>Ctrl</kbd>+<kbd>.</kbd></td><td>Format → Text → Superscript</td></tr>
+            <tr><td>Subscript</td><td><kbd>Ctrl</kbd>+<kbd>,</kbd></td><td>Format → Text → Subscript</td></tr>
+            <tr><td>Line spacing</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>1/2/5</kbd></td><td>Format → Line & paragraph spacing</td></tr>
+            <tr><td>Document outline</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>A H</kbd></td><td>View → Show document outline</td></tr>
+            <tr><td>Hapus semua format</td><td><kbd>Ctrl</kbd>+<kbd>\</kbd></td><td>Format → Clear formatting</td></tr>
+            <tr><td>Page setup</td><td>—</td><td>File → Page setup</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips Grid -->
+  <h3 style="font-size:16px; font-weight:800; margin-bottom:16px;">💡 Tips Formatting Profesional</h3>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🎯</div>
+      <h4>Pakai Style, Bukan Format Manual</h4>
+      <p>Selalu gunakan Heading Style alih-alih bold teks biasa. Style memungkinkan daftar isi otomatis dan perubahan global yang konsisten.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🧹</div>
+      <h4>Clear Formatting Sebelum Paste</h4>
+      <p>Setelah paste teks dari sumber lain, langsung tekan <kbd>Ctrl</kbd>+<kbd>\</kbd> (Docs) atau <kbd>Ctrl</kbd>+<kbd>Space</kbd> (Word) untuk menghapus format bawaan teks tersebut.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📐</div>
+      <h4>Konsistensi Margin Akademik</h4>
+      <p>Standar Indonesia: margin kiri 4 cm (area jilid), dan atas/kanan/bawah 3 cm. Simpan sebagai template agar tidak lupa.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🖌</div>
+      <h4>Format Painter untuk Konsistensi</h4>
+      <p>Sudah format satu paragraf dengan sempurna? Gunakan Format Painter untuk menyalin formatnya ke semua paragraf serupa dalam hitungan detik.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔤</div>
+      <h4>Pilih Font yang Mudah Dibaca</h4>
+      <p>Untuk dokumen akademik: gunakan Times New Roman 12pt atau Calibri 11pt untuk body, dan pertahankan konsisten di seluruh dokumen.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">↔️</div>
+      <h4>Justify untuk Laporan Formal</h4>
+      <p>Alignment <em>Justify</em> (<kbd>Ctrl</kbd>+<kbd>J</kbd>) memberikan tampilan rapi di laporan dan skripsi karena teks rata kiri dan kanan secara bersamaan.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div style="background:#0F1221; color:rgba(255,255,255,0.35); text-align:center; padding:20px 16px; font-size:12px; margin-top:32px; line-height:1.8;">
+  <div style="margin-bottom:8px;">
+    <a href="index.html" style="color:rgba(255,255,255,0.55); text-decoration:none; font-weight:600;">← Kembali ke Beranda</a>
+    &nbsp;·&nbsp;
+    <a href="panduan-insert-objek.html" style="color:rgba(255,255,255,0.55); text-decoration:none; font-weight:600;">Modul 1: Insert Objek</a>
+  </div>
+  <strong style="color:rgba(255,255,255,0.5);">Modul 2 — Style & Formatting</strong><br>
+  Universitas Katolik Widya Mandala Surabaya · Fakultas Teknologi Informasi
+</div>
+
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleCard(header) {
+    header.closest('.card').classList.toggle('open');
+  }
+</script>
+</body>
+</html>
