@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tugas Modul 2 — Laporan PKL dengan Style & Formatting</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0F1221;
+    --ink-mid:    #3D4060;
+    --ink-soft:   #767A9B;
+    --paper:      #F5F4EF;
+    --paper-dark: #ECEAE1;
+    --rule:       #D9D7CC;
+    --white:      #FFFFFF;
+    --hl:         #E8A838;   /* highlighter yellow — signature colour */
+    --hl-lt:      #FEF6E4;
+    --hl-md:      #FAEBC2;
+    --word:       #2B579A;
+    --word-lt:    #EEF3FB;
+    --gdocs:      #1A73E8;
+    --gdocs-lt:   #E8F0FE;
+    --ok:         #1A8C4A;
+    --ok-lt:      #E6F4EC;
+    --r:          10px;
+    --r-sm:       6px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.72;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--ink);
+    padding: 9px 28px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.38);
+  }
+  .topbar a { color: rgba(255,255,255,0.38); text-decoration: none; transition: color .2s; }
+  .topbar a:hover { color: #fff; }
+  .topbar .sep { color: rgba(255,255,255,0.15); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    padding: 52px 28px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Signature: horizontal ruled lines like a real sheet of paper */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      transparent 0px, transparent 39px,
+      rgba(232,168,56,0.1) 39px, rgba(232,168,56,0.1) 40px
+    );
+    pointer-events: none;
+  }
+  /* Red margin line on the left, like a physical assignment paper */
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 72px;
+    width: 1.5px;
+    background: rgba(220,60,60,0.22);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(232,168,56,0.4);
+    background: rgba(232,168,56,0.12);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #F5C85A;
+    margin-bottom: 18px;
+  }
+  .hero-title {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(28px, 5vw, 46px);
+    color: #fff;
+    line-height: 1.12;
+    margin-bottom: 14px;
+    font-weight: 400;
+  }
+  .hero-title em { font-style: italic; color: #F5C85A; }
+  .hero-subtitle {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    max-width: 520px;
+    margin-bottom: 32px;
+    line-height: 1.65;
+  }
+
+  /* Meta strips */
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 0;
+  }
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid;
+  }
+  .chip-neutral { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+  .chip-word    { background: var(--word-lt); border-color: var(--word-lt); color: var(--word); }
+  .chip-gdocs   { background: var(--gdocs-lt); border-color: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* Deadline banner at bottom of hero */
+  .deadline-bar {
+    margin-top: 32px;
+    background: rgba(232,168,56,0.12);
+    border-top: 1px solid rgba(232,168,56,0.2);
+    padding: 14px 0;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .dl-item { display: flex; flex-direction: column; }
+  .dl-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.35); }
+  .dl-val   { font-size: 14px; font-weight: 700; color: #F5C85A; font-family: 'JetBrains Mono', monospace; }
+  .dl-divider { width: 1px; height: 30px; background: rgba(255,255,255,0.1); }
+
+  /* ── PAGE LAYOUT ── */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 36px 20px 72px;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  /* ── MAIN COLUMN ── */
+  .main-col { min-width: 0; }
+
+  /* ── SECTION LABEL ── */
+  .sec-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    margin-top: 32px;
+  }
+  .sec-label:first-child { margin-top: 0; }
+  .sec-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+  .badge-context  { background: var(--hl-md); color: #7A5100; }
+  .badge-task     { background: var(--ink); color: #fff; }
+  .badge-format   { background: var(--ok-lt); color: var(--ok); }
+  .badge-rubrik   { background: var(--word-lt); color: var(--word); }
+  .badge-submit   { background: var(--gdocs-lt); color: var(--gdocs); }
+  .sec-rule { flex: 1; height: 1px; background: var(--rule); }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .card-body { padding: 20px 22px; }
+
+  /* ── SKENARIO BLOCK ── */
+  .scenario {
+    background: var(--hl-lt);
+    border: 1.5px solid var(--hl-md);
+    border-radius: var(--r);
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .scenario::before {
+    content: '📋';
+    position: absolute;
+    top: -12px; left: 18px;
+    font-size: 22px;
+  }
+  .scenario h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 17px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    margin-top: 6px;
+    color: var(--ink);
+  }
+  .scenario p { font-size: 14px; line-height: 1.65; color: var(--ink-mid); }
+  .scenario strong { color: var(--ink); }
+
+  /* ── STRUKTUR DOKUMEN ── */
+  .doc-structure {
+    counter-reset: chapnum;
+  }
+  .chapter {
+    border: 1px solid var(--rule);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin-bottom: 10px;
+    background: var(--white);
+  }
+  .chapter-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--white);
+    border-bottom: 1px solid var(--rule);
+  }
+  .chapter-num {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .chapter-title { font-size: 14.5px; font-weight: 700; flex: 1; }
+  .chapter-tag {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 100px;
+  }
+  .tag-h1 { background: #FEF3C7; color: #92400E; }
+  .tag-h2 { background: var(--word-lt); color: var(--word); }
+  .tag-normal { background: var(--paper-dark); color: var(--ink-soft); }
+
+  .chapter-reqs { padding: 14px 18px; }
+  .req-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--rule);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .req-item:last-child { border-bottom: none; }
+  .req-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--hl);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+  .req-text { flex: 1; color: var(--ink-mid); }
+  .req-text strong { color: var(--ink); }
+  .req-tag {
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 100px;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .rt-w { background: var(--word-lt); color: var(--word); }
+  .rt-g { background: var(--gdocs-lt); color: var(--gdocs); }
+  .rt-b { background: var(--hl-md); color: #7A5100; }
+
+  /* ── FORMAT TABLE ── */
+  .fmt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .fmt-col {
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+  }
+  .fmt-col-head {
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .fch-word  { background: var(--word-lt); color: var(--word); }
+  .fch-gdocs { background: var(--gdocs-lt); color: var(--gdocs); }
+  .fmt-rows { padding: 0; }
+  .fmt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+    border-top: 1px solid var(--rule);
+    gap: 8px;
+    font-size: 13px;
+  }
+  .fmt-row:first-child { border-top: none; }
+  .fmt-key { color: var(--ink-soft); font-size: 12px; }
+  .fmt-val { font-weight: 700; color: var(--ink); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  /* ── RUBRIK TABLE ── */
+  .rubrik-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .rubrik-table th {
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .rubrik-table th:last-child { text-align: right; }
+  .rubrik-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .rubrik-table tr:last-child td { border-bottom: none; font-weight: 700; background: var(--paper); }
+  .rubrik-table tr:nth-child(even) td { background: #FAFAF8; }
+  .rubrik-table td:last-child { text-align: right; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--word); }
+  .rubrik-table .total-row td { color: var(--ink) !important; font-size: 14px; }
+  .rubrik-table .total-row td:last-child { color: var(--hl) !important; font-size: 16px; }
+
+  kbd {
+    display: inline-block;
+    background: var(--paper-dark);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* note highlight */
+  .note {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 11px 14px;
+    border-radius: var(--r-sm);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 12px;
+  }
+  .note-hl   { background: var(--hl-lt); border-left: 3px solid var(--hl); color: #6B4700; }
+  .note-ok   { background: var(--ok-lt); border-left: 3px solid var(--ok); color: #14532D; }
+  .note-info { background: var(--gdocs-lt); border-left: 3px solid var(--gdocs); color: #1e3a6e; }
+  .note-icon { flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+  .note-body { flex: 1; min-width: 0; }
+
+  /* submit boxes */
+  .submit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .submit-box {
+    border-radius: var(--r);
+    padding: 18px;
+    border: 1.5px solid;
+  }
+  .sb-word  { background: var(--word-lt); border-color: var(--word-mid, #c7d8f5); }
+  .sb-gdocs { background: var(--gdocs-lt); border-color: #b3cffa; }
+  .sb-app-name {
+    font-size: 13px; font-weight: 800;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sb-word .sb-app-name  { color: var(--word); }
+  .sb-gdocs .sb-app-name { color: var(--gdocs); }
+  .sb-filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(255,255,255,0.7);
+    border-radius: var(--r-sm);
+    padding: 8px 12px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    word-break: break-all;
+  }
+  .sb-note { font-size: 12px; color: var(--ink-soft); line-height: 1.5; }
+
+  /* ── STICKY SIDEBAR ── */
+  .side-col { position: sticky; top: 20px; }
+
+  .side-card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .side-head {
+    padding: 13px 16px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .side-body { padding: 14px 16px; }
+
+  /* Checklist */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .cl-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--ink-mid);
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: var(--r-sm);
+    transition: background 0.15s;
+  }
+  .cl-item:hover { background: var(--paper); }
+  .cl-item.done { color: var(--ok); }
+  .cl-box {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid var(--rule);
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.2s;
+    font-size: 11px;
+  }
+  .cl-item.done .cl-box {
+    background: var(--ok);
+    border-color: var(--ok);
+    color: #fff;
+  }
+
+  /* Completion ring */
+  .completion-ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0 12px;
+  }
+  .ring-wrap { position: relative; width: 80px; height: 80px; }
+  .ring-svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+  .ring-track { fill: none; stroke: var(--paper-dark); stroke-width: 7; }
+  .ring-fill  { fill: none; stroke: var(--ok); stroke-width: 7; stroke-linecap: round;
+                stroke-dasharray: 213; stroke-dashoffset: 213; transition: stroke-dashoffset 0.5s ease; }
+  .ring-label {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .ring-pct   { font-size: 18px; font-weight: 800; color: var(--ink); line-height: 1; }
+  .ring-sub   { font-size: 10px; color: var(--ink-soft); font-weight: 600; margin-top: 2px; }
+  .ring-caption { margin-top: 10px; font-size: 12.5px; font-weight: 600; color: var(--ink-mid); text-align: center; }
+
+  /* Score preview */
+  .score-rows { display: flex; flex-direction: column; gap: 4px; }
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .score-row:last-child { border-bottom: none; font-weight: 800; font-size: 13px; }
+  .score-row .sr-label { color: var(--ink-soft); }
+  .score-row .sr-pts { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ink); }
+  .score-row.total-row .sr-pts { color: var(--hl); font-size: 15px; }
+
+  /* Tips pill */
+  .tip-pill {
+    background: var(--hl-lt);
+    border: 1px solid var(--hl-md);
+    border-radius: var(--r);
+    padding: 12px 14px;
+    font-size: 12.5px;
+    color: #6B4700;
+    line-height: 1.6;
+  }
+  .tip-pill strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; color: #92400E; }
+
+  /* ── PRINT BUTTON ── */
+  .print-btn {
+    display: block;
+    width: 100%;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: var(--r);
+    padding: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    text-align: center;
+    transition: opacity 0.2s;
+    margin-top: 4px;
+  }
+  .print-btn:hover { opacity: 0.85; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+    padding: 18px 20px;
+    font-size: 12px;
+  }
+  footer a { color: rgba(255,255,255,0.45); text-decoration: none; }
+  footer a:hover { color: #fff; }
+
+  @media (max-width: 680px) {
+    .page { grid-template-columns: 1fr; }
+    .side-col { position: static; }
+    .fmt-grid, .submit-grid { grid-template-columns: 1fr; }
+    .hero::after { display: none; }
+  }
+
+  @media print {
+    .topbar, .side-col, .print-btn, footer { display: none; }
+    .page { grid-template-columns: 1fr; padding: 20px; }
+    .hero { padding: 32px 28px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html">🏠 Beranda</a>
+  <span class="sep">/</span>
+  <a href="panduan-style-formatting.html">Modul 2 — Style & Formatting</a>
+  <span class="sep">/</span>
+  Tugas
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">📄 Tugas Individu · Modul 2</div>
+    <h1 class="hero-title">Laporan PKL dengan<br><em>Style & Formatting</em></h1>
+    <p class="hero-subtitle">Buat laporan Praktik Kerja Lapangan mini yang menerapkan seluruh teknik Style & Formatting di Microsoft Word dan Google Docs secara konsisten.</p>
+    <div class="hero-meta">
+      <span class="meta-chip chip-word">⬛ Microsoft Word</span>
+      <span class="meta-chip chip-gdocs">🔵 Google Docs</span>
+      <span class="meta-chip chip-neutral">👤 Individu</span>
+      <span class="meta-chip chip-neutral">⏱ 90–120 menit</span>
+      <span class="meta-chip chip-neutral">🎯 KKM 75</span>
+    </div>
+    <div class="deadline-bar">
+      <div class="dl-item">
+        <span class="dl-label">Mata Kuliah</span>
+        <span class="dl-val">Microsoft Word & Google Docs</span>
+      </div>
+      <div class="dl-divider"></div>
+      <div class="dl-item">
+        <span class="dl-label">Bobot Nilai</span>
+        <span class="dl-val">Tugas Modul 2</span>
+      </div>
+      <div class="dl-divider"></div>
+      <div class="dl-item">
+        <span class="dl-label">Format Submit</span>
+        <span class="dl-val">.docx + .pdf</span>
+      </div>
+      <div class="dl-divider"></div>
+      <div class="dl-item">
+        <span class="dl-label">Jumlah Halaman</span>
+        <span class="dl-val">Min. 3 halaman</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- ══════════════════ MAIN COLUMN ══════════════════ -->
+  <div class="main-col">
+
+    <!-- SKENARIO -->
+    <div class="sec-label" style="margin-top:0;">
+      <span class="sec-badge badge-context">🗒 Skenario</span>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="scenario">
+      <h3>Konteks Tugas</h3>
+      <p>
+        Kamu baru saja menyelesaikan <strong>Praktik Kerja Lapangan (PKL)</strong> selama satu bulan di
+        <strong>PT. Solusi Digital Nusantara</strong> — sebuah perusahaan teknologi informasi di Surabaya.
+        Pembimbing lapangan memintamu membuat <strong>laporan singkat PKL</strong> yang terlihat profesional
+        sebelum dikumpulkan ke kampus.
+      </p>
+      <p style="margin-top:8px;">
+        Tugasmu adalah membuat dokumen tersebut <strong>dua kali</strong> — pertama di <strong>Microsoft Word</strong>,
+        lalu dengan tampilan yang sama di <strong>Google Docs</strong> — menggunakan semua teknik
+        Style & Formatting yang sudah dipelajari.
+      </p>
+    </div>
+
+    <!-- STRUKTUR DOKUMEN -->
+    <div class="sec-label">
+      <span class="sec-badge badge-task">📑 Struktur Dokumen</span>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-body" style="padding-bottom:8px;">
+        <p style="font-size:13.5px; color:var(--ink-mid); margin-bottom:14px;">Dokumen harus memuat <strong style="color:var(--ink)">minimal 5 bab</strong> berikut dengan struktur heading yang benar. Setiap bab wajib memenuhi persyaratan yang tercantum.</p>
+      </div>
+    </div>
+
+    <!-- BAB 1 -->
+    <div class="chapter">
+      <div class="chapter-head">
+        <div class="chapter-num">1</div>
+        <div class="chapter-title">BAB I — Pendahuluan</div>
+        <span class="chapter-tag tag-h1">Heading 1</span>
+      </div>
+      <div class="chapter-reqs">
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Judul bab menggunakan <strong>Heading 1</strong> (bukan teks bold biasa). Sub-bagian seperti "1.1 Latar Belakang" menggunakan <strong>Heading 2</strong>.</div>
+          <span class="req-tag rt-b">Style</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Paragraf isi ditulis dengan style <strong>Normal/Body</strong>, spasi <strong>1,5</strong>, alignment <strong>Justify</strong>.</div>
+          <span class="req-tag rt-b">Format</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Berisi minimal 3 sub-bagian: <strong>1.1 Latar Belakang</strong>, <strong>1.2 Tujuan PKL</strong>, <strong>1.3 Manfaat PKL</strong>.</div>
+          <span class="req-tag rt-b">Konten</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Di Google Docs: gunakan <strong>View → Show document outline</strong> untuk memverifikasi struktur heading sudah benar.</div>
+          <span class="req-tag rt-g">Docs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAB 2 -->
+    <div class="chapter">
+      <div class="chapter-head">
+        <div class="chapter-num">2</div>
+        <div class="chapter-title">BAB II — Profil Perusahaan</div>
+        <span class="chapter-tag tag-h1">Heading 1</span>
+      </div>
+      <div class="chapter-reqs">
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Buat <strong>logo perusahaan sederhana</strong> menggunakan Shape (di Word: Insert → Shapes; di Google Docs: Insert → Drawing → New). Logo harus mengandung minimal 2 shape yang digabungkan.</div>
+          <span class="req-tag rt-b">Shape</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Sisipkan <strong>tabel profil perusahaan</strong> (minimal 5 baris × 2 kolom) berisi: nama, bidang usaha, alamat, telp, website. Beri warna header tabel dengan warna tema dokumen.</div>
+          <span class="req-tag rt-b">Tabel</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Nama perusahaan di kop/judul bab menggunakan <strong>WordArt</strong> (Word) atau efek teks tebal berwarna via <strong>Drawing → Word Art</strong> (Google Docs).</div>
+          <span class="req-tag rt-b">WordArt</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAB 3 -->
+    <div class="chapter">
+      <div class="chapter-head">
+        <div class="chapter-num">3</div>
+        <div class="chapter-title">BAB III — Kegiatan PKL</div>
+        <span class="chapter-tag tag-h1">Heading 1</span>
+      </div>
+      <div class="chapter-reqs">
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Gunakan <strong>Numbered List bertingkat</strong> (multilevel) untuk merinci kegiatan mingguan. Contoh: 1. Minggu 1 → 1.1. Orientasi → 1.2. Pengenalan sistem.</div>
+          <span class="req-tag rt-w">Word</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Buat <strong>SmartArt alur kerja</strong> (Word: Insert → SmartArt → Process) atau <strong>diagram manual</strong> (Google Docs: Insert → Drawing → gabungkan Shape + Arrow) yang menggambarkan alur kerja di perusahaan, minimal 4 tahap.</div>
+          <span class="req-tag rt-b">SmartArt</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Sisipkan <strong>Text Box</strong> sebagai "catatan penting" atau highlight di sisi halaman. Beri warna background Text Box yang kontras dengan teks isi dokumen.</div>
+          <span class="req-tag rt-b">Text Box</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Minimal 1 paragraf menggunakan <strong>first line indent</strong> 1,25 cm.</div>
+          <span class="req-tag rt-b">Format</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAB 4 -->
+    <div class="chapter">
+      <div class="chapter-head">
+        <div class="chapter-num">4</div>
+        <div class="chapter-title">BAB IV — Hasil & Analisis</div>
+        <span class="chapter-tag tag-h1">Heading 1</span>
+      </div>
+      <div class="chapter-reqs">
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Sisipkan <strong>Bar Chart atau Pie Chart</strong> yang menggambarkan data relevan (contoh: persentase waktu per jenis kegiatan, jumlah tugas per minggu). Edit data chart secara langsung (Word: via Excel mini; Google Docs: via Google Sheets).</div>
+          <span class="req-tag rt-b">Chart</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Gunakan <strong>Format Painter / Paint Format</strong> untuk menyamakan format minimal 3 sub-heading Heading 2 secara konsisten.</div>
+          <span class="req-tag rt-b">Efficiency</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Teks analisis menggunakan <strong>Bold</strong> untuk kata kunci penting, <strong>Italic</strong> untuk istilah teknis asing, dan minimal sekali menggunakan teks <strong>berformat Highlight</strong> (warna kuning atau warna lain) untuk temuan utama.</div>
+          <span class="req-tag rt-b">Format</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAB 5 -->
+    <div class="chapter">
+      <div class="chapter-head">
+        <div class="chapter-num">5</div>
+        <div class="chapter-title">BAB V — Penutup</div>
+        <span class="chapter-tag tag-h1">Heading 1</span>
+      </div>
+      <div class="chapter-reqs">
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Berisi <strong>5.1 Kesimpulan</strong> dan <strong>5.2 Saran</strong> menggunakan Heading 2 yang sudah dimodifikasi tampilannya (warna atau font berbeda dari default).</div>
+          <span class="req-tag rt-b">Style</span>
+        </div>
+        <div class="req-item">
+          <div class="req-dot"></div>
+          <div class="req-text">Tambahkan <strong>tanda tangan digital</strong> menggunakan Shape (kotak + garis) dan Text Box untuk nama dan NIM di bawah saran.</div>
+          <span class="req-tag rt-b">Shape</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMAT DOKUMEN -->
+    <div class="sec-label">
+      <span class="sec-badge badge-format">📐 Ketentuan Format</span>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="fmt-grid">
+          <!-- Word -->
+          <div class="fmt-col">
+            <div class="fmt-col-head fch-word">⬛ Microsoft Word</div>
+            <div class="fmt-rows">
+              <div class="fmt-row"><span class="fmt-key">Font body</span><span class="fmt-val">Times New Roman</span></div>
+              <div class="fmt-row"><span class="fmt-key">Ukuran</span><span class="fmt-val">12 pt</span></div>
+              <div class="fmt-row"><span class="fmt-key">Spasi baris</span><span class="fmt-val">1,5</span></div>
+              <div class="fmt-row"><span class="fmt-key">Margin kiri</span><span class="fmt-val">4 cm</span></div>
+              <div class="fmt-row"><span class="fmt-key">Margin lain</span><span class="fmt-val">3 cm</span></div>
+              <div class="fmt-row"><span class="fmt-key">Ukuran kertas</span><span class="fmt-val">A4</span></div>
+              <div class="fmt-row"><span class="fmt-key">Alignment</span><span class="fmt-val">Justify</span></div>
+              <div class="fmt-row"><span class="fmt-key">First line indent</span><span class="fmt-val">1,25 cm</span></div>
+              <div class="fmt-row"><span class="fmt-key">Theme warna</span><span class="fmt-val">Bebas (konsisten)</span></div>
+            </div>
+          </div>
+          <!-- Google Docs -->
+          <div class="fmt-col">
+            <div class="fmt-col-head fch-gdocs">🔵 Google Docs</div>
+            <div class="fmt-rows">
+              <div class="fmt-row"><span class="fmt-key">Font body</span><span class="fmt-val">Times New Roman</span></div>
+              <div class="fmt-row"><span class="fmt-key">Ukuran</span><span class="fmt-val">12 pt</span></div>
+              <div class="fmt-row"><span class="fmt-key">Spasi baris</span><span class="fmt-val">1,5</span></div>
+              <div class="fmt-row"><span class="fmt-key">Margin kiri</span><span class="fmt-val">4 cm</span></div>
+              <div class="fmt-row"><span class="fmt-key">Margin lain</span><span class="fmt-val">3 cm</span></div>
+              <div class="fmt-row"><span class="fmt-key">Ukuran kertas</span><span class="fmt-val">A4</span></div>
+              <div class="fmt-row"><span class="fmt-key">Alignment</span><span class="fmt-val">Justify</span></div>
+              <div class="fmt-row"><span class="fmt-key">SmartArt</span><span class="fmt-val">Via Drawing</span></div>
+              <div class="fmt-row"><span class="fmt-key">Save styles</span><span class="fmt-val">Save as default</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note note-hl" style="margin-top:14px;">
+          <span class="note-icon">✏️</span>
+          <div class="note-body">Terapkan ketentuan margin di awal sebelum mengetik konten. Di Word: <kbd>Layout → Margins → Custom Margins</kbd>. Di Google Docs: <kbd>File → Page setup → Set as default</kbd>.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUBRIK -->
+    <div class="sec-label">
+      <span class="sec-badge badge-rubrik">📊 Rubrik Penilaian</span>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-body" style="padding:0; overflow:hidden;">
+        <table class="rubrik-table">
+          <thead>
+            <tr>
+              <th style="width:42%">Kriteria</th>
+              <th>Indikator Penilaian</th>
+              <th>Poin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Heading Style & Struktur</strong></td>
+              <td>H1 untuk bab, H2 untuk sub-bab, Normal untuk isi. Style dimodifikasi minimal 1 kali. Navigation Pane / Outline terbaca bersih.</td>
+              <td>20</td>
+            </tr>
+            <tr>
+              <td><strong>Paragraph Formatting</strong></td>
+              <td>Spasi 1,5, justify, first line indent 1,25 cm diterapkan konsisten di seluruh paragraf isi.</td>
+              <td>15</td>
+            </tr>
+            <tr>
+              <td><strong>Font & Format Karakter</strong></td>
+              <td>Times New Roman 12pt, penggunaan Bold, Italic, Highlight tepat guna. Format Painter digunakan minimal untuk 3 heading.</td>
+              <td>15</td>
+            </tr>
+            <tr>
+              <td><strong>Objek Visual</strong></td>
+              <td>Shape/Logo, SmartArt/Diagram, Chart (dengan data), Text Box, WordArt — semua hadir dan relevan.</td>
+              <td>20</td>
+            </tr>
+            <tr>
+              <td><strong>Theme & Konsistensi</strong></td>
+              <td>Warna aksen dokumen konsisten (heading, tabel header, shape, Text Box satu tema warna).</td>
+              <td>10</td>
+            </tr>
+            <tr>
+              <td><strong>File Google Docs</strong></td>
+              <td>Konten sama dengan Word, format setara. SmartArt dibuat via Drawing. Page setup sesuai ketentuan.</td>
+              <td>15</td>
+            </tr>
+            <tr>
+              <td><strong>Kelengkapan & Penamaan File</strong></td>
+              <td>5 bab lengkap, min. 3 halaman, penamaan file sesuai format (NIM_Nama_Word.docx & NIM_Nama_GDocs.pdf).</td>
+              <td>5</td>
+            </tr>
+            <tr class="total-row">
+              <td colspan="2"><strong>TOTAL</strong></td>
+              <td>100</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PENGUMPULAN -->
+    <div class="sec-label">
+      <span class="sec-badge badge-submit">📤 Pengumpulan</span>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <p style="font-size:13.5px; color:var(--ink-mid); margin-bottom:14px;">Kumpulkan <strong style="color:var(--ink)">dua file</strong> dengan nama sesuai format berikut:</p>
+        <div class="submit-grid">
+          <div class="submit-box sb-word">
+            <div class="sb-app-name">⬛ Microsoft Word</div>
+            <div class="sb-filename">NIM_NamaLengkap_Word.docx</div>
+            <div class="sb-note">Contoh: 20230001_AndiSaputra_Word.docx</div>
+          </div>
+          <div class="submit-box sb-gdocs">
+            <div class="sb-app-name">🔵 Google Docs</div>
+            <div class="sb-filename">NIM_NamaLengkap_GDocs.pdf</div>
+            <div class="sb-note">Export dari Google Docs: File → Download → PDF Document</div>
+          </div>
+        </div>
+
+        <div class="note note-info" style="margin-top:14px;">
+          <span class="note-icon">ℹ️</span>
+          <div class="note-body">Kedua file berisi <strong>konten yang sama</strong>. Yang dinilai adalah bagaimana masing-masing aplikasi digunakan untuk menghasilkan tampilan serupa — termasuk perbedaan cara SmartArt dibuat di Google Docs.</div>
+        </div>
+        <div class="note note-ok" style="margin-top:10px;">
+          <span class="note-icon">✅</span>
+          <div class="note-body">Simpan file Word dalam format <strong>.docx</strong> (bukan .doc). Pastikan semua objek (gambar, chart, shape) sudah tertanam (<em>embedded</em>) dalam file sebelum dikumpulkan.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-col -->
+
+  <!-- ══════════════════ SIDEBAR ══════════════════ -->
+  <div class="side-col">
+
+    <!-- Completion ring -->
+    <div class="side-card">
+      <div class="side-head">
+        <span>Kelengkapan Tugas</span>
+        <span id="clCount" style="font-family:'JetBrains Mono',monospace; color:var(--ink-soft)">0/12</span>
+      </div>
+      <div class="side-body" style="padding-top:4px;">
+        <div class="completion-ring">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 80 80">
+              <circle class="ring-track" cx="40" cy="40" r="34"/>
+              <circle class="ring-fill" id="ringFill" cx="40" cy="40" r="34"/>
+            </svg>
+            <div class="ring-label">
+              <span class="ring-pct" id="ringPct">0%</span>
+              <span class="ring-sub">selesai</span>
+            </div>
+          </div>
+          <div class="ring-caption" id="ringCaption">Centang item yang sudah selesai dikerjakan</div>
+        </div>
+
+        <ul class="checklist" id="checklist">
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Margin & ukuran kertas diatur</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Font Times New Roman 12pt, spasi 1,5</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Heading 1 & 2 diterapkan ke semua bab</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Style Heading dimodifikasi (warna/font)</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Navigation Pane/Outline terbaca bersih</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Shape logo perusahaan dibuat (Bab II)</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>WordArt & Text Box hadir</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>SmartArt/diagram alur kerja (Bab III)</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Chart dengan data asli (Bab IV)</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Format Painter digunakan ≥3 heading</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>File Word (.docx) siap kumpul</span></li>
+          <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>File Google Docs (PDF) siap kumpul</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Score preview -->
+    <div class="side-card">
+      <div class="side-head"><span>Bobot Nilai</span></div>
+      <div class="side-body">
+        <div class="score-rows">
+          <div class="score-row"><span class="sr-label">Heading Style</span><span class="sr-pts">20</span></div>
+          <div class="score-row"><span class="sr-label">Paragraph Format</span><span class="sr-pts">15</span></div>
+          <div class="score-row"><span class="sr-label">Font & Karakter</span><span class="sr-pts">15</span></div>
+          <div class="score-row"><span class="sr-label">Objek Visual</span><span class="sr-pts">20</span></div>
+          <div class="score-row"><span class="sr-label">Theme & Konsistensi</span><span class="sr-pts">10</span></div>
+          <div class="score-row"><span class="sr-label">Google Docs</span><span class="sr-pts">15</span></div>
+          <div class="score-row"><span class="sr-label">Kelengkapan</span><span class="sr-pts">5</span></div>
+          <div class="score-row total-row"><span class="sr-label">Total</span><span class="sr-pts">100</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="tip-pill">
+      <strong>💡 Tips Cepat</strong>
+      Terapkan semua format di Word terlebih dahulu, simpan sebagai template (.dotx), baru buat ulang di Google Docs. Ini jauh lebih efisien daripada mengerjakan keduanya dari nol secara bergantian.
+    </div>
+
+    <button class="print-btn" onclick="window.print()">🖨 Cetak Lembar Tugas</button>
+
+  </div><!-- /side-col -->
+
+</div><!-- /page -->
+
+<footer>
+  <a href="panduan-style-formatting.html">← Modul 2 Style & Formatting</a> &nbsp;·&nbsp;
+  <a href="soal-style-formatting.html">Soal Latihan →</a><br>
+  <span style="margin-top:6px; display:inline-block;">Tugas Modul 2 · Microsoft Word & Google Docs · UKWMS</span>
+</footer>
+
+<script>
+  const TOTAL = 12;
+
+  function toggleCheck(item) {
+    item.classList.toggle('done');
+    item.querySelector('.cl-box').textContent = item.classList.contains('done') ? '✓' : '';
+    updateRing();
+  }
+
+  function updateRing() {
+    const done = document.querySelectorAll('.cl-item.done').length;
+    const pct  = Math.round((done / TOTAL) * 100);
+    const circ = 2 * Math.PI * 34; // 213.6
+
+    document.getElementById('ringFill').style.strokeDashoffset = circ - (circ * pct / 100);
+    document.getElementById('ringPct').textContent = pct + '%';
+    document.getElementById('clCount').textContent = done + '/' + TOTAL;
+
+    const captions = [
+      'Centang item yang sudah selesai dikerjakan',
+      'Bagus! Terus lengkapi checklist-nya.',
+      'Sudah separuh jalan, teruskan!',
+      'Hampir selesai, tinggal sedikit lagi!',
+      '🎉 Semua item selesai! Siap dikumpulkan.'
+    ];
+    const idx = pct === 100 ? 4 : pct >= 75 ? 3 : pct >= 50 ? 2 : pct >= 25 ? 1 : 0;
+    document.getElementById('ringCaption').textContent = captions[idx];
+
+    // Change ring colour based on progress
+    const fill = document.getElementById('ringFill');
+    if (pct === 100)     fill.style.stroke = '#1A8C4A';
+    else if (pct >= 50)  fill.style.stroke = '#E8A838';
+    else                 fill.style.stroke = '#2B579A';
+  }
+</script>
+</body>
+</html>
