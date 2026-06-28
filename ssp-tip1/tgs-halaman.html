@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tugas Modul 3 — Pengaturan Halaman, Style & Daftar Isi</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:      #0D1B2A;
+    --navy-mid:  #1C3048;
+    --paper:     #F8F5F0;
+    --paper-d:   #EDE9E1;
+    --rule:      #D5D0C5;
+    --white:     #FFFFFF;
+    --red:       #C0392B;
+    --red-lt:    #FDECEA;
+    --red-md:    #F5B7B1;
+    --teal:      #1A6B52;
+    --teal-lt:   #E6F5EE;
+    --teal-md:   #A7D9C0;
+    --word:      #2B579A;
+    --word-lt:   #EEF3FB;
+    --ok:        #16A34A;
+    --ok-lt:     #DCFCE7;
+    --amber:     #D97706;
+    --amber-lt:  #FEF3C7;
+    --r:         10px;
+    --r-sm:      6px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--paper);
+    color: var(--navy);
+    font-size: 15px;
+    line-height: 1.72;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--navy);
+    padding: 9px 28px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: rgba(255,255,255,.35);
+  }
+  .topbar a { color: rgba(255,255,255,.35); text-decoration: none; transition: color .2s; }
+  .topbar a:hover { color: #fff; }
+  .topbar .sep { color: rgba(255,255,255,.15); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    padding: 52px 28px 0;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px, transparent 47px,
+        rgba(255,255,255,.025) 47px, rgba(255,255,255,.025) 48px
+      ),
+      repeating-linear-gradient(
+        transparent 0px, transparent 47px,
+        rgba(255,255,255,.018) 47px, rgba(255,255,255,.018) 48px
+      );
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 300px;
+    gap: 48px; align-items: flex-end;
+    position: relative; z-index: 1;
+  }
+  .hero-eye {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(192,57,43,.18);
+    border: 1px solid rgba(192,57,43,.35);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase;
+    color: #F1948A; margin-bottom: 18px;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(26px, 4.5vw, 42px);
+    color: #fff; line-height: 1.12; margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .hero-title em { font-style: italic; color: #F1948A; font-weight: 700; }
+  .hero-sub {
+    font-size: 14.5px; color: rgba(255,255,255,.55);
+    max-width: 440px; margin-bottom: 28px; line-height: 1.65;
+  }
+  .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
+  .hchip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 13px; font-weight: 700; border: 1px solid;
+  }
+  .hc-word { background: var(--word-lt); border-color: var(--word-lt); color: var(--word); }
+  .hc-neu  { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.12); color: rgba(255,255,255,.7); }
+
+  /* ── SIGNATURE: Page anatomy diagram ── */
+  .page-anatomy {
+    padding-bottom: 0;
+    display: flex; flex-direction: column; gap: 10px;
+    align-self: flex-end;
+  }
+  .anatomy-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .08em;
+    color: rgba(255,255,255,.35); margin-bottom: 2px;
+  }
+  .pages-row { display: flex; gap: 10px; align-items: flex-end; }
+
+  /* Single page mini */
+  .page-mini {
+    flex: 1;
+    background: #fff;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 8px 28px rgba(0,0,0,.35);
+    overflow: hidden;
+    position: relative;
+  }
+  .pm-tab {
+    padding: 5px 10px 4px;
+    font-size: 9px; font-weight: 800;
+    letter-spacing: .05em;
+    border-bottom: 1px solid #EEE;
+  }
+  .pm-tab-red  { background: var(--red-lt); color: var(--red); }
+  .pm-tab-blue { background: var(--word-lt); color: var(--word); }
+
+  /* Header area of mini page */
+  .pm-header {
+    padding: 5px 10px;
+    border-bottom: 1px dashed #DDD;
+    display: flex; justify-content: space-between;
+    align-items: center; min-height: 18px;
+  }
+  .pm-hdr-txt { font-size: 7.5px; color: #888; font-style: italic; }
+  .pm-pg-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px; font-weight: 800;
+    padding: 2px 6px; border-radius: 3px;
+  }
+  .pgb-red  { background: var(--red); color: #fff; }
+  .pgb-blue { background: var(--word); color: #fff; }
+  .pgb-ghost { background: transparent; color: transparent; }
+
+  /* Body lines */
+  .pm-body { padding: 8px 10px; }
+  .pm-line { height: 4px; border-radius: 2px; background: #E8E8E8; margin-bottom: 4px; }
+  .pm-line.h  { height: 7px; width: 55%; background: #C5D8F5; margin-bottom: 6px; }
+  .pm-line.f  { width: 100%; }
+  .pm-line.m  { width: 80%; }
+  .pm-line.s  { width: 60%; }
+
+  /* Footer area */
+  .pm-footer {
+    padding: 5px 10px;
+    border-top: 1px dashed #DDD;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 18px;
+  }
+  .pm-footer.right { justify-content: flex-end; }
+
+  /* Arrow between pages */
+  .anatomy-arrow {
+    font-size: 16px; color: rgba(255,255,255,.3);
+    align-self: center; flex-shrink: 0; line-height: 1;
+  }
+
+  /* Legend */
+  .anatomy-legend {
+    display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px;
+  }
+  .leg-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 600; color: rgba(255,255,255,.45);
+  }
+  .leg-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* Info bar */
+  .hero-infobar {
+    border-top: 1px solid rgba(255,255,255,.08);
+    margin-top: 32px;
+    padding: 14px 0;
+    display: flex; gap: 28px; flex-wrap: wrap;
+  }
+  .ib-item { display: flex; flex-direction: column; }
+  .ib-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.3); }
+  .ib-val { font-size: 13.5px; font-weight: 700; color: rgba(255,255,255,.8); }
+  .ib-div { width: 1px; background: rgba(255,255,255,.1); }
+
+  /* ── MAIN ── */
+  .main { max-width: 900px; margin: 0 auto; padding: 40px 20px 72px; }
+
+  /* ── PHASE HEADERS ── */
+  .phase-header {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 20px; position: relative;
+  }
+  .phase-num {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700; flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+  .pn-a { background: var(--red); color: #fff; }
+  .pn-b { background: var(--teal); color: #fff; }
+  .pn-c { background: var(--navy); color: #fff; }
+  .phase-title-wrap { margin-left: 14px; }
+  .phase-eyebrow { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--red); margin-bottom: 2px; }
+  .phase-eyebrow.teal { color: var(--teal); }
+  .phase-eyebrow.navy { color: var(--word); }
+  .phase-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--navy); line-height: 1.2; }
+  .phase-rule { flex: 1; height: 1px; background: var(--rule); margin-left: 16px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: var(--r);
+    margin-bottom: 14px; overflow: hidden;
+  }
+  .card-body { padding: 20px 22px; }
+
+  /* ── SECTION LABEL ── */
+  .sec-lbl {
+    display: flex; align-items: center; gap: 10px;
+    margin: 28px 0 14px;
+  }
+  .sec-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 800;
+    letter-spacing: .06em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 100px;
+  }
+  .sb-red   { background: var(--red-lt); color: var(--red); }
+  .sb-teal  { background: var(--teal-lt); color: var(--teal); }
+  .sb-navy  { background: var(--word-lt); color: var(--word); }
+  .sb-amber { background: var(--amber-lt); color: var(--amber); }
+  .sec-line { flex: 1; height: 1px; background: var(--rule); }
+
+  /* ── STEP CARDS ── */
+  .step-card {
+    border: 1px solid var(--rule);
+    border-radius: var(--r);
+    overflow: hidden; margin-bottom: 10px;
+    background: var(--white);
+  }
+  .step-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 18px; border-bottom: 1px solid var(--rule);
+    background: var(--white);
+  }
+  .step-n {
+    width: 30px; height: 30px; border-radius: 8px;
+    font-size: 13px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-family: 'JetBrains Mono', monospace;
+  }
+  .sn-red  { background: var(--red-lt); color: var(--red); }
+  .sn-teal { background: var(--teal-lt); color: var(--teal); }
+  .sn-navy { background: var(--word-lt); color: var(--word); }
+  .step-head h3 { font-size: 14.5px; font-weight: 700; flex: 1; }
+  .step-tag {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 100px; flex-shrink: 0;
+  }
+  .tag-w { background: var(--word-lt); color: var(--word); }
+  .tag-r { background: var(--red-lt); color: var(--red); }
+  .tag-t { background: var(--teal-lt); color: var(--teal); }
+  .step-body { padding: 16px 18px; }
+
+  /* ── INSTRUCTION LIST ── */
+  .instr { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .instr li {
+    display: flex; gap: 10px; font-size: 14px;
+    line-height: 1.6; align-items: flex-start;
+  }
+  .instr-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    margin-top: 8px; flex-shrink: 0;
+  }
+  .dot-red  { background: var(--red); }
+  .dot-teal { background: var(--teal); }
+  .dot-navy { background: var(--word); }
+
+  /* ── MENU PATH ── */
+  .mpath {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 3px;
+    background: #F2F4F8; border: 1px solid var(--rule);
+    border-radius: var(--r-sm);
+    padding: 6px 12px; font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 8px 0; line-height: 1.5; max-width: 100%;
+  }
+  .mp-sep { color: #999; }
+
+  kbd {
+    display: inline-block;
+    background: #ECEEF5; border: 1px solid #CDD1E0;
+    border-radius: 4px; padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--navy); white-space: nowrap;
+  }
+
+  /* ── NOTES ── */
+  .note {
+    display: flex; flex-wrap: wrap; gap: 4px 9px;
+    align-items: flex-start;
+    padding: 11px 14px; border-radius: var(--r-sm);
+    font-size: 13px; line-height: 1.65; margin-top: 10px;
+  }
+  .n-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .n-body { flex: 1; min-width: 180px; }
+  .n-warn  { background: var(--amber-lt); border-left: 3px solid var(--amber); color: #78350F; }
+  .n-tip   { background: var(--teal-lt); border-left: 3px solid var(--teal); color: #14532D; }
+  .n-crit  { background: var(--red-lt); border-left: 3px solid var(--red); color: #7F1D1D; }
+  .n-info  { background: var(--word-lt); border-left: 3px solid var(--word); color: #1e3a6e; }
+
+  /* ── PAGE POSITION DIAGRAM (inline) ── */
+  .pos-diagram {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin: 12px 0;
+  }
+  .pos-page {
+    border: 1.5px solid var(--rule);
+    border-radius: var(--r-sm); overflow: hidden;
+    background: #FAFAFA;
+  }
+  .pos-label {
+    padding: 6px 10px;
+    font-size: 11px; font-weight: 800; text-align: center;
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  .pl-red  { background: var(--red-lt); color: var(--red); }
+  .pl-blue { background: var(--word-lt); color: var(--word); }
+  .pl-roman { background: #FEF3C7; color: #92400E; }
+  .pos-page-inner {
+    padding: 8px; background: #fff;
+    border-top: 1px solid var(--rule);
+    min-height: 80px; position: relative; display: flex;
+    flex-direction: column;
+  }
+  .pos-header {
+    display: flex; justify-content: flex-end; align-items: center;
+    min-height: 14px; margin-bottom: 4px;
+    padding: 2px 0; border-bottom: 1px dotted #DDD;
+  }
+  .pos-footer {
+    display: flex; align-items: center;
+    min-height: 14px; margin-top: 4px;
+    padding: 2px 0; border-top: 1px dotted #DDD;
+  }
+  .pos-footer.center { justify-content: center; }
+  .pos-footer.right  { justify-content: flex-end; }
+  .pos-body-lines { flex: 1; display: flex; flex-direction: column; gap: 3px; padding: 4px 0; }
+  .pbl { height: 3.5px; border-radius: 2px; background: #E0E0E0; }
+  .pbl.h { height: 6px; width: 50%; background: #C5D8F5; }
+  .pbl.m { width: 80%; }
+  .pbl.s { width: 60%; }
+  .pbl.f { width: 100%; }
+  .pg-num-sm {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 800;
+    padding: 1px 6px; border-radius: 3px;
+  }
+  .pn-red  { background: var(--red); color: #fff; }
+  .pn-blue { background: var(--word); color: #fff; }
+  .pn-roman { background: #92400E; color: #fff; }
+  .pn-none { opacity: 0; }
+  .pos-note { font-size: 10.5px; color: #888; text-align: center; padding: 5px 8px; font-style: italic; }
+
+  /* ── HEADING STYLE TABLE ── */
+  .style-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .style-table th {
+    background: var(--navy); color: #fff;
+    padding: 10px 14px; text-align: left;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase;
+  }
+  .style-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--rule);
+    vertical-align: top; line-height: 1.5;
+  }
+  .style-table tr:last-child td { border-bottom: none; }
+  .style-table tr:hover td { background: #F8F8F5; }
+  .style-preview { font-weight: 700; }
+  .sp-h1 { font-size: 16px; color: var(--navy); border-bottom: 2px solid var(--red); padding-bottom: 2px; display: inline-block; }
+  .sp-h2 { font-size: 14px; color: var(--word); }
+  .sp-h3 { font-size: 13px; color: #444; font-style: italic; }
+
+  /* ── RUBRIK ── */
+  .rubrik-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .rubrik-table th {
+    background: var(--navy); color: #fff;
+    padding: 10px 14px; text-align: left;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase;
+  }
+  .rubrik-table th:last-child { text-align: right; }
+  .rubrik-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--rule);
+    vertical-align: top; line-height: 1.5;
+  }
+  .rubrik-table tr:last-child td { border-bottom: none; }
+  .rubrik-table tr:nth-child(even) td { background: #FAFAF8; }
+  .rubrik-table td:last-child { text-align: right; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--word); }
+  .total-row td { font-weight: 800; background: var(--paper) !important; }
+  .total-row td:last-child { font-size: 16px; color: var(--red) !important; }
+  .phase-row td { background: #F0F4FF !important; font-weight: 700; font-size: 12px; color: var(--muted, #666); }
+
+  /* ── SUBMIT BOXES ── */
+  .submit-box {
+    background: var(--word-lt);
+    border: 1.5px solid #C7D8F5;
+    border-radius: var(--r);
+    padding: 18px 20px;
+  }
+  .sb-filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; background: rgba(255,255,255,.8);
+    border-radius: var(--r-sm); padding: 8px 12px;
+    color: var(--navy); margin: 10px 0 6px; word-break: break-all;
+  }
+
+  /* ── CHECKLIST SIDEBAR ── */
+  .layout-grid { display: grid; grid-template-columns: 1fr 240px; gap: 28px; align-items: start; }
+  .sticky-side { position: sticky; top: 20px; }
+
+  .side-card {
+    background: var(--white); border: 1px solid var(--rule);
+    border-radius: var(--r); overflow: hidden; margin-bottom: 14px;
+  }
+  .side-head {
+    padding: 12px 16px; font-size: 11.5px; font-weight: 800;
+    letter-spacing: .05em; text-transform: uppercase;
+    border-bottom: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--navy);
+  }
+  .side-body { padding: 14px 16px; }
+
+  /* Ring */
+  .ring-wrap { position: relative; width: 76px; height: 76px; margin: 0 auto 10px; }
+  .ring-svg { width: 76px; height: 76px; transform: rotate(-90deg); }
+  .ring-track { fill: none; stroke: var(--paper-d); stroke-width: 7; }
+  .ring-fill  {
+    fill: none; stroke: var(--word); stroke-width: 7;
+    stroke-linecap: round; stroke-dasharray: 201;
+    stroke-dashoffset: 201; transition: stroke-dashoffset .5s ease, stroke .3s;
+  }
+  .ring-label {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .ring-pct { font-size: 17px; font-weight: 800; color: var(--navy); line-height: 1; }
+  .ring-sub  { font-size: 9.5px; color: #999; font-weight: 600; margin-top: 2px; }
+  .ring-cap  { font-size: 12px; font-weight: 600; color: #666; text-align: center; }
+
+  /* Checklist */
+  .cl-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .cl-item {
+    display: flex; align-items: flex-start; gap: 9px;
+    font-size: 12.5px; line-height: 1.45; color: #555;
+    cursor: pointer; padding: 5px 6px; border-radius: var(--r-sm);
+    transition: background .15s;
+  }
+  .cl-item:hover { background: var(--paper); }
+  .cl-item.done { color: var(--ok); }
+  .cl-box {
+    width: 17px; height: 17px; border-radius: 4px;
+    border: 1.5px solid var(--rule); background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px; font-size: 10px;
+    transition: all .2s;
+  }
+  .cl-item.done .cl-box { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .cl-phase-lbl {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .07em; padding: 6px 6px 2px;
+    color: #AAA;
+  }
+
+  /* Score card */
+  .score-rows { display: flex; flex-direction: column; gap: 2px; }
+  .score-row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; padding: 5px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: center;
+  }
+  .score-row:last-child { border-bottom: none; font-weight: 800; font-size: 13px; }
+  .sr-lbl { color: #777; }
+  .sr-pts { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--navy); }
+  .sr-total .sr-pts { color: var(--red); font-size: 15px; }
+
+  .tip-pill {
+    background: var(--amber-lt); border: 1px solid #FDE68A;
+    border-radius: var(--r); padding: 12px 14px;
+    font-size: 12.5px; color: #78350F; line-height: 1.6;
+  }
+  .tip-pill strong { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; color: var(--amber); }
+
+  .print-btn {
+    display: block; width: 100%;
+    background: var(--navy); color: #fff; border: none;
+    border-radius: var(--r); padding: 11px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+    text-align: center; margin-top: 8px; transition: opacity .2s;
+  }
+  .print-btn:hover { opacity: .85; }
+
+  footer {
+    background: var(--navy); color: rgba(255,255,255,.3);
+    text-align: center; padding: 18px 20px; font-size: 12px;
+  }
+  footer a { color: rgba(255,255,255,.45); text-decoration: none; }
+  footer a:hover { color: #fff; }
+
+  @media (max-width: 700px) {
+    .hero-inner, .layout-grid { grid-template-columns: 1fr; }
+    .page-anatomy { display: none; }
+    .sticky-side { position: static; }
+    .pos-diagram { grid-template-columns: 1fr 1fr; }
+  }
+  @media print {
+    .topbar, .sticky-side, footer, .print-btn { display: none; }
+    .layout-grid { grid-template-columns: 1fr; }
+    .main { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html">🏠 Beranda</a>
+  <span class="sep">/</span>
+  <a href="panduan-halaman-daftarisi.html">Modul 3 — Halaman &amp; Daftar Isi</a>
+  <span class="sep">/</span>
+  Tugas
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eye">📄 Tugas Individu · Modul 3</div>
+      <h1 class="hero-title">Pengaturan Halaman,<br><em>Style</em> &amp; Daftar Isi</h1>
+      <p class="hero-sub">Buat laporan bertingkat dengan nomor halaman berbeda per section, heading style kustom, dan daftar isi otomatis — hanya menggunakan Microsoft Word.</p>
+      <div class="hero-chips">
+        <span class="hchip hc-word">⬛ Microsoft Word</span>
+        <span class="hchip hc-neu">👤 Individu</span>
+        <span class="hchip hc-neu">⏱ 90–120 menit</span>
+        <span class="hchip hc-neu">🎯 KKM 75</span>
+      </div>
+      <div class="hero-infobar">
+        <div class="ib-item"><span class="ib-lbl">Fase A</span><span class="ib-val">Pengaturan Halaman</span></div>
+        <div class="ib-div"></div>
+        <div class="ib-item"><span class="ib-lbl">Fase B</span><span class="ib-val">Style &amp; Heading</span></div>
+        <div class="ib-div"></div>
+        <div class="ib-item"><span class="ib-lbl">Fase C</span><span class="ib-val">Daftar Isi Otomatis</span></div>
+        <div class="ib-div"></div>
+        <div class="ib-item"><span class="ib-lbl">Format File</span><span class="ib-val">.docx</span></div>
+      </div>
+    </div>
+
+    <!-- SIGNATURE: page anatomy diagram -->
+    <div class="page-anatomy">
+      <div class="anatomy-label">Tampilan nomor halaman yang harus dicapai</div>
+      <div class="pages-row">
+        <!-- Halaman pendahuluan / daftar isi -->
+        <div class="page-mini">
+          <div class="pm-tab pm-tab-blue">Daftar Isi</div>
+          <div class="pm-header">
+            <span class="pm-hdr-txt"></span>
+            <span class="pm-pg-badge pgb-ghost">i</span>
+          </div>
+          <div class="pm-body">
+            <div class="pm-line" style="width:70%; background:#C5D8F5; height:5px;"></div>
+            <div class="pm-line m"></div>
+            <div class="pm-line s"></div>
+            <div class="pm-line m"></div>
+            <div class="pm-line s"></div>
+            <div class="pm-line m"></div>
+          </div>
+          <div class="pm-footer" style="justify-content:center;">
+            <span class="pm-pg-badge" style="background:#8B7355; color:#fff; font-size:8px;">i</span>
+          </div>
+        </div>
+
+        <div class="anatomy-arrow">→</div>
+
+        <!-- Halaman awal bab (tengah bawah) -->
+        <div class="page-mini">
+          <div class="pm-tab pm-tab-red">Awal Bab</div>
+          <div class="pm-header">
+            <span class="pm-hdr-txt"></span>
+            <span class="pm-pg-badge pgb-ghost">·</span>
+          </div>
+          <div class="pm-body">
+            <div class="pm-line h"></div>
+            <div class="pm-line f"></div>
+            <div class="pm-line m"></div>
+            <div class="pm-line f"></div>
+            <div class="pm-line s"></div>
+          </div>
+          <div class="pm-footer" style="justify-content:center;">
+            <span class="pm-pg-badge pgb-red">1</span>
+          </div>
+        </div>
+
+        <div class="anatomy-arrow">→</div>
+
+        <!-- Halaman isi bab (kanan atas) -->
+        <div class="page-mini">
+          <div class="pm-tab pm-tab-blue">Isi Bab</div>
+          <div class="pm-header" style="justify-content:flex-end;">
+            <span class="pm-pg-badge pgb-blue">2</span>
+          </div>
+          <div class="pm-body">
+            <div class="pm-line f"></div>
+            <div class="pm-line m"></div>
+            <div class="pm-line f"></div>
+            <div class="pm-line s"></div>
+            <div class="pm-line f"></div>
+          </div>
+          <div class="pm-footer" style="justify-content:center; border:none;">
+            <span style="font-size:7px; color:#CCC; font-style:italic;">tidak ada nomor di footer</span>
+          </div>
+        </div>
+      </div>
+      <div class="anatomy-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#8B7355;"></div>Romawi (i,ii,iii)</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--red);"></div>Tengah bawah</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--word);"></div>Kanan atas</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+<div class="layout-grid">
+
+<!-- ═══════════════════════════════════════
+     MAIN COLUMN
+═══════════════════════════════════════ -->
+<div class="main-col">
+
+  <!-- SKENARIO -->
+  <div style="background:var(--white); border:1px solid var(--rule); border-radius:var(--r); padding:20px 22px; margin-bottom:28px; position:relative;">
+    <div style="position:absolute; top:-12px; left:18px; font-size:20px;">📋</div>
+    <p style="font-size:13px; font-weight:700; color:var(--red); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; margin-top:4px;">Skenario Tugas</p>
+    <p style="font-size:14.5px; line-height:1.7; color:#333;">
+      Kamu diminta menyiapkan <strong>Laporan Kerja Praktek</strong> yang siap cetak dan dikumpulkan ke dosen pembimbing. Dokumen harus memiliki penomoran halaman yang berbeda antara bagian pendahuluan dan isi bab, heading yang konsisten dan sudah dikustomisasi, serta daftar isi yang dibuat secara otomatis oleh Word.
+    </p>
+    <div class="note n-crit" style="margin-top:14px;">
+      <span class="n-icon">⚠️</span>
+      <div class="n-body">Tugas ini <strong>hanya dikerjakan di Microsoft Word</strong>. Kerjakan secara berurutan: selesaikan Fase A dulu sebelum lanjut ke Fase B dan C, karena setiap fase bergantung pada hasil fase sebelumnya.</div>
+    </div>
+  </div>
+
+  <!-- ═══ FASE A ═══ -->
+  <div class="phase-header">
+    <div class="phase-num pn-a">A</div>
+    <div class="phase-title-wrap">
+      <div class="phase-eyebrow">Fase A</div>
+      <div class="phase-title">Pengaturan Halaman &amp; Nomor Halaman</div>
+    </div>
+    <div class="phase-rule"></div>
+  </div>
+
+  <!-- Struktur section -->
+  <div class="sec-lbl" style="margin-top:0;">
+    <span class="sec-badge sb-red">📑 Struktur Dokumen</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <p style="font-size:13.5px; color:#555; margin-bottom:16px;">Dokumen terdiri dari <strong style="color:var(--navy)">3 section</strong> dengan pengaturan nomor halaman yang berbeda. Buat terlebih dahulu struktur halaman berikut sebelum mengisi konten:</p>
+
+      <!-- Section diagram -->
+      <div class="pos-diagram">
+        <!-- Section 1 -->
+        <div class="pos-page">
+          <div class="pos-label pl-roman">Section 1 — Pendahuluan</div>
+          <div class="pos-page-inner">
+            <div class="pos-header"></div>
+            <div class="pos-body-lines">
+              <div class="pbl h"></div>
+              <div class="pbl m"></div>
+              <div class="pbl f"></div>
+              <div class="pbl s"></div>
+              <div class="pbl m"></div>
+            </div>
+            <div class="pos-footer center">
+              <span class="pg-num-sm pn-roman">i</span>
+            </div>
+          </div>
+          <div class="pos-note">Nomor romawi kecil<br>posisi tengah bawah<br>mulai dari i</div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="pos-page">
+          <div class="pos-label pl-red">Section 2 — Awal Tiap Bab</div>
+          <div class="pos-page-inner">
+            <div class="pos-header"></div>
+            <div class="pos-body-lines">
+              <div class="pbl h"></div>
+              <div class="pbl m"></div>
+              <div class="pbl f"></div>
+              <div class="pbl s"></div>
+              <div class="pbl m"></div>
+            </div>
+            <div class="pos-footer center">
+              <span class="pg-num-sm pn-red">1</span>
+            </div>
+          </div>
+          <div class="pos-note">Nomor arab<br>posisi <strong>tengah bawah</strong><br>mulai dari 1</div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="pos-page">
+          <div class="pos-label pl-blue">Section 3 — Isi Bab</div>
+          <div class="pos-page-inner">
+            <div class="pos-header" style="justify-content:flex-end;">
+              <span class="pg-num-sm pn-blue">2</span>
+            </div>
+            <div class="pos-body-lines">
+              <div class="pbl f"></div>
+              <div class="pbl m"></div>
+              <div class="pbl f"></div>
+              <div class="pbl s"></div>
+              <div class="pbl m"></div>
+            </div>
+            <div class="pos-footer" style="border:none;"></div>
+          </div>
+          <div class="pos-note">Nomor arab (lanjutan)<br>posisi <strong>kanan atas</strong><br>tanpa nomor di footer</div>
+        </div>
+      </div>
+
+      <div class="note n-info" style="margin-top:4px;">
+        <span class="n-icon">💡</span>
+        <div class="n-body">Penomoran angka arab <strong>menerus</strong> antara Section 2 dan Section 3 — halaman pertama bab = 1, halaman isi berikutnya = 2, 3, dst. Hanya <em>posisi</em> nomor yang berbeda, bukan angkanya.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Langkah A1 -->
+  <div class="sec-lbl">
+    <span class="sec-badge sb-red">🔧 Langkah Pengerjaan Fase A</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-red">A1</div>
+      <h3>Siapkan Konten Dokumen (3 Bagian)</h3>
+      <span class="step-tag tag-r">Persiapan</span>
+    </div>
+    <div class="step-body">
+      <p style="font-size:13.5px; color:#555; margin-bottom:12px;">Buat dokumen Word baru, isi dengan struktur berikut. Gunakan teks fiktif yang masuk akal — konten yang sebenarnya akan diformat di Fase B:</p>
+      <ul class="instr">
+        <li><div class="instr-dot dot-red"></div><div><strong>Halaman Judul</strong> — nama, NIM, judul laporan, nama dosen, tahun (1 halaman)</div></li>
+        <li><div class="instr-dot dot-red"></div><div><strong>Kata Pengantar</strong> — paragraf singkat 2–3 kalimat (1 halaman)</div></li>
+        <li><div class="instr-dot dot-red"></div><div><strong>Daftar Isi</strong> — kosongkan dulu, akan diisi otomatis di Fase C (1 halaman)</div></li>
+        <li><div class="instr-dot dot-red"></div><div><strong>BAB I — Pendahuluan</strong> — tiga sub-bab: 1.1 Latar Belakang, 1.2 Tujuan, 1.3 Manfaat (min. 2 halaman)</div></li>
+        <li><div class="instr-dot dot-red"></div><div><strong>BAB II — Tinjauan Pustaka</strong> — dua sub-bab: 2.1 Teori Dasar, 2.2 Penelitian Terdahulu (min. 2 halaman)</div></li>
+        <li><div class="instr-dot dot-red"></div><div><strong>BAB III — Penutup</strong> — dua sub-bab: 3.1 Kesimpulan, 3.2 Saran (min. 1 halaman)</div></li>
+      </ul>
+      <div class="note n-warn">
+        <span class="n-icon">⚠️</span>
+        <div class="n-body">Belum perlu menggunakan Heading Style di langkah ini — cukup ketik teksnya. Heading Style diterapkan di Fase B setelah section break selesai dipasang.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-red">A2</div>
+      <h3>Atur Margin Dokumen</h3>
+      <span class="step-tag tag-w">Layout</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-red"></div><div>Tab <strong>Layout</strong> → <strong>Margins</strong> → <strong>Custom Margins…</strong></div></li>
+        <li><div class="instr-dot dot-red"></div><div>Isi: <strong>Top = 3 cm, Bottom = 3 cm, Left = 4 cm, Right = 3 cm</strong></div></li>
+        <li><div class="instr-dot dot-red"></div><div>Pastikan <em>Apply to: Whole document</em> → klik <strong>OK</strong></div></li>
+      </ul>
+      <div class="mpath">Layout <span class="mp-sep">→</span> Margins <span class="mp-sep">→</span> Custom Margins…</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-red">A3</div>
+      <h3>Pasang Section Break — Pisahkan 3 Bagian</h3>
+      <span class="step-tag tag-w">Section Break</span>
+    </div>
+    <div class="step-body">
+      <p style="font-size:13.5px; color:#555; margin-bottom:12px;">Section Break memisahkan dokumen agar tiap bagian bisa punya pengaturan nomor halaman yang berbeda:</p>
+      <ul class="instr">
+        <li><div class="instr-dot dot-red"></div><div><strong>Section Break 1:</strong> Letakkan kursor di akhir halaman Daftar Isi (sebelum BAB I). Tab <strong>Layout</strong> → <strong>Breaks</strong> → <strong>Next Page</strong>.</div></li>
+        <li><div class="instr-dot dot-red"></div><div><strong>Section Break 2:</strong> Letakkan kursor di akhir <em>halaman pertama</em> BAB I (setelah judul BAB I dan sebelum paragraf isi). Pasang lagi <strong>Breaks → Next Page</strong>.</div></li>
+      </ul>
+      <div class="mpath">Layout <span class="mp-sep">→</span> Breaks <span class="mp-sep">→</span> Next Page</div>
+      <div class="note n-tip">
+        <span class="n-icon">💡</span>
+        <div class="n-body">Aktifkan <strong>Show Formatting Marks</strong> (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>8</kbd>) untuk melihat tanda <em>"Section Break (Next Page)"</em> yang sudah terpasang. Ini membantu memastikan posisi break sudah tepat.</div>
+      </div>
+      <div class="note n-warn">
+        <span class="n-icon">⚠️</span>
+        <div class="n-body">Lakukan hal yang sama untuk <strong>setiap awal bab baru</strong> (BAB II, BAB III) — setiap halaman judul bab menjadi Section 2 tersendiri, dan isi babnya masuk Section 3.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-red">A4</div>
+      <h3>Nomor Halaman Section 1 — Romawi Tengah Bawah</h3>
+      <span class="step-tag tag-w">Page Number</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-red"></div><div>Klik di dalam halaman <strong>Section 1</strong> (Halaman Judul / Kata Pengantar / Daftar Isi).</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Tab <strong>Insert</strong> → <strong>Page Number</strong> → <strong>Bottom of Page</strong> → pilih <strong>Plain Number 2</strong> (tengah).</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Masih di mode edit footer, klik <strong>Page Number</strong> → <strong>Format Page Numbers…</strong></div></li>
+        <li><div class="instr-dot dot-red"></div><div>Ubah <em>Number format</em> ke <strong>i, ii, iii, …</strong> dan pastikan <em>Start at: i</em> → klik <strong>OK</strong>.</div></li>
+      </ul>
+      <div class="mpath">Insert <span class="mp-sep">→</span> Page Number <span class="mp-sep">→</span> Bottom of Page <span class="mp-sep">→</span> Plain Number 2</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-red">A5</div>
+      <h3>Nomor Halaman Section 2 — Arab Tengah Bawah (Awal Bab)</h3>
+      <span class="step-tag tag-w">Page Number</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-red"></div><div>Double-click footer di halaman <strong>awal BAB I</strong> (Section 2) untuk masuk mode edit footer.</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Di tab <strong>Header &amp; Footer</strong>, klik <strong>Link to Previous</strong> untuk <strong>menonaktifkannya</strong> (tombol tidak lagi tampak tertekan/highlighted).</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Hapus nomor halaman yang ada (jika otomatis terbawa dari Section 1).</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Klik <strong>Insert</strong> → <strong>Page Number</strong> → <strong>Bottom of Page</strong> → <strong>Plain Number 2</strong> (tengah).</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Klik <strong>Format Page Numbers…</strong> → format <strong>1, 2, 3, …</strong> → <em>Start at: 1</em> → <strong>OK</strong>.</div></li>
+      </ul>
+      <div class="note n-crit">
+        <span class="n-icon">🔑</span>
+        <div class="n-body"><strong>Nonaktifkan "Link to Previous" WAJIB dilakukan sebelum memasang nomor baru.</strong> Jika lupa, perubahan di Section 2 akan ikut mengubah footer Section 1 dan sebaliknya.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-red">A6</div>
+      <h3>Nomor Halaman Section 3 — Arab Kanan Atas (Isi Bab)</h3>
+      <span class="step-tag tag-w">Page Number</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-red"></div><div>Double-click area <strong>header</strong> di halaman isi bab pertama (Section 3).</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Nonaktifkan <strong>Link to Previous</strong> di header (sama seperti langkah A5, tapi kali ini di header bukan footer).</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Klik <strong>Insert</strong> → <strong>Page Number</strong> → <strong>Top of Page</strong> → <strong>Plain Number 3</strong> (kanan).</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Klik <strong>Format Page Numbers…</strong> → format <strong>1, 2, 3, …</strong> → pilih <strong>"Continue from previous section"</strong> (agar angka menerus, bukan mulai dari 1 lagi) → <strong>OK</strong>.</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Pastikan footer Section 3 <strong>tidak ada nomor halaman</strong> — hapus jika ada.</div></li>
+      </ul>
+      <div class="mpath">Insert <span class="mp-sep">→</span> Page Number <span class="mp-sep">→</span> Top of Page <span class="mp-sep">→</span> Plain Number 3</div>
+      <div class="note n-tip">
+        <span class="n-icon">💡</span>
+        <div class="n-body">Ulangi langkah A5 dan A6 untuk <strong>setiap bab baru</strong> (BAB II, BAB III). Tiap awal bab punya Section 2-nya sendiri (tengah bawah), diikuti Section 3 untuk isinya (kanan atas).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-red">A7</div>
+      <h3>Verifikasi Hasil Pengaturan Halaman</h3>
+      <span class="step-tag tag-r">Cek</span>
+    </div>
+    <div class="step-body">
+      <p style="font-size:13.5px; color:#555; margin-bottom:10px;">Sebelum lanjut ke Fase B, pastikan semua kondisi berikut sudah benar:</p>
+      <ul class="instr">
+        <li><div class="instr-dot dot-red"></div><div>Halaman Judul, Kata Pengantar, Daftar Isi → nomor romawi kecil di <strong>tengah bawah</strong></div></li>
+        <li><div class="instr-dot dot-red"></div><div>Setiap halaman awal BAB → nomor arab di <strong>tengah bawah</strong>, dimulai dari angka 1</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Setiap halaman isi bab → nomor arab di <strong>kanan atas</strong>, angka menerus</div></li>
+        <li><div class="instr-dot dot-red"></div><div>Tidak ada nomor halaman yang "bocor" ke section lain yang tidak seharusnya</div></li>
+      </ul>
+      <div class="note n-warn">
+        <span class="n-icon">⚠️</span>
+        <div class="n-body">Gunakan <strong>Print Preview</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd> → pratinjau) untuk memverifikasi posisi nomor di semua halaman sebelum lanjut.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FASE B ═══ -->
+  <div class="phase-header" style="margin-top:36px;">
+    <div class="phase-num pn-b">B</div>
+    <div class="phase-title-wrap">
+      <div class="phase-eyebrow teal">Fase B</div>
+      <div class="phase-title">Kustomisasi Style &amp; Heading</div>
+    </div>
+    <div class="phase-rule"></div>
+  </div>
+
+  <!-- Ketentuan Style -->
+  <div class="sec-lbl" style="margin-top:0;">
+    <span class="sec-badge sb-teal">🎨 Ketentuan Style yang Harus Diterapkan</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="padding:0; overflow:hidden;">
+      <table class="style-table">
+        <thead>
+          <tr>
+            <th style="width:18%">Style</th>
+            <th style="width:22%">Digunakan untuk</th>
+            <th>Ketentuan Format</th>
+            <th style="width:22%">Pratinjau</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Heading 1</strong></td>
+            <td>Judul BAB (BAB I, BAB II, dst.)</td>
+            <td>Font: <strong>Times New Roman 14pt</strong>, Bold, warna <strong>#0D1B2A</strong> (navy). Border bawah merah tipis. Spasi sebelum: 24pt, sesudah: 12pt.</td>
+            <td><span class="style-preview sp-h1">BAB I Pendahuluan</span></td>
+          </tr>
+          <tr>
+            <td><strong>Heading 2</strong></td>
+            <td>Sub-bab (1.1, 1.2, 2.1, dst.)</td>
+            <td>Font: <strong>Times New Roman 12pt</strong>, Bold, warna <strong>#2B579A</strong> (biru Word). Tidak ada border. Spasi sebelum: 12pt, sesudah: 6pt.</td>
+            <td><span class="style-preview sp-h2">1.1 Latar Belakang</span></td>
+          </tr>
+          <tr>
+            <td><strong>Heading 3</strong></td>
+            <td>Sub-sub-bab (jika ada)</td>
+            <td>Font: <strong>Times New Roman 12pt</strong>, Italic, warna <strong>#444444</strong>. Spasi sebelum: 6pt, sesudah: 4pt.</td>
+            <td><span class="style-preview sp-h3">1.1.1 Konteks Masalah</span></td>
+          </tr>
+          <tr>
+            <td><strong>Normal</strong></td>
+            <td>Semua paragraf isi</td>
+            <td>Font: <strong>Times New Roman 12pt</strong>, warna hitam. Spasi 1,5. Alignment Justify. First line indent: 1,25 cm.</td>
+            <td><span style="font-size:12px; font-family:Georgia; color:#333;">Paragraf isi dokumen…</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Langkah B -->
+  <div class="sec-lbl">
+    <span class="sec-badge sb-teal">🔧 Langkah Pengerjaan Fase B</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-teal">B1</div>
+      <h3>Modifikasi Style Heading 1</h3>
+      <span class="step-tag tag-t">Styles</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-teal"></div><div>Tab <strong>Home</strong> → di panel Styles, klik kanan <strong>Heading 1</strong> → pilih <strong>Modify…</strong></div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Ubah font ke <strong>Times New Roman</strong>, ukuran <strong>14</strong>, centang <strong>Bold</strong>.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Klik tombol <strong>Format</strong> (pojok kiri bawah dialog) → <strong>Font…</strong> → ubah warna font ke <strong>#0D1B2A</strong> (pilih <em>More Colors</em> → masukkan kode hex).</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Klik <strong>Format</strong> → <strong>Border…</strong> → pilih <em>Bottom border</em>, warna <strong>merah (#C0392B)</strong>, lebar <strong>1pt</strong> → OK.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Klik <strong>Format</strong> → <strong>Paragraph…</strong> → Spacing: <em>Before: 24pt</em>, <em>After: 12pt</em> → OK.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Centang <em>"Automatically update"</em> → klik <strong>OK</strong>.</div></li>
+      </ul>
+      <div class="mpath">Home <span class="mp-sep">→</span> Styles <span class="mp-sep">→</span> klik kanan Heading 1 <span class="mp-sep">→</span> Modify…</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-teal">B2</div>
+      <h3>Modifikasi Style Heading 2 &amp; Heading 3</h3>
+      <span class="step-tag tag-t">Styles</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-teal"></div><div>Ulangi langkah B1 untuk <strong>Heading 2</strong>: font Times New Roman 12pt Bold, warna <strong>#2B579A</strong>, spasi Before 12pt After 6pt, tanpa border.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Ulangi untuk <strong>Heading 3</strong>: font Times New Roman 12pt Italic, warna <strong>#444444</strong>, spasi Before 6pt After 4pt.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-teal">B3</div>
+      <h3>Modifikasi Style Normal (Body Text)</h3>
+      <span class="step-tag tag-t">Styles</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-teal"></div><div>Klik kanan <strong>Normal</strong> di panel Styles → <strong>Modify…</strong></div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Font: <strong>Times New Roman 12pt</strong>, warna hitam (Automatic).</div></li>
+        <li><div class="instr-dot dot-teal"></div><div><strong>Format → Paragraph…</strong>: Alignment <strong>Justified</strong>, Line spacing <strong>1,5</strong>, Special indent <strong>First line 1,25 cm</strong>.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Centang <em>"Automatically update"</em> → <strong>OK</strong>.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-teal">B4</div>
+      <h3>Terapkan Heading Style ke Seluruh Judul Bab &amp; Sub-bab</h3>
+      <span class="step-tag tag-t">Apply</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-teal"></div><div>Klik di baris teks "BAB I PENDAHULUAN" → klik <strong>Heading 1</strong> di panel Styles. Ulangi untuk BAB II dan BAB III.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Klik di baris "1.1 Latar Belakang" → klik <strong>Heading 2</strong>. Ulangi untuk semua sub-bab.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Terapkan style <strong>Normal</strong> ke semua paragraf isi.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Verifikasi via <strong>View → Navigation Pane</strong> — semua judul harus tampil bersih di panel kiri.</div></li>
+      </ul>
+      <div class="note n-tip">
+        <span class="n-icon">💡</span>
+        <div class="n-body">Shortcut: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> untuk Heading 1, <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>2</kbd> untuk Heading 2. Jauh lebih cepat dari klik mouse.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-teal">B5</div>
+      <h3>Gunakan Format Painter untuk Efisiensi</h3>
+      <span class="step-tag tag-t">Format Painter</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-teal"></div><div>Jika ada teks yang formatnya sudah benar tapi belum diberi style, gunakan <strong>Format Painter</strong> untuk menyalin format secara cepat.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div>Seleksi teks sumber → klik ikon kuas di tab Home → klik/drag ke teks tujuan.</div></li>
+        <li><div class="instr-dot dot-teal"></div><div><strong>Double-click</strong> ikon Format Painter untuk menggunakannya ke banyak tempat sekaligus. Tekan <kbd>Esc</kbd> untuk berhenti.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══ FASE C ═══ -->
+  <div class="phase-header" style="margin-top:36px;">
+    <div class="phase-num pn-c">C</div>
+    <div class="phase-title-wrap">
+      <div class="phase-eyebrow navy">Fase C</div>
+      <div class="phase-title">Daftar Isi Otomatis</div>
+    </div>
+    <div class="phase-rule"></div>
+  </div>
+
+  <div class="sec-lbl" style="margin-top:0;">
+    <span class="sec-badge sb-navy">🔧 Langkah Pengerjaan Fase C</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-navy">C1</div>
+      <h3>Sisipkan Daftar Isi Otomatis</h3>
+      <span class="step-tag tag-w">Table of Contents</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-navy"></div><div>Klik di <strong>halaman Daftar Isi</strong> yang sudah disiapkan di Langkah A1 (halaman yang kosong).</div></li>
+        <li><div class="instr-dot dot-navy"></div><div>Tab <strong>References</strong> → klik <strong>Table of Contents</strong> → pilih <strong>"Custom Table of Contents…"</strong></div></li>
+        <li><div class="instr-dot dot-navy"></div><div>Atur: <em>Show levels: 2</em> (tampilkan Heading 1 dan Heading 2 saja). <em>Tab leader: …</em> (titik). Centang <em>Show page numbers</em> dan <em>Right align page numbers</em>.</div></li>
+        <li><div class="instr-dot dot-navy"></div><div>Klik <strong>OK</strong> — daftar isi langsung terbentuk.</div></li>
+      </ul>
+      <div class="mpath">References <span class="mp-sep">→</span> Table of Contents <span class="mp-sep">→</span> Custom Table of Contents…</div>
+      <div class="note n-crit">
+        <span class="n-icon">⚠️</span>
+        <div class="n-body">Jika daftar isi <strong>kosong atau tidak ada isinya</strong>, berarti Heading Style belum diterapkan dengan benar di Fase B. Kembali ke Fase B dan pastikan semua judul bab menggunakan Heading 1/2.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-navy">C2</div>
+      <h3>Kustomisasi Tampilan Daftar Isi</h3>
+      <span class="step-tag tag-w">TOC Style</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-navy"></div><div>Di dialog Custom Table of Contents, klik <strong>Modify…</strong> untuk mengubah tampilan tiap level.</div></li>
+        <li><div class="instr-dot dot-navy"></div><div><strong>TOC 1</strong> (Heading 1): font Times New Roman 12pt, Bold, warna navy.</div></li>
+        <li><div class="instr-dot dot-navy"></div><div><strong>TOC 2</strong> (Heading 2): font Times New Roman 11pt, Regular, indent kiri 0,5 cm.</div></li>
+        <li><div class="instr-dot dot-navy"></div><div>Klik <strong>OK</strong> untuk menerapkan.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-head">
+      <div class="step-n sn-navy">C3</div>
+      <h3>Update Daftar Isi &amp; Verifikasi Akhir</h3>
+      <span class="step-tag tag-w">Update</span>
+    </div>
+    <div class="step-body">
+      <ul class="instr">
+        <li><div class="instr-dot dot-navy"></div><div>Klik di dalam daftar isi → klik <strong>Update Table</strong> yang muncul di atas → pilih <strong>"Update entire table"</strong>.</div></li>
+        <li><div class="instr-dot dot-navy"></div><div>Verifikasi: nomor halaman di daftar isi harus cocok dengan posisi bab yang sebenarnya di dokumen.</div></li>
+        <li><div class="instr-dot dot-navy"></div><div>Periksa bahwa nomor halaman di daftar isi menunjukkan nomor <strong>angka arab</strong> (bukan romawi) sesuai penomoran section isi bab.</div></li>
+        <li><div class="instr-dot dot-navy"></div><div>Lakukan <strong>Print Preview</strong> satu kali terakhir untuk memastikan keseluruhan tampilan dokumen sudah benar.</div></li>
+      </ul>
+      <div class="note n-tip">
+        <span class="n-icon">💡</span>
+        <div class="n-body">Shortcut update daftar isi: klik daftar isi → tekan <kbd>F9</kbd> → pilih <em>Update entire table</em>. Biasakan update daftar isi <strong>setiap kali menambah atau mengubah konten</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RUBRIK -->
+  <div class="sec-lbl" style="margin-top:32px;">
+    <span class="sec-badge sb-amber">📊 Rubrik Penilaian</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-body" style="padding:0; overflow:hidden;">
+      <table class="rubrik-table">
+        <thead>
+          <tr><th style="width:40%">Kriteria</th><th>Indikator</th><th>Poin</th></tr>
+        </thead>
+        <tbody>
+          <tr class="phase-row"><td colspan="3">FASE A — Pengaturan Halaman</td></tr>
+          <tr>
+            <td><strong>Section Break &amp; Struktur</strong></td>
+            <td>Section Break terpasang di posisi yang tepat (antara bagian pendahuluan, awal bab, dan isi bab). Tidak ada konten yang salah section.</td>
+            <td>15</td>
+          </tr>
+          <tr>
+            <td><strong>Nomor Halaman Section 1</strong></td>
+            <td>Halaman pendahuluan bernomor romawi kecil (i, ii, iii) di posisi tengah bawah. Halaman judul boleh tanpa nomor.</td>
+            <td>15</td>
+          </tr>
+          <tr>
+            <td><strong>Nomor Halaman Awal Bab</strong></td>
+            <td>Setiap halaman pertama bab bernomor arab di tengah bawah. Mulai dari angka 1 di BAB I.</td>
+            <td>15</td>
+          </tr>
+          <tr>
+            <td><strong>Nomor Halaman Isi Bab</strong></td>
+            <td>Halaman isi bab bernomor arab di kanan atas. Angka menerus (tidak dimulai ulang). Footer halaman isi bersih tanpa nomor.</td>
+            <td>15</td>
+          </tr>
+          <tr class="phase-row"><td colspan="3">FASE B — Style &amp; Heading</td></tr>
+          <tr>
+            <td><strong>Modifikasi Style Heading</strong></td>
+            <td>Heading 1, 2, dan 3 dimodifikasi sesuai ketentuan (font, ukuran, warna, border untuk H1). Perubahan konsisten di seluruh dokumen.</td>
+            <td>15</td>
+          </tr>
+          <tr>
+            <td><strong>Penerapan Style</strong></td>
+            <td>Semua judul bab menggunakan Heading 1, sub-bab menggunakan Heading 2. Style Normal diterapkan di semua paragraf isi (spasi 1,5, justify, indent).</td>
+            <td>10</td>
+          </tr>
+          <tr class="phase-row"><td colspan="3">FASE C — Daftar Isi</td></tr>
+          <tr>
+            <td><strong>Daftar Isi Otomatis</strong></td>
+            <td>Daftar isi dibuat via References → Table of Contents (bukan diketik manual). Menampilkan H1 dan H2, dengan nomor halaman dan leader dots.</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td><strong>Akurasi &amp; Kustomisasi</strong></td>
+            <td>Nomor halaman di daftar isi sesuai dokumen. TOC style dikustomisasi (Bold untuk level 1, indent untuk level 2).</td>
+            <td>5</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="2"><strong>TOTAL</strong></td>
+            <td>100</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="sec-lbl" style="margin-top:28px;">
+    <span class="sec-badge sb-navy">📤 Pengumpulan</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="submit-box">
+    <p style="font-size:13.5px; margin-bottom:10px; color:#333;">Kumpulkan <strong>satu file</strong> dengan nama sesuai format:</p>
+    <div class="sb-filename">NIM_NamaLengkap_Modul3.docx</div>
+    <p style="font-size:12.5px; color:#777;">Contoh: <span style="font-family:'JetBrains Mono',monospace; font-size:12px;">20230001_AndiSaputra_Modul3.docx</span></p>
+    <div class="note n-warn" style="margin-top:12px;">
+      <span class="n-icon">⚠️</span>
+      <div class="n-body">Simpan dalam format <strong>.docx</strong> (bukan .pdf). Dosen perlu membuka dan memeriksa langsung Section Break serta style yang diterapkan di dalam file Word.</div>
+    </div>
+  </div>
+
+</div><!-- /main-col -->
+
+<!-- ═══════════════════════════════════════
+     STICKY SIDEBAR
+═══════════════════════════════════════ -->
+<div class="sticky-side">
+
+  <!-- Ring progress -->
+  <div class="side-card">
+    <div class="side-head">
+      <span>Kelengkapan</span>
+      <span id="clCount" style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#AAA;">0/14</span>
+    </div>
+    <div class="side-body">
+      <div style="text-align:center; margin-bottom:12px;">
+        <div class="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 76 76">
+            <circle class="ring-track" cx="38" cy="38" r="32"/>
+            <circle class="ring-fill" id="ringFill" cx="38" cy="38" r="32"/>
+          </svg>
+          <div class="ring-label">
+            <span class="ring-pct" id="ringPct">0%</span>
+            <span class="ring-sub">selesai</span>
+          </div>
+        </div>
+        <div class="ring-cap" id="ringCap">Centang langkah yang sudah selesai</div>
+      </div>
+
+      <ul class="cl-list" id="checklist">
+        <li class="cl-phase-lbl">Fase A — Halaman</li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Konten 3 bab sudah diketik</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Margin 4-3-3-3 cm diatur</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Section Break terpasang</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Nomor romawi tengah bawah ✓</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Nomor arab tengah bawah (awal bab) ✓</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Nomor arab kanan atas (isi bab) ✓</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Link to Previous dinonaktifkan</span></li>
+        <li class="cl-phase-lbl">Fase B — Style</li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Heading 1 dimodifikasi</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Heading 2 &amp; 3 dimodifikasi</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Style Normal dimodifikasi</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Semua judul diterapkan H1/H2</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Navigation Pane bersih</span></li>
+        <li class="cl-phase-lbl">Fase C — Daftar Isi</li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>Daftar isi otomatis disisipkan</span></li>
+        <li class="cl-item" onclick="toggleCheck(this)"><span class="cl-box"></span><span>TOC style dikustomisasi &amp; diupdate</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Score -->
+  <div class="side-card">
+    <div class="side-head"><span>Bobot Nilai</span></div>
+    <div class="side-body">
+      <div class="score-rows">
+        <div class="score-row"><span class="sr-lbl">Section Break</span><span class="sr-pts">15</span></div>
+        <div class="score-row"><span class="sr-lbl">Nomor romawi</span><span class="sr-pts">15</span></div>
+        <div class="score-row"><span class="sr-lbl">Nomor awal bab</span><span class="sr-pts">15</span></div>
+        <div class="score-row"><span class="sr-lbl">Nomor isi bab</span><span class="sr-pts">15</span></div>
+        <div class="score-row"><span class="sr-lbl">Modifikasi style</span><span class="sr-pts">15</span></div>
+        <div class="score-row"><span class="sr-lbl">Penerapan style</span><span class="sr-pts">10</span></div>
+        <div class="score-row"><span class="sr-lbl">Daftar isi otomatis</span><span class="sr-pts">10</span></div>
+        <div class="score-row"><span class="sr-lbl">Akurasi TOC</span><span class="sr-pts">5</span></div>
+        <div class="score-row sr-total"><span class="sr-lbl"><strong>Total</strong></span><span class="sr-pts">100</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="tip-pill">
+    <strong>⚡ Urutan Kritis</strong>
+    Kerjakan persis berurutan: Section Break → Nomor Halaman → Style → Daftar Isi. Jangan pasang daftar isi sebelum heading style selesai — hasilnya akan kosong.
+  </div>
+
+  <button class="print-btn" onclick="window.print()">🖨 Cetak Lembar Tugas</button>
+
+</div><!-- /sticky-side -->
+
+</div><!-- /layout-grid -->
+</div><!-- /main -->
+
+<footer>
+  <a href="panduan-halaman-daftarisi.html">← Modul 3: Halaman &amp; Daftar Isi</a> &nbsp;·&nbsp;
+  <a href="index.html">🏠 Beranda</a><br>
+  <span style="display:inline-block; margin-top:5px;">Tugas Modul 3 · Microsoft Word · UKWMS</span>
+</footer>
+
+<script>
+  const TOTAL = 14;
+  const CIRC  = 2 * Math.PI * 32; // 201.06
+
+  function toggleCheck(item) {
+    item.classList.toggle('done');
+    item.querySelector('.cl-box').textContent = item.classList.contains('done') ? '✓' : '';
+    updateRing();
+  }
+
+  function updateRing() {
+    const done = document.querySelectorAll('.cl-item.done').length;
+    const pct  = Math.round((done / TOTAL) * 100);
+
+    document.getElementById('ringFill').style.strokeDashoffset = CIRC - (CIRC * pct / 100);
+    document.getElementById('ringPct').textContent  = pct + '%';
+    document.getElementById('clCount').textContent  = done + '/' + TOTAL;
+
+    const fill = document.getElementById('ringFill');
+    if (pct === 100)     { fill.style.stroke = '#16A34A'; }
+    else if (pct >= 60)  { fill.style.stroke = '#1A6B52'; }
+    else if (pct >= 30)  { fill.style.stroke = '#2B579A'; }
+    else                 { fill.style.stroke = '#C0392B'; }
+
+    const caps = [
+      'Centang langkah yang sudah selesai',
+      'Fase A sedang berjalan, lanjutkan!',
+      'Lebih dari separuh selesai 💪',
+      'Hampir sampai, tinggal sedikit!',
+      '🎉 Semua selesai! Siap dikumpulkan.'
+    ];
+    const idx = pct === 100 ? 4 : pct >= 75 ? 3 : pct >= 50 ? 2 : pct >= 20 ? 1 : 0;
+    document.getElementById('ringCap').textContent = caps[idx];
+  }
+</script>
+</body>
+</html>
