@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul 3: Halaman & Daftar Isi — Word & Google Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:         #F0F3F8;
+    --surface:    #FFFFFF;
+    --border:     #DDE3EF;
+    --text:       #111827;
+    --muted:      #5C6480;
+    --navy:       #1C2B4A;
+    --teal:       #2E9E6B;
+    --teal-lt:    #E6F5EE;
+    --teal-md:    #A7D9C0;
+    --word:       #2B579A;
+    --word-lt:    #EEF3FB;
+    --gdocs:      #1A73E8;
+    --gdocs-lt:   #E8F0FE;
+    --warn-bg:    #FEF3C7;
+    --warn-bdr:   #F59E0B;
+    --warn-txt:   #78350F;
+    --diff-bg:    #FFF1F2;
+    --diff-bdr:   #F43F5E;
+    --diff-txt:   #881337;
+    --r:          12px;
+    --r-sm:       7px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--navy);
+    padding: 9px 28px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase;
+    color: rgba(255,255,255,.38);
+  }
+  .topbar a { color: rgba(255,255,255,.38); text-decoration: none; transition: color .2s; }
+  .topbar a:hover { color: #fff; }
+  .topbar .sep { color: rgba(255,255,255,.15); }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #1E4060 55%, #1A6B52 100%);
+    padding: 52px 28px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Signature background: vertical page-line grid */
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 920px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 310px;
+    gap: 40px; align-items: flex-end;
+    position: relative; z-index: 1;
+  }
+  .hero-text-col { padding-bottom: 0; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(46,158,107,.18);
+    border: 1px solid rgba(46,158,107,.35);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase;
+    color: #6EE7B7; margin-bottom: 18px;
+  }
+  .hero-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(28px, 5vw, 44px);
+    color: #fff; line-height: 1.13; margin-bottom: 12px;
+    font-weight: 400;
+  }
+  .hero-title em { font-style: italic; color: #6EE7B7; }
+  .hero-desc {
+    font-size: 14.5px; color: rgba(255,255,255,.58);
+    max-width: 460px; margin-bottom: 26px; line-height: 1.65;
+  }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 38px; }
+  .hp { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; font-size: 13px; font-weight: 700; }
+  .hp-word  { background: var(--word-lt); color: var(--word); }
+  .hp-gdocs { background: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* ── SIGNATURE: mini document preview ── */
+  .mini-doc-wrap {
+    position: relative;
+    padding-bottom: 28px;
+    align-self: flex-end;
+  }
+  .mini-doc {
+    background: #fff;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 20px 56px rgba(0,0,0,.35), 0 4px 16px rgba(0,0,0,.2);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow: hidden;
+    width: 100%;
+  }
+  /* Header bar */
+  .mdoc-header {
+    background: #F0F3F8; border-bottom: 1.5px solid #DDE3EF;
+    padding: 7px 14px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .mdoc-header-left { font-size: 9px; font-weight: 700; color: #888; letter-spacing: .04em; }
+  .mdoc-header-right { font-size: 9px; color: #AAA; font-style: italic; }
+  /* Page num in header */
+  .mdoc-header-pg {
+    background: var(--teal); color: #fff;
+    font-size: 9px; font-weight: 800;
+    padding: 2px 7px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  /* Content area */
+  .mdoc-body { padding: 14px 16px 0; }
+  /* ToC preview */
+  .mdoc-toc-title { font-size: 11px; font-weight: 800; color: #1C2B4A; border-bottom: 2px solid var(--teal); padding-bottom: 4px; margin-bottom: 10px; }
+  .mdoc-toc-row {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 6px; font-size: 9px;
+  }
+  .mdoc-toc-text { color: #2B579A; font-weight: 600; white-space: nowrap; }
+  .mdoc-toc-dots { flex: 1; border-bottom: 1px dotted #CCC; margin: 0 5px; position: relative; top: -1px; }
+  .mdoc-toc-pg { color: #555; font-family: 'JetBrains Mono', monospace; font-size: 8px; font-weight: 700; }
+  .mdoc-toc-row.h2 .mdoc-toc-text { color: #444; font-weight: 500; margin-left: 12px; font-size: 8.5px; }
+  /* Page break indicator */
+  .mdoc-break {
+    border-top: 1.5px dashed #E0E0E0;
+    margin: 10px 0 0;
+    position: relative;
+  }
+  .mdoc-break::after {
+    content: '— halaman baru —';
+    position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+    background: #fff; padding: 0 6px;
+    font-size: 7.5px; color: #BBB; white-space: nowrap; font-style: italic;
+  }
+  /* Content page with header/footer */
+  .mdoc-page2 { padding: 0 16px; }
+  .mdoc-pg2-header {
+    border-bottom: 1px solid #EEE;
+    padding: 6px 0; margin-bottom: 8px;
+    display: flex; justify-content: space-between;
+    font-size: 8px; color: #AAA; font-style: italic;
+  }
+  .mdoc-line { height: 5px; border-radius: 3px; background: #EBEBEB; margin-bottom: 5px; }
+  .mdoc-line.short { width: 65%; }
+  .mdoc-line.med   { width: 82%; }
+  .mdoc-line.full  { width: 100%; }
+  .mdoc-line.h1 { height: 8px; width: 55%; background: #C5D8F5; border-radius: 3px; margin-bottom: 7px; }
+  .mdoc-pg2-footer {
+    border-top: 1px solid #EEE;
+    padding: 5px 0; margin-top: 8px;
+    display: flex; justify-content: space-between;
+    font-size: 8px; color: #AAA;
+  }
+  .mdoc-pg-num {
+    background: var(--navy); color: #fff;
+    font-size: 7.5px; font-weight: 800;
+    padding: 2px 7px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── NAV TABS ── */
+  .nav-wrap {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+  }
+  .nav-tabs {
+    display: flex; gap: 2px; padding: 0 24px;
+    max-width: 920px; margin: 0 auto;
+  }
+  .nav-tab {
+    padding: 13px 16px; font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; white-space: nowrap;
+    border: none; background: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: all .2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+  .tab-section { display: none; padding: 36px 0 52px; }
+  .tab-section.active { display: block; }
+  .sec-hd { margin-bottom: 26px; }
+  .sec-hd h2 { font-size: 21px; font-weight: 800; margin-bottom: 5px; }
+  .sec-hd p  { color: var(--muted); font-size: 14px; }
+
+  /* ── ACCORDION CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 14px; overflow: hidden;
+  }
+  .card-hd {
+    display: flex; align-items: center; gap: 14px;
+    padding: 17px 22px; cursor: pointer; user-select: none;
+  }
+  .card-ico {
+    width: 40px; height: 40px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; flex-shrink: 0;
+  }
+  .card-hd h3 { font-size: 15px; font-weight: 700; flex: 1; }
+  .chevron { color: var(--muted); font-size: 11px; transition: transform .25s; }
+  .card.open .chevron { transform: rotate(180deg); }
+  .card-bd { display: none; border-top: 1px solid var(--border); }
+  .card.open .card-bd { display: block; }
+
+  /* ── COMPARE GRID ── */
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; }
+  .cmp-col { padding: 22px; min-width: 0; overflow: hidden; }
+  .cmp-col:first-child { border-right: 1px solid var(--border); }
+  .app-lbl {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 100px;
+    font-size: 12px; font-weight: 700; margin-bottom: 14px;
+  }
+  .lbl-w { background: var(--word-lt); color: var(--word); }
+  .lbl-g { background: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* ── STEPS ── */
+  .steps { list-style: none; }
+  .steps li {
+    display: flex; gap: 10px; margin-bottom: 9px;
+    font-size: 14px; line-height: 1.55; align-items: flex-start;
+  }
+  .sn {
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .sn-w { background: var(--word-lt); color: var(--word); }
+  .sn-g { background: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* ── MENU PATH ── */
+  .menu-path {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 3px;
+    background: #F2F4FA; border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 6px 12px;
+    font-size: 12px; font-family: 'JetBrains Mono', monospace;
+    margin: 8px 0; line-height: 1.5; max-width: 100%;
+  }
+  .mp-sep { color: var(--muted); }
+
+  /* ── NOTES ── */
+  .note {
+    border-radius: var(--r-sm); padding: 11px 14px;
+    font-size: 13px; display: flex; flex-wrap: wrap;
+    gap: 4px 9px; align-items: flex-start;
+    margin-top: 12px; line-height: 1.65;
+  }
+  .n-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .n-body { flex: 1; min-width: 180px; }
+  .n-tip  { background: var(--teal-lt); border-left: 3px solid var(--teal); color: #14532D; }
+  .n-warn { background: var(--warn-bg); border-left: 3px solid var(--warn-bdr); color: var(--warn-txt); }
+  .n-diff { background: var(--diff-bg); border-left: 3px solid var(--diff-bdr); color: var(--diff-txt); }
+  .n-info { background: var(--word-lt); border-left: 3px solid var(--word); color: #1e3a6e; }
+
+  kbd {
+    display: inline-block;
+    background: #ECEEF5; border: 1px solid #CDD1E0;
+    border-radius: 4px; padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--text); white-space: nowrap;
+  }
+
+  /* ── VISUAL EXAMPLE BLOCKS ── */
+  /* Header/Footer visual demo */
+  .hf-demo {
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    font-size: 12.5px;
+    margin: 10px 0;
+    background: #FAFBFF;
+  }
+  .hf-header {
+    background: var(--teal-lt);
+    border-bottom: 1.5px solid var(--teal-md);
+    padding: 6px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11.5px; color: #14532D; font-weight: 600;
+  }
+  .hf-header .area-label {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--teal); background: #fff;
+    padding: 2px 8px; border-radius: 100px;
+  }
+  .hf-body { padding: 14px; display: flex; flex-direction: column; gap: 5px; }
+  .hf-body .body-line { height: 5px; border-radius: 3px; background: #E0E3ED; }
+  .hf-body .body-line.s { width: 60%; }
+  .hf-body .body-line.m { width: 85%; }
+  .hf-body .body-line.f { width: 100%; }
+  .hf-footer {
+    background: #F5F6FA;
+    border-top: 1.5px solid var(--border);
+    padding: 6px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11.5px; color: var(--muted);
+  }
+  .hf-footer .area-label {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--muted); background: #fff;
+    padding: 2px 8px; border-radius: 100px; border: 1px solid var(--border);
+  }
+  .pg-badge {
+    background: var(--navy); color: #fff;
+    font-size: 10.5px; font-weight: 800;
+    padding: 2px 9px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .pg-badge-roman {
+    background: #6B7280; color: #fff;
+    font-size: 10.5px; font-weight: 800;
+    padding: 2px 9px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ToC demo */
+  .toc-demo {
+    background: #FAFBFF;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 16px 18px;
+    margin: 10px 0;
+    font-size: 13px;
+  }
+  .toc-demo-title {
+    font-weight: 800; font-size: 14px; color: var(--navy);
+    border-bottom: 2px solid var(--teal);
+    padding-bottom: 6px; margin-bottom: 12px;
+    font-family: 'DM Serif Display', serif;
+  }
+  .toc-row {
+    display: flex; align-items: baseline; gap: 0;
+    margin-bottom: 6px; font-size: 13px;
+  }
+  .toc-text { color: var(--word); font-weight: 600; white-space: nowrap; }
+  .toc-row.sub .toc-text { color: var(--text); font-weight: 500; font-size: 12.5px; margin-left: 20px; }
+  .toc-leader { flex: 1; border-bottom: 1px dotted #9CA3AF; margin: 0 6px; position: relative; top: -3px; }
+  .toc-pg { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); font-weight: 700; }
+
+  /* Section break visual */
+  .break-demo {
+    margin: 10px 0;
+    border: 1.5px dashed var(--border);
+    border-radius: var(--r-sm);
+    padding: 12px 16px;
+    background: var(--warn-bg);
+    font-size: 12.5px;
+    color: var(--warn-txt);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  /* Page number formats table */
+  .pg-fmt-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px; padding: 16px;
+  }
+  .pg-fmt-card {
+    border: 1.5px solid var(--border); border-radius: var(--r-sm);
+    padding: 12px; text-align: center; background: #FAFBFF;
+  }
+  .pg-fmt-preview {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px; font-weight: 700;
+    color: var(--navy); margin-bottom: 5px;
+  }
+  .pg-fmt-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+  /* Quick-ref table */
+  .ref-table {
+    width: 100%; border-collapse: collapse; font-size: 13.5px;
+  }
+  .ref-table th {
+    background: var(--navy); color: #fff;
+    padding: 10px 14px; text-align: left;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase;
+  }
+  .ref-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    vertical-align: top; line-height: 1.5;
+  }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table tr:hover td { background: #F5F7FF; }
+
+  /* Tips grid */
+  .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+  .tip-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 18px;
+  }
+  .tip-icon { font-size: 26px; margin-bottom: 10px; }
+  .tip-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+  .tip-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+  @media (max-width: 640px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .mini-doc-wrap { display: none; }
+    .cmp { grid-template-columns: 1fr; }
+    .cmp-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero { padding: 36px 20px 36px; }
+    .pg-fmt-grid { grid-template-columns: repeat(3,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html">🏠 Beranda</a>
+  <span class="sep">/</span>
+  Modul 3 — Halaman &amp; Daftar Isi
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-text-col">
+      <div class="hero-eyebrow">📑 Modul 3 dari 5</div>
+      <h1 class="hero-title">Halaman &amp;<br><em>Daftar Isi</em></h1>
+      <p class="hero-desc">Kuasai header, footer, nomor halaman, page break, section break, dan daftar isi otomatis — pondasi setiap laporan profesional.</p>
+      <div class="hero-pills">
+        <span class="hp hp-word">⬛ Microsoft Word</span>
+        <span class="hp hp-gdocs">🔵 Google Docs</span>
+      </div>
+    </div>
+
+    <!-- SIGNATURE: animated mini document -->
+    <div class="mini-doc-wrap">
+      <div class="mini-doc">
+        <!-- Page 1: ToC -->
+        <div class="mdoc-header">
+          <span class="mdoc-header-left">Laporan PKL · Andi Saputra</span>
+          <span class="mdoc-header-right">UKWMS 2024</span>
+        </div>
+        <div class="mdoc-body">
+          <div class="mdoc-toc-title">DAFTAR ISI</div>
+          <div class="mdoc-toc-row">
+            <span class="mdoc-toc-text">BAB I Pendahuluan</span>
+            <span class="mdoc-toc-dots"></span>
+            <span class="mdoc-toc-pg">1</span>
+          </div>
+          <div class="mdoc-toc-row h2">
+            <span class="mdoc-toc-text">1.1 Latar Belakang</span>
+            <span class="mdoc-toc-dots"></span>
+            <span class="mdoc-toc-pg">1</span>
+          </div>
+          <div class="mdoc-toc-row h2">
+            <span class="mdoc-toc-text">1.2 Tujuan PKL</span>
+            <span class="mdoc-toc-dots"></span>
+            <span class="mdoc-toc-pg">2</span>
+          </div>
+          <div class="mdoc-toc-row">
+            <span class="mdoc-toc-text">BAB II Profil Perusahaan</span>
+            <span class="mdoc-toc-dots"></span>
+            <span class="mdoc-toc-pg">3</span>
+          </div>
+          <div class="mdoc-toc-row">
+            <span class="mdoc-toc-text">BAB III Kegiatan PKL</span>
+            <span class="mdoc-toc-dots"></span>
+            <span class="mdoc-toc-pg">5</span>
+          </div>
+        </div>
+        <div class="mdoc-break"></div>
+        <!-- Page 2: with header/footer -->
+        <div class="mdoc-page2">
+          <div class="mdoc-pg2-header">
+            <span>Laporan PKL · Andi Saputra</span>
+            <span class="mdoc-header-pg">UKWMS</span>
+          </div>
+          <div class="mdoc-line h1"></div>
+          <div class="mdoc-line full"></div>
+          <div class="mdoc-line med"></div>
+          <div class="mdoc-line full"></div>
+          <div class="mdoc-line short"></div>
+          <div class="mdoc-pg2-footer">
+            <span>Microsoft Word &amp; Google Docs</span>
+            <span class="mdoc-pg-num">1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('header')">📌 Header &amp; Footer</button>
+    <button class="nav-tab" onclick="showTab('nomor')">🔢 Nomor Halaman</button>
+    <button class="nav-tab" onclick="showTab('break')">✂️ Page &amp; Section Break</button>
+    <button class="nav-tab" onclick="showTab('toc')">📋 Daftar Isi Otomatis</button>
+    <button class="nav-tab" onclick="showTab('quickref')">⚡ Referensi Cepat</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════
+     TAB 1 — HEADER & FOOTER
+══════════════════════════════════════ -->
+<div class="tab-section active" id="tab-header">
+  <div class="sec-hd">
+    <h2>📌 Header &amp; Footer</h2>
+    <p>Menambahkan informasi berulang di bagian atas dan bawah setiap halaman — nama penulis, judul dokumen, tanggal, atau nomor halaman.</p>
+  </div>
+
+  <!-- Demo visual -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--teal-lt)">👁</div>
+      <h3>Seperti Apa Header &amp; Footer di Dokumen</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="hf-demo">
+          <div class="hf-header">
+            <span>Laporan PKL — PT. Solusi Digital Nusantara</span>
+            <span class="area-label">HEADER</span>
+            <span style="font-size:11px; color:#555;">UKWMS 2024</span>
+          </div>
+          <div class="hf-body">
+            <div class="body-line h1" style="height:8px; width:50%; background:#C5D8F5; border-radius:3px;"></div>
+            <div class="body-line f"></div>
+            <div class="body-line m"></div>
+            <div class="body-line f"></div>
+            <div class="body-line s"></div>
+          </div>
+          <div class="hf-footer">
+            <span class="area-label">FOOTER</span>
+            <span>Universitas Katolik Widya Mandala Surabaya</span>
+            <span class="pg-badge">Hal. 3</span>
+          </div>
+        </div>
+        <p style="font-size:12.5px; color:var(--muted); margin-top:10px; text-align:center;">Header dan footer muncul otomatis di <em>setiap halaman</em> tanpa perlu diketik ulang.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menyisipkan Header/Footer -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">➕</div>
+      <h3>Menyisipkan Header &amp; Footer</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik tab <strong>Insert</strong> di Ribbon.</li>
+            <li><span class="sn sn-w">2</span>Klik <strong>Header</strong> → pilih template siap pakai, atau klik <em>Edit Header</em> untuk isian kosong.</li>
+            <li><span class="sn sn-w">3</span>Area header aktif (ditandai garis biru putus-putus). Ketik teks header.</li>
+            <li><span class="sn sn-w">4</span>Untuk footer: klik <strong>Footer</strong> → pilih template, atau tekan <kbd>Tab</kbd> dua kali dari header untuk loncat ke footer.</li>
+            <li><span class="sn sn-w">5</span>Klik <strong>Close Header and Footer</strong> (atau double-click area isi dokumen) untuk keluar dari mode edit header/footer.</li>
+          </ol>
+          <div class="menu-path">Insert <span class="mp-sep">→</span> Header / Footer <span class="mp-sep">→</span> Edit Header</div>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Double-click area header/footer yang sudah ada untuk mengeditnya kembali tanpa harus masuk menu Insert.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik menu <strong>Insert</strong> → pilih <strong>Headers &amp; footers</strong>.</li>
+            <li><span class="sn sn-g">2</span>Pilih <strong>Header</strong> atau <strong>Footer</strong>.</li>
+            <li><span class="sn sn-g">3</span>Kursor otomatis pindah ke area header/footer. Ketik teks yang diinginkan.</li>
+            <li><span class="sn sn-g">4</span>Klik di area isi dokumen untuk kembali ke mode pengetikan biasa.</li>
+          </ol>
+          <div class="menu-path">Insert <span class="mp-sep">→</span> Headers &amp; footers <span class="mp-sep">→</span> Header / Footer</div>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Di Google Docs, klik langsung di area atas/bawah halaman (di luar area teks utama) untuk mengaktifkan header/footer secara langsung.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Berbeda Halaman Pertama -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--teal-lt)">📄</div>
+      <h3>Header Berbeda di Halaman Pertama</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Double-click area header untuk masuk mode edit.</li>
+            <li><span class="sn sn-w">2</span>Di tab <strong>Header &amp; Footer</strong>, centang opsi <strong>Different First Page</strong>.</li>
+            <li><span class="sn sn-w">3</span>Header halaman pertama kini terpisah — bisa dikosongkan atau diisi berbeda (misal: halaman judul tidak perlu header).</li>
+            <li><span class="sn sn-w">4</span>Centang juga <strong>Different Odd &amp; Even Pages</strong> jika dokumen dicetak bolak-balik.</li>
+          </ol>
+          <div class="note n-info">
+            <span class="n-icon">📌</span>
+            <span class="n-body">Untuk laporan akademik, halaman judul dan daftar isi biasanya <strong>tidak memiliki header</strong>. Gunakan <em>Different First Page</em> atau Section Break untuk mengatur ini.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik di area header dokumen untuk mengaktifkannya.</li>
+            <li><span class="sn sn-g">2</span>Centang opsi <strong>Different first page header &amp; footer</strong> yang muncul di bawah area header.</li>
+            <li><span class="sn sn-g">3</span>Halaman pertama kini memiliki header/footer tersendiri yang bisa berbeda.</li>
+          </ol>
+          <div class="note n-diff">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Google Docs hanya mendukung <em>Different First Page</em>. Opsi header ganjil/genap berbeda tidak tersedia secara native.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Margin Header/Footer -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:#F0F3F8">📐</div>
+      <h3>Mengatur Jarak Header &amp; Footer dari Tepi Halaman</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Double-click area header → tab <strong>Header &amp; Footer</strong> muncul.</li>
+            <li><span class="sn sn-w">2</span>Di grup <em>Position</em>, ubah nilai <strong>Header from Top</strong> dan <strong>Footer from Bottom</strong> (standar: 1,25 cm).</li>
+          </ol>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik <strong>Format → Headers &amp; footers…</strong></li>
+            <li><span class="sn sn-g">2</span>Atur nilai <em>Header</em> (jarak dari atas) dan <em>Footer</em> (jarak dari bawah) dalam satuan cm.</li>
+          </ol>
+          <div class="menu-path">Format <span class="mp-sep">→</span> Headers &amp; footers…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 2 — NOMOR HALAMAN
+══════════════════════════════════════ -->
+<div class="tab-section" id="tab-nomor">
+  <div class="sec-hd">
+    <h2>🔢 Nomor Halaman</h2>
+    <p>Menambahkan, memformat, dan memulai ulang penomoran halaman — termasuk penomoran romawi untuk bagian awal laporan.</p>
+  </div>
+
+  <!-- Format number preview -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--teal-lt)">🔢</div>
+      <h3>Format Nomor Halaman yang Tersedia</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="pg-fmt-grid">
+        <div class="pg-fmt-card"><div class="pg-fmt-preview">1 2 3</div><div class="pg-fmt-label">Angka Arab<br>(standar isi)</div></div>
+        <div class="pg-fmt-card"><div class="pg-fmt-preview">i ii iii</div><div class="pg-fmt-label">Romawi kecil<br>(pendahuluan)</div></div>
+        <div class="pg-fmt-card"><div class="pg-fmt-preview">I II III</div><div class="pg-fmt-label">Romawi besar</div></div>
+        <div class="pg-fmt-card"><div class="pg-fmt-preview">a b c</div><div class="pg-fmt-label">Huruf kecil</div></div>
+        <div class="pg-fmt-card"><div class="pg-fmt-preview">A B C</div><div class="pg-fmt-label">Huruf besar</div></div>
+        <div class="pg-fmt-card"><div class="pg-fmt-preview">-1- -2-</div><div class="pg-fmt-label">Dengan tanda hubung</div></div>
+      </div>
+      <div class="note n-info" style="margin:0 16px 16px;">
+        <span class="n-icon">📌</span>
+        <span class="n-body">Laporan akademik Indonesia umumnya: halaman <strong>pendahuluan/daftar isi</strong> → romawi kecil (i, ii, iii), halaman <strong>isi/bab</strong> → angka arab (1, 2, 3).</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menyisipkan Nomor Halaman -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">➕</div>
+      <h3>Menyisipkan Nomor Halaman</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Tab <strong>Insert</strong> → klik <strong>Page Number</strong>.</li>
+            <li><span class="sn sn-w">2</span>Pilih posisi: <em>Top of Page</em> (header), <em>Bottom of Page</em> (footer), <em>Current Position</em>.</li>
+            <li><span class="sn sn-w">3</span>Pilih alignment: kiri, tengah, atau kanan.</li>
+            <li><span class="sn sn-w">4</span>Nomor halaman otomatis muncul di semua halaman.</li>
+          </ol>
+          <div class="menu-path">Insert <span class="mp-sep">→</span> Page Number <span class="mp-sep">→</span> Bottom of Page</div>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Untuk format "Halaman 1 dari 5", gunakan <em>Insert → Quick Parts → Field → NumPages</em> dikombinasi dengan Page Number.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik di dalam area <strong>header</strong> atau <strong>footer</strong> terlebih dahulu.</li>
+            <li><span class="sn sn-g">2</span>Klik menu <strong>Insert</strong> → <strong>Page numbers</strong>.</li>
+            <li><span class="sn sn-g">3</span>Pilih salah satu dari 4 opsi tampilan (posisi dan apakah halaman pertama ditampilkan).</li>
+            <li><span class="sn sn-g">4</span>Untuk "Halaman X dari Y": pilih <strong>Page count</strong> dari menu Insert, lalu ketik teks di sekitarnya.</li>
+          </ol>
+          <div class="menu-path">Insert <span class="mp-sep">→</span> Page numbers</div>
+          <div class="note n-diff">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Di Google Docs, nomor halaman <strong>harus disisipkan dari dalam area header/footer</strong>. Tidak bisa disisipkan langsung dari area isi dokumen.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Memulai ulang nomor -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--teal-lt)">🔄</div>
+      <h3>Memulai Ulang Nomor Halaman (Romawi → Angka Arab)</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <p style="font-size:13.5px; color:var(--muted); margin-bottom:10px;">Kunci: harus ada <strong>Section Break</strong> antara bagian romawi dan bagian angka arab.</p>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Tempatkan kursor di awal halaman BAB I (setelah daftar isi).</li>
+            <li><span class="sn sn-w">2</span>Tab <strong>Layout</strong> → <strong>Breaks</strong> → <strong>Next Page</strong> (Section Break).</li>
+            <li><span class="sn sn-w">3</span>Double-click footer di section baru → <strong>nonaktifkan</strong> "Link to Previous" di tab Header &amp; Footer.</li>
+            <li><span class="sn sn-w">4</span>Klik <strong>Page Number → Format Page Numbers…</strong></li>
+            <li><span class="sn sn-w">5</span>Pilih format angka arab, set <em>Start at: 1</em> → <strong>OK</strong>.</li>
+            <li><span class="sn sn-w">6</span>Kembali ke section pertama → format nomor halaman ke romawi kecil.</li>
+          </ol>
+          <div class="note n-warn">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Langkah <strong>nonaktifkan "Link to Previous"</strong> sangat penting — tanpa ini, perubahan footer di section baru akan ikut mengubah footer di section sebelumnya.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik menu <strong>Insert</strong> → <strong>Page numbers</strong> → <strong>More options…</strong></li>
+            <li><span class="sn sn-g">2</span>Di dialog yang muncul, ubah <em>Start at</em> sesuai kebutuhan.</li>
+            <li><span class="sn sn-g">3</span>Pilih apakah nomor muncul di halaman pertama atau tidak.</li>
+          </ol>
+          <div class="note n-diff">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Google Docs <strong>tidak mendukung</strong> dua format nomor berbeda (romawi + angka arab) dalam satu dokumen tanpa plugin tambahan. Ini adalah keterbatasan signifikan dibanding Word.</span>
+          </div>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Solusi di Google Docs: buat dua dokumen terpisah (satu untuk bagian romawi, satu untuk isi), lalu gabungkan saat ekspor ke PDF menggunakan tools seperti Adobe Acrobat atau Smallpdf.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 3 — PAGE & SECTION BREAK
+══════════════════════════════════════ -->
+<div class="tab-section" id="tab-break">
+  <div class="sec-hd">
+    <h2>✂️ Page Break &amp; Section Break</h2>
+    <p>Memaksa konten pindah ke halaman baru, atau membagi dokumen menjadi beberapa section dengan pengaturan halaman berbeda.</p>
+  </div>
+
+  <!-- Perbedaan Page vs Section Break -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--teal-lt)">🔍</div>
+      <h3>Perbedaan Page Break vs Section Break</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px; display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="border:1.5px solid var(--teal-md); border-radius:var(--r-sm); overflow:hidden;">
+          <div style="background:var(--teal-lt); padding:10px 14px; font-size:13px; font-weight:700; color:#14532D; display:flex; align-items:center; gap:8px;">
+            <span style="background:var(--teal); color:#fff; border-radius:4px; padding:2px 8px; font-size:11px;">PAGE BREAK</span>
+            Pindah Halaman Saja
+          </div>
+          <div style="padding:14px; font-size:13.5px; line-height:1.6; color:var(--muted);">
+            Memindahkan konten ke halaman baru. <strong style="color:var(--text)">Pengaturan halaman tetap sama</strong> — margin, orientasi, header/footer tidak berubah. Paling sering digunakan.
+          </div>
+        </div>
+        <div style="border:1.5px solid #C7D8F5; border-radius:var(--r-sm); overflow:hidden;">
+          <div style="background:var(--word-lt); padding:10px 14px; font-size:13px; font-weight:700; color:var(--word); display:flex; align-items:center; gap:8px;">
+            <span style="background:var(--word); color:#fff; border-radius:4px; padding:2px 8px; font-size:11px;">SECTION BREAK</span>
+            Buat Bagian Baru
+          </div>
+          <div style="padding:14px; font-size:13.5px; line-height:1.6; color:var(--muted);">
+            Membagi dokumen jadi section terpisah. Tiap section bisa punya <strong style="color:var(--text)">pengaturan berbeda</strong>: orientasi, margin, nomor halaman, header/footer sendiri.
+          </div>
+        </div>
+      </div>
+      <div class="break-demo" style="margin:0 20px 20px;">
+        <span style="font-size:20px;">💡</span>
+        <span>Gunakan <strong>Page Break</strong> untuk: memulai bab baru di halaman baru. Gunakan <strong>Section Break</strong> untuk: mengubah orientasi satu halaman menjadi landscape, atau mengganti format nomor halaman.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Break -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--teal-lt)">📄</div>
+      <h3>Menyisipkan Page Break</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Tempatkan kursor di awal konten yang ingin dipindah ke halaman baru (misal: sebelum judul BAB II).</li>
+            <li><span class="sn sn-w">2</span><strong>Cara 1 (Shortcut):</strong> Tekan <kbd>Ctrl</kbd>+<kbd>Enter</kbd> — cara tercepat.</li>
+            <li><span class="sn sn-w">3</span><strong>Cara 2 (Menu):</strong> Tab <strong>Insert</strong> → <strong>Page Break</strong>.</li>
+            <li><span class="sn sn-w">4</span><strong>Cara 3 (via Breaks):</strong> Tab <strong>Layout</strong> → <strong>Breaks</strong> → <strong>Page</strong>.</li>
+          </ol>
+          <div class="note n-warn">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Hindari membuat "halaman baru" dengan menekan <kbd>Enter</kbd> berkali-kali. Ini menyebabkan konten bergeser saat teks diubah. Selalu gunakan Page Break yang tepat.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Tempatkan kursor sebelum konten yang ingin dipindah.</li>
+            <li><span class="sn sn-g">2</span><strong>Shortcut:</strong> <kbd>Ctrl</kbd>+<kbd>Enter</kbd> — sama dengan Word.</li>
+            <li><span class="sn sn-g">3</span><strong>Via menu:</strong> <strong>Insert</strong> → <strong>Break</strong> → <strong>Page break</strong>.</li>
+          </ol>
+          <div class="menu-path">Insert <span class="mp-sep">→</span> Break <span class="mp-sep">→</span> Page break</div>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Shortcut <kbd>Ctrl</kbd>+<kbd>Enter</kbd> untuk Page Break <strong>sama persis</strong> di Word dan Google Docs — mudah diingat!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Break -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">✂️</div>
+      <h3>Menyisipkan Section Break</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Tempatkan kursor di posisi pemisah section.</li>
+            <li><span class="sn sn-w">2</span>Tab <strong>Layout</strong> → <strong>Breaks</strong> → pilih jenis Section Break:</li>
+          </ol>
+          <div style="margin: 8px 0 8px 32px; font-size:13.5px; display:flex; flex-direction:column; gap:6px;">
+            <div><strong>Next Page</strong> — section baru dimulai di halaman baru (paling umum).</div>
+            <div><strong>Continuous</strong> — section baru di halaman yang sama (untuk mengubah jumlah kolom).</div>
+            <div><strong>Even/Odd Page</strong> — section baru di halaman genap/ganjil berikutnya.</div>
+          </div>
+          <div class="menu-path">Layout <span class="mp-sep">→</span> Breaks <span class="mp-sep">→</span> Next Page</div>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Untuk melihat di mana section break berada: aktifkan <strong>Show Formatting Marks</strong> dengan <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>8</kbd> (atau ikon ¶ di tab Home).</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik <strong>Insert</strong> → <strong>Break</strong>.</li>
+            <li><span class="sn sn-g">2</span>Pilih <strong>Section break (next page)</strong> atau <strong>Section break (continuous)</strong>.</li>
+          </ol>
+          <div class="menu-path">Insert <span class="mp-sep">→</span> Break <span class="mp-sep">→</span> Section break (next page)</div>
+          <div class="note n-diff">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Section Break di Google Docs lebih terbatas — tidak mendukung pengaturan header/footer berbeda per section seperti di Word.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Column Break -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--gdocs-lt)">⚡</div>
+      <h3>Column Break — Teks Multi-Kolom</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Seleksi teks yang ingin dibuat multi-kolom.</li>
+            <li><span class="sn sn-w">2</span>Tab <strong>Layout</strong> → <strong>Columns</strong> → pilih 2 atau 3 kolom.</li>
+            <li><span class="sn sn-w">3</span>Untuk memaksa pindah kolom: <strong>Layout → Breaks → Column</strong>.</li>
+          </ol>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Seleksi teks.</li>
+            <li><span class="sn sn-g">2</span><strong>Format</strong> → <strong>Columns</strong> → pilih 1, 2, atau 3 kolom.</li>
+            <li><span class="sn sn-g">3</span>Untuk pindah kolom: <strong>Insert → Break → Column break</strong>.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 4 — DAFTAR ISI
+══════════════════════════════════════ -->
+<div class="tab-section" id="tab-toc">
+  <div class="sec-hd">
+    <h2>📋 Daftar Isi Otomatis</h2>
+    <p>Membuat, memperbarui, dan mengustomisasi daftar isi yang dihasilkan otomatis dari Heading Style dokumen.</p>
+  </div>
+
+  <!-- Preview Daftar Isi -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--teal-lt)">👁</div>
+      <h3>Hasil Daftar Isi Otomatis</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="toc-demo">
+          <div class="toc-demo-title">DAFTAR ISI</div>
+          <div class="toc-row">
+            <span class="toc-text">BAB I &nbsp; PENDAHULUAN</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">1</span>
+          </div>
+          <div class="toc-row sub">
+            <span class="toc-text">1.1 Latar Belakang</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">1</span>
+          </div>
+          <div class="toc-row sub">
+            <span class="toc-text">1.2 Tujuan PKL</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">2</span>
+          </div>
+          <div class="toc-row sub">
+            <span class="toc-text">1.3 Manfaat PKL</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">2</span>
+          </div>
+          <div class="toc-row">
+            <span class="toc-text">BAB II &nbsp; PROFIL PERUSAHAAN</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">3</span>
+          </div>
+          <div class="toc-row sub">
+            <span class="toc-text">2.1 Sejarah Perusahaan</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">3</span>
+          </div>
+          <div class="toc-row">
+            <span class="toc-text">BAB III &nbsp; KEGIATAN PKL</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">5</span>
+          </div>
+          <div class="toc-row">
+            <span class="toc-text">BAB IV &nbsp; HASIL DAN ANALISIS</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">8</span>
+          </div>
+          <div class="toc-row">
+            <span class="toc-text">BAB V &nbsp; PENUTUP</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">11</span>
+          </div>
+          <div class="toc-row sub">
+            <span class="toc-text">5.1 Kesimpulan</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">11</span>
+          </div>
+          <div class="toc-row sub">
+            <span class="toc-text">5.2 Saran</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">12</span>
+          </div>
+          <div class="toc-row">
+            <span class="toc-text">DAFTAR PUSTAKA</span>
+            <span class="toc-leader"></span>
+            <span class="toc-pg">13</span>
+          </div>
+        </div>
+        <p style="font-size:12.5px; color:var(--muted); margin-top:8px; text-align:center;">Titik-titik pemandu (<em>leader dots</em>) dan nomor halaman dibuat otomatis. Cukup klik <em>Update</em> jika konten berubah.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Syarat utama -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--warn-bg)">⚠️</div>
+      <h3>Syarat Utama: Semua Judul Harus Menggunakan Heading Style</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px 22px;">
+        <p style="font-size:14px; line-height:1.65; margin-bottom:16px;">Daftar isi otomatis <strong>hanya bisa dibuat</strong> jika judul bab dan sub-bab sudah menggunakan Heading Style (Heading 1, Heading 2, Heading 3), bukan teks biasa yang diformat tebal secara manual.</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div style="border:1.5px solid #BBF7D0; border-radius:var(--r-sm); overflow:hidden;">
+            <div style="background:#DCFCE7; padding:8px 12px; font-size:12px; font-weight:800; color:#14532D;">✅ BENAR — Terdeteksi di Daftar Isi</div>
+            <div style="padding:12px 14px; font-size:13px; color:var(--muted);">Klik teks judul bab → terapkan <strong style="color:var(--word)">Heading 1</strong> dari panel Styles. Word/Docs akan mendeteksinya otomatis.</div>
+          </div>
+          <div style="border:1.5px solid #FCA5A5; border-radius:var(--r-sm); overflow:hidden;">
+            <div style="background:#FEE2E2; padding:8px 12px; font-size:12px; font-weight:800; color:#991B1B;">❌ SALAH — Tidak Terdeteksi</div>
+            <div style="padding:12px 14px; font-size:13px; color:var(--muted);">Teks diketik lalu diformat <kbd>Ctrl</kbd>+<kbd>B</kbd> dan ukuran diperbesar manual. Tampak seperti judul, tapi bukan Heading Style.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menyisipkan Daftar Isi -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">📋</div>
+      <h3>Menyisipkan Daftar Isi</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Tempatkan kursor di halaman yang akan menjadi halaman daftar isi (biasanya setelah halaman judul).</li>
+            <li><span class="sn sn-w">2</span>Tab <strong>References</strong> → klik <strong>Table of Contents</strong>.</li>
+            <li><span class="sn sn-w">3</span>Pilih template otomatis: <em>Automatic Table 1</em> atau <em>Automatic Table 2</em>.</li>
+            <li><span class="sn sn-w">4</span>Daftar isi langsung muncul dengan titik-titik pemandu dan nomor halaman.</li>
+          </ol>
+          <div class="menu-path">References <span class="mp-sep">→</span> Table of Contents <span class="mp-sep">→</span> Automatic Table 1</div>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Pilih <em>Custom Table of Contents…</em> untuk mengatur berapa level heading yang ditampilkan (default: 3 level) dan mengubah karakter pemandu titik.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Tempatkan kursor di posisi daftar isi.</li>
+            <li><span class="sn sn-g">2</span>Klik menu <strong>Insert</strong> → <strong>Table of contents</strong>.</li>
+            <li><span class="sn sn-g">3</span>Pilih salah satu dari 3 gaya tampilan:
+              <div style="margin-top:6px; font-size:13px; display:flex; flex-direction:column; gap:4px;">
+                <div>• <strong>With page numbers</strong> — klasik dengan nomor halaman di kanan</div>
+                <div>• <strong>With blue links</strong> — tanpa nomor, judul bisa diklik</div>
+                <div>• <strong>Plain text</strong> — tanpa nomor dan tanpa link</div>
+              </div>
+            </li>
+            <li><span class="sn sn-g">4</span>Daftar isi langsung muncul.</li>
+          </ol>
+          <div class="menu-path">Insert <span class="mp-sep">→</span> Table of contents</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update daftar isi -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--teal-lt)">🔄</div>
+      <h3>Memperbarui Daftar Isi setelah Konten Berubah</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik di dalam area daftar isi → muncul kotak abu-abu.</li>
+            <li><span class="sn sn-w">2</span>Klik tombol <strong>Update Table</strong> yang muncul di bagian atas daftar isi.</li>
+            <li><span class="sn sn-w">3</span>Dialog muncul, pilih:<br>
+              • <em>Update page numbers only</em> — hanya perbarui nomor halaman<br>
+              • <em>Update entire table</em> — perbarui judul dan nomor halaman</li>
+            <li><span class="sn sn-w">4</span>Pilih <em>Update entire table</em> jika ada judul bab yang berubah.</li>
+          </ol>
+          <div class="note n-warn">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Selalu perbarui daftar isi <strong>sebelum mencetak</strong> atau mengumpulkan dokumen. Nomor halaman bisa berubah setelah konten diedit.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik di dalam daftar isi yang sudah ada.</li>
+            <li><span class="sn sn-g">2</span>Klik ikon <strong>↺ Refresh</strong> (lingkaran panah) yang muncul di pojok kiri atas daftar isi.</li>
+            <li><span class="sn sn-g">3</span>Daftar isi langsung diperbarui.</li>
+          </ol>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Di Google Docs, daftar isi dengan format <em>"With blue links"</em> bisa diklik langsung untuk navigasi ke bab tersebut — sangat berguna untuk dokumen digital.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kustomisasi ToC -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--gdocs-lt)">🎨</div>
+      <h3>Mengustomisasi Tampilan Daftar Isi</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik daftar isi → <strong>References → Table of Contents → Custom Table of Contents…</strong></li>
+            <li><span class="sn sn-w">2</span>Ubah <em>Show levels</em>: berapa level heading yang ditampilkan (1 = hanya H1, 2 = H1+H2, dst.).</li>
+            <li><span class="sn sn-w">3</span>Ubah karakter <em>Tab leader</em>: titik (.), garis (—), atau kosong.</li>
+            <li><span class="sn sn-w">4</span>Klik <strong>Modify…</strong> untuk mengubah font dan ukuran teks tiap level ToC.</li>
+          </ol>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik daftar isi → klik ikon <strong>⋮</strong> (tiga titik) yang muncul.</li>
+            <li><span class="sn sn-g">2</span>Pilih <strong>Table of contents options</strong> untuk mengubah heading mana yang ditampilkan.</li>
+            <li><span class="sn sn-g">3</span>Untuk mengubah tampilan visual: seleksi teks dalam daftar isi → format manual (font, ukuran, warna).</li>
+          </ol>
+          <div class="note n-diff">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Kustomisasi daftar isi di Google Docs lebih terbatas — tidak ada opsi <em>Tab leader</em> kustom atau <em>Modify style</em> per level seperti di Word.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 5 — QUICK REF
+══════════════════════════════════════ -->
+<div class="tab-section" id="tab-quickref">
+  <div class="sec-hd">
+    <h2>⚡ Referensi Cepat</h2>
+    <p>Ringkasan semua jalur menu, shortcut, dan perbandingan fitur dalam satu halaman.</p>
+  </div>
+
+  <div class="card open" style="margin-bottom:16px;">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">⬛</div>
+      <h3>Microsoft Word — Semua Shortcut &amp; Menu</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="overflow-x:auto;">
+        <table class="ref-table">
+          <thead><tr><th>Fungsi</th><th>Shortcut</th><th>Jalur Menu</th></tr></thead>
+          <tbody>
+            <tr><td>Sisipkan Header</td><td>—</td><td>Insert → Header → Edit Header</td></tr>
+            <tr><td>Sisipkan Footer</td><td>—</td><td>Insert → Footer → Edit Footer</td></tr>
+            <tr><td>Keluar mode Header/Footer</td><td><kbd>Esc</kbd></td><td>Double-click area isi dokumen</td></tr>
+            <tr><td>Header beda halaman pertama</td><td>—</td><td>Tab Header & Footer → ✓ Different First Page</td></tr>
+            <tr><td>Nomor Halaman</td><td>—</td><td>Insert → Page Number → Bottom of Page</td></tr>
+            <tr><td>Format Nomor Halaman</td><td>—</td><td>Insert → Page Number → Format Page Numbers…</td></tr>
+            <tr><td>Page Break</td><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Insert → Page Break</td></tr>
+            <tr><td>Section Break (Next Page)</td><td>—</td><td>Layout → Breaks → Next Page</td></tr>
+            <tr><td>Tampilkan formatting marks</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>8</kbd></td><td>Home → ¶ (Show/Hide)</td></tr>
+            <tr><td>Daftar Isi Otomatis</td><td>—</td><td>References → Table of Contents → Automatic Table 1</td></tr>
+            <tr><td>Update Daftar Isi</td><td><kbd>F9</kbd></td><td>Klik daftar isi → Update Table</td></tr>
+            <tr><td>Kustom Daftar Isi</td><td>—</td><td>References → Table of Contents → Custom Table of Contents…</td></tr>
+            <tr><td>Non-aktifkan Link to Previous</td><td>—</td><td>Tab Header & Footer → Link to Previous (klik untuk toggle)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card open" style="margin-bottom:28px;">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--gdocs-lt)">🔵</div>
+      <h3>Google Docs — Semua Shortcut &amp; Menu</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="overflow-x:auto;">
+        <table class="ref-table">
+          <thead><tr><th>Fungsi</th><th>Shortcut</th><th>Jalur Menu</th></tr></thead>
+          <tbody>
+            <tr><td>Sisipkan Header</td><td>—</td><td>Insert → Headers & footers → Header</td></tr>
+            <tr><td>Sisipkan Footer</td><td>—</td><td>Insert → Headers & footers → Footer</td></tr>
+            <tr><td>Header beda halaman pertama</td><td>—</td><td>Klik header → ✓ Different first page</td></tr>
+            <tr><td>Margin Header/Footer</td><td>—</td><td>Format → Headers & footers…</td></tr>
+            <tr><td>Nomor Halaman</td><td>—</td><td>Insert → Page numbers (dari dalam header/footer)</td></tr>
+            <tr><td>Page Break</td><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Insert → Break → Page break</td></tr>
+            <tr><td>Section Break</td><td>—</td><td>Insert → Break → Section break (next page)</td></tr>
+            <tr><td>Column Break</td><td>—</td><td>Insert → Break → Column break</td></tr>
+            <tr><td>Daftar Isi Otomatis</td><td>—</td><td>Insert → Table of contents</td></tr>
+            <tr><td>Update Daftar Isi</td><td>—</td><td>Klik daftar isi → ikon ↺ Refresh</td></tr>
+            <tr><td>Multi-kolom</td><td>—</td><td>Format → Columns</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Perbedaan Utama Word vs Docs -->
+  <div class="card open" style="margin-bottom:28px;">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--diff-bg)">⚖️</div>
+      <h3>Perbedaan Utama Word vs Google Docs</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="overflow-x:auto;">
+        <table class="ref-table">
+          <thead><tr><th>Fitur</th><th style="color:#93C5FD">⬛ Word</th><th style="color:#93C5FD">🔵 Google Docs</th></tr></thead>
+          <tbody>
+            <tr><td>Header/Footer berbeda per section</td><td>✅ Didukung penuh</td><td>⚠️ Hanya "Different First Page"</td></tr>
+            <tr><td>Nomor halaman romawi + arab dalam satu dokumen</td><td>✅ Via Section Break + Format Page Numbers</td><td>❌ Tidak didukung native</td></tr>
+            <tr><td>Section Break dengan header berbeda</td><td>✅ Dengan Link to Previous</td><td>⚠️ Terbatas</td></tr>
+            <tr><td>Kustomisasi daftar isi (leader, level, style)</td><td>✅ Sangat lengkap</td><td>⚠️ Terbatas (3 gaya tampilan saja)</td></tr>
+            <tr><td>Daftar isi dengan link klik</td><td>✅ (saat ekspor PDF)</td><td>✅ Native "With blue links"</td></tr>
+            <tr><td>Update daftar isi</td><td><kbd>F9</kbd> atau klik Update</td><td>Klik ikon ↺ Refresh</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips grid -->
+  <h3 style="font-size:16px; font-weight:800; margin-bottom:16px;">💡 Tips Penting</h3>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🔢</div>
+      <h4>Romawi Dulu, Arab Kemudian</h4>
+      <p>Urutan kerja di Word: buat Section Break → nonaktifkan "Link to Previous" → baru format nomor per section. Jangan balik urutan atau hasilnya kacau.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">⛔</div>
+      <h4>Jangan Enter Berkali-kali</h4>
+      <p>Membuat halaman baru dengan menekan Enter 20× adalah kebiasaan buruk. Gunakan <kbd>Ctrl</kbd>+<kbd>Enter</kbd> untuk Page Break yang selalu tepat posisinya.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔄</div>
+      <h4>Update Sebelum Dikumpulkan</h4>
+      <p>Selalu perbarui daftar isi sebelum mencetak atau mengumpulkan. Nomor halaman berubah setiap kali konten ditambah atau dihapus.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">👁</div>
+      <h4>Aktifkan Show Formatting Marks</h4>
+      <p>Tekan <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>8</kbd> di Word untuk melihat di mana Page Break dan Section Break berada. Sangat membantu debugging layout dokumen.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔗</div>
+      <h4>Link to Previous — Kunci Section Break</h4>
+      <p>Saat menggunakan Section Break untuk nomor halaman berbeda, selalu nonaktifkan "Link to Previous" di footer section baru. Ini langkah yang paling sering terlewat.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📋</div>
+      <h4>Daftar Isi = Cermin Heading</h4>
+      <p>Daftar isi otomatis hanya sebaik Heading Style yang kamu terapkan. Jika ada judul yang tidak muncul di daftar isi, pastikan judul itu menggunakan Heading 1/2/3, bukan teks biasa.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div style="background:var(--navy); color:rgba(255,255,255,.35); text-align:center; padding:20px 16px; font-size:12px; margin-top:32px; line-height:1.9;">
+  <div style="margin-bottom:8px;">
+    <a href="panduan-style-formatting.html" style="color:rgba(255,255,255,.5); text-decoration:none; font-weight:600;">← Modul 2: Style &amp; Formatting</a>
+    &nbsp;·&nbsp;
+    <a href="index.html" style="color:rgba(255,255,255,.5); text-decoration:none; font-weight:600;">🏠 Beranda</a>
+  </div>
+  <strong style="color:rgba(255,255,255,.5);">Modul 3 — Halaman &amp; Daftar Isi</strong><br>
+  Universitas Katolik Widya Mandala Surabaya · Fakultas Teknologi Informasi
+</div>
+
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function toggleCard(hd) { hd.closest('.card').classList.toggle('open'); }
+</script>
+</body>
+</html>
