@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modul: Membuat Formulir di Microsoft Word</title>
+<title>Modul: Membuat Formulir — Microsoft Word & Google Docs</title>
 <style>
   :root {
     --blue-50: #E6F1FB; --blue-100: #B5D4F4; --blue-200: #85B7EB;
@@ -17,6 +17,8 @@
     --coral-50: #FAECE7; --coral-100: #F5C4B3; --coral-200: #F0997B;
     --coral-400: #D85A30; --coral-600: #993C1D; --coral-800: #712B13;
     --green-50: #EAF3DE; --green-100: #C0DD97; --green-400: #639922; --green-800: #27500A;
+    --gdocs-50: #E8F0FE; --gdocs-100: #C5D8FC; --gdocs-200: #9BBEF9;
+    --gdocs-400: #4285F4; --gdocs-600: #1A73E8; --gdocs-800: #0D47A1; --gdocs-900: #062270;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -125,6 +127,7 @@
   .section-num.amber { background: var(--amber-50); color: var(--amber-800); }
   .section-num.coral { background: var(--coral-50); color: var(--coral-800); }
   .section-num.green { background: var(--green-50); color: var(--green-800); }
+  .section-num.gdocs { background: var(--gdocs-50); color: var(--gdocs-800); }
   .section-title { font-size: 17px; font-weight: 600; color: var(--gray-900); }
   .section-sub { font-size: 13px; color: var(--gray-400); margin-top: 1px; }
   .section-body { padding: 1.5rem; }
@@ -163,6 +166,51 @@
   .steps.amber li::before { background: var(--amber-50); color: var(--amber-800); }
   .steps.coral li::before { background: var(--coral-50); color: var(--coral-800); }
   .steps.green li::before { background: var(--green-50); color: var(--green-800); }
+  .steps.gdocs li::before { background: var(--gdocs-50); color: var(--gdocs-800); }
+
+  /* SECTION DIVIDER */
+  .part-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem 0 1.5rem;
+  }
+  .part-divider-line { flex: 1; height: 0.5px; background: #ddd; }
+  .part-divider-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .part-divider-badge.word { background: var(--blue-50); color: var(--blue-800); border: 0.5px solid var(--blue-100); }
+  .part-divider-badge.gdocs { background: var(--gdocs-50); color: var(--gdocs-800); border: 0.5px solid var(--gdocs-100); }
+
+  /* GDOCS CALLOUT */
+  .callout.gdocs { background: var(--gdocs-50); border-left: 3px solid var(--gdocs-400); }
+  .callout.gdocs .callout-text { color: var(--gdocs-800); }
+
+  /* COMPARISON TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 1rem; }
+  .compare-table th {
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .compare-table th.word-col { background: var(--blue-800); color: #fff; }
+  .compare-table th.gdocs-col { background: var(--gdocs-800); color: #fff; }
+  .compare-table th.feature-col { background: var(--gray-800); color: #fff; }
+  .compare-table td { padding: 8px 12px; border-bottom: 0.5px solid #eee; vertical-align: top; }
+  .compare-table tr:nth-child(even) td { background: var(--gray-50); }
+  .compare-table .good { color: #1A8C4A; font-weight: 500; }
+  .compare-table .mid { color: var(--amber-600); font-weight: 500; }
+  .compare-table .bad { color: #993C1D; font-weight: 500; }
 
   /* CALLOUT */
   .callout {
@@ -401,14 +449,15 @@
 <body>
 
 <div class="site-header">
-  <div class="badge">Modul Pelatihan · Microsoft Word</div>
+  <div class="badge">Modul Praktikum · Microsoft Word & Google Docs</div>
   <h1>Membuat Formulir Profesional<br>dengan Tabel</h1>
-  <p>Pelajari cara merancang formulir terstruktur menggunakan fitur tabel di Microsoft Word, sekaligus sebagai fondasi untuk membuat formulir PDF yang dapat diisi secara elektronik.</p>
+  <p>Pelajari cara merancang formulir terstruktur menggunakan tabel di <strong style="color:#fff;">Microsoft Word</strong> dan <strong style="color:#7eb8f7;">Google Docs</strong>, sekaligus sebagai fondasi untuk membuat formulir PDF yang dapat diisi secara elektronik.</p>
   <div class="header-meta">
-    <span>⏱ Durasi: ±90 menit</span>
+    <span>⏱ Durasi: ±120 menit</span>
     <span>📊 Level: Menengah</span>
-    <span>🛠 Versi: Word 2016 – 365</span>
-    <span>📄 5 Materi Utama</span>
+    <span>⬛ Word 2016–365</span>
+    <span>🔵 Google Docs</span>
+    <span>📄 7 Materi Utama</span>
   </div>
 </div>
 
@@ -418,6 +467,9 @@
   <a href="#merancang-formulir">Merancang Formulir</a>
   <a href="#memformat">Memformat</a>
   <a href="#ke-pdf">Konversi ke PDF</a>
+  <a href="#gdocs-tabel">Google Docs: Tabel</a>
+  <a href="#gdocs-forms">Google Forms</a>
+  <a href="#perbandingan">Perbandingan</a>
 </nav>
 
 <div class="container">
@@ -428,6 +480,14 @@
     <div class="progress-step done">3<br>Desain Layout</div>
     <div class="progress-step done">4<br>Format & Tampilan</div>
     <div class="progress-step done">5<br>Ekspor PDF</div>
+    <div class="progress-step done">6<br>GDocs Tabel</div>
+    <div class="progress-step done">7<br>Google Forms</div>
+  </div>
+
+  <div class="part-divider">
+    <div class="part-divider-line"></div>
+    <div class="part-divider-badge word">⬛ Bagian A — Microsoft Word</div>
+    <div class="part-divider-line"></div>
   </div>
 
   <!-- SECTION 1: PENDAHULUAN -->
@@ -819,33 +879,448 @@
     </div>
   </div>
 
-  <!-- RINGKASAN -->
-  <div style="background: var(--blue-800); border-radius: 12px; padding: 1.5rem 2rem; color: #fff;">
-    <h2 style="font-size:18px; font-weight:600; margin-bottom:1rem;">📌 Ringkasan Alur Kerja</h2>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:1rem;">
-      <div style="text-align:center; padding:1rem; background:rgba(255,255,255,0.1); border-radius:8px;">
-        <div style="font-size:28px;">📐</div>
-        <div style="font-size:13px; margin-top:6px; color:var(--blue-100);">Rencanakan struktur formulir</div>
+  <!-- GOOGLE DOCS DIVIDER -->
+  <div class="part-divider" style="margin-top:3rem;">
+    <div class="part-divider-line"></div>
+    <div class="part-divider-badge gdocs">🔵 Bagian B — Google Docs</div>
+    <div class="part-divider-line"></div>
+  </div>
+
+  <!-- SECTION 6: GDOCS TABEL -->
+  <div class="section" id="gdocs-tabel">
+    <div class="section-header">
+      <div class="section-num gdocs">6</div>
+      <div>
+        <div class="section-title">Membuat Formulir dengan Tabel di Google Docs</div>
+        <div class="section-sub">Teknik layout formulir menggunakan fitur tabel bawaan Google Docs</div>
       </div>
-      <div style="text-align:center; font-size:20px; display:flex; align-items:center; justify-content:center; color:var(--blue-200);">→</div>
-      <div style="text-align:center; padding:1rem; background:rgba(255,255,255,0.1); border-radius:8px;">
-        <div style="font-size:28px;">📊</div>
-        <div style="font-size:13px; margin-top:6px; color:var(--blue-100);">Buat tabel di Word</div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout gdocs">
+        <span class="callout-icon">🔵</span>
+        <div class="callout-text">
+          <strong>Pendekatan Google Docs</strong>
+          Google Docs menggunakan tabel untuk layout formulir cetak, mirip dengan Word. Untuk formulir digital yang bisa diisi online, gunakan <strong>Google Forms</strong> (dibahas di Materi 7). Kombinasi keduanya memberi fleksibilitas untuk cetak maupun digital.
+        </div>
       </div>
-      <div style="text-align:center; font-size:20px; display:flex; align-items:center; justify-content:center; color:var(--blue-200);">→</div>
-      <div style="text-align:center; padding:1rem; background:rgba(255,255,255,0.1); border-radius:8px;">
-        <div style="font-size:28px;">🎨</div>
-        <div style="font-size:13px; margin-top:6px; color:var(--blue-100);">Format & merge sel</div>
+
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">A. Menyisipkan tabel di Google Docs</p>
+        <ol class="steps gdocs">
+          <li>Buka dokumen Google Docs → klik menu <strong>Insert</strong> (Sisipkan) di menu bar atas</li>
+          <li>Pilih <strong>Table</strong> → arahkan kursor ke grid untuk memilih jumlah kolom dan baris, lalu klik</li>
+          <li>Untuk formulir sederhana, mulai dengan tabel <strong>2 kolom</strong> (label | isian) atau <strong>4 kolom</strong> untuk tata letak yang lebih kompleks</li>
+          <li>Tabel langsung tersisip di posisi kursor. Tekan <kbd>Tab</kbd> untuk berpindah antar sel, dan <kbd>Tab</kbd> di sel terakhir untuk menambah baris baru</li>
+        </ol>
       </div>
-      <div style="text-align:center; font-size:20px; display:flex; align-items:center; justify-content:center; color:var(--blue-200);">→</div>
-      <div style="text-align:center; padding:1rem; background:rgba(255,255,255,0.1); border-radius:8px;">
-        <div style="font-size:28px;">📄</div>
-        <div style="font-size:13px; margin-top:6px; color:var(--blue-100);">Ekspor ke PDF</div>
+
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">B. Merge cells (gabung sel) di Google Docs</p>
+        <ol class="steps gdocs">
+          <li>Klik dan seret untuk memilih beberapa sel yang akan digabungkan</li>
+          <li>Klik kanan pada sel yang dipilih → pilih <strong>Merge cells</strong></li>
+          <li>Atau gunakan menu <strong>Format</strong> → <strong>Table</strong> → <strong>Merge cells</strong></li>
+          <li>Untuk membatalkan: pilih sel yang digabung → klik kanan → <strong>Unmerge cells</strong></li>
+        </ol>
       </div>
-      <div style="text-align:center; font-size:20px; display:flex; align-items:center; justify-content:center; color:var(--blue-200);">→</div>
-      <div style="text-align:center; padding:1rem; background:rgba(255,255,255,0.1); border-radius:8px;">
-        <div style="font-size:28px;">✍️</div>
-        <div style="font-size:13px; margin-top:6px; color:var(--blue-100);">Tambah field di Acrobat</div>
+
+      <div class="callout tip">
+        <span class="callout-icon">💡</span>
+        <div class="callout-text">
+          <strong>Cara cepat menambah baris/kolom</strong>
+          Arahkan kursor ke tepi kiri (untuk baris) atau tepi atas (untuk kolom) tabel — akan muncul tombol <strong>+</strong> berwarna biru. Klik untuk menambahkan baris atau kolom di posisi tersebut tanpa perlu klik kanan.
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">C. Mengatur lebar kolom dan tinggi baris</p>
+        <ol class="steps gdocs">
+          <li>Seret batas kolom di dalam tabel untuk mengubah lebar secara manual</li>
+          <li>Untuk lebar presisi: klik kanan sel → <strong>Table properties</strong> → di bagian <em>Column</em> masukkan lebar dalam cm atau inci</li>
+          <li>Tinggi baris: klik kanan → <strong>Table properties</strong> → bagian <em>Row</em> → atur minimum row height</li>
+          <li>Centang <strong>Pin header rows</strong> jika tabel panjang dan ingin baris pertama tetap terlihat saat scroll</li>
+        </ol>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">D. Memformat tampilan tabel formulir</p>
+        <ol class="steps gdocs">
+          <li>Klik kanan sel → <strong>Table properties</strong> → tab <em>Color</em> untuk mengatur warna border dan warna latar sel (<em>Cell background color</em>)</li>
+          <li>Untuk header formulir: pilih baris pertama → beri warna latar biru gelap dan warna teks putih melalui toolbar teks biasa</li>
+          <li>Atur <em>Cell padding</em> (jarak teks dari tepi sel) minimal 0.1 cm agar teks tidak mepet</li>
+          <li>Pilih <em>Table border</em> → atur ketebalan (0.5pt untuk tipis, 1–2pt untuk tegas) dan warna border</li>
+          <li>Untuk menghilangkan border tertentu: pilih sel → Table properties → atur border sisi tertentu ke warna putih atau ketebalan 0</li>
+        </ol>
+      </div>
+
+      <!-- DEMO FORMULIR GDOCS -->
+      <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">Contoh hasil formulir di Google Docs</p>
+      <div style="border: 0.5px solid #ccc; border-radius:8px; overflow:hidden; margin-bottom:1.25rem;">
+        <table class="demo-table">
+          <tr>
+            <td colspan="4" style="background:var(--gdocs-800); color:#fff; text-align:center; font-weight:600; font-size:15px; padding:12px;">FORMULIR PENDAFTARAN PESERTA</td>
+          </tr>
+          <tr>
+            <td colspan="4" style="background:var(--gdocs-50); font-weight:600; color:var(--gdocs-800); font-size:13px; text-transform:uppercase; letter-spacing:0.04em; padding:8px 12px;">A. Data Pribadi</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Nama Lengkap</td>
+            <td colspan="3" class="input-cell"><span class="input-line">&nbsp;</span></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Tempat Lahir</td>
+            <td class="input-cell"><span class="input-line">&nbsp;</span></td>
+            <td class="label-cell">Tanggal Lahir</td>
+            <td class="input-cell"><span class="input-line">&nbsp;</span></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Jenis Kelamin</td>
+            <td colspan="3" class="input-cell">☐ Laki-laki &nbsp;&nbsp; ☐ Perempuan</td>
+          </tr>
+          <tr>
+            <td colspan="4" style="background:var(--gdocs-50); font-weight:600; color:var(--gdocs-800); font-size:13px; text-transform:uppercase; letter-spacing:0.04em; padding:8px 12px;">B. Kontak</td>
+          </tr>
+          <tr>
+            <td class="label-cell">No. Telepon</td>
+            <td class="input-cell"><span class="input-line">&nbsp;</span></td>
+            <td class="label-cell">Email</td>
+            <td class="input-cell"><span class="input-line">&nbsp;</span></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Alamat</td>
+            <td colspan="3" class="input-cell" style="height:50px;"><span class="input-line">&nbsp;</span></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Tanda Tangan</td>
+            <td colspan="3" class="input-cell" style="height:50px;"></td>
+          </tr>
+        </table>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">E. Menyimpan sebagai PDF dari Google Docs</p>
+        <ol class="steps gdocs">
+          <li>Klik menu <strong>File</strong> → <strong>Download</strong> → pilih <strong>PDF Document (.pdf)</strong></li>
+          <li>PDF langsung terunduh — tidak ada opsi pengaturan tambahan seperti di Word</li>
+          <li>Buka PDF hasil unduhan di <strong>Adobe Acrobat</strong> atau <strong>Foxit PDF Editor</strong> untuk menambahkan field isian interaktif</li>
+          <li>Alternatif: gunakan <strong>File → Print</strong> → pilih <em>Save as PDF</em> (melalui print dialog) untuk kontrol lebih atas orientasi dan ukuran halaman</li>
+        </ol>
+      </div>
+
+      <div class="callout warning">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-text">
+          <strong>Perbedaan penting vs Microsoft Word</strong>
+          Google Docs tidak memiliki fitur Content Controls atau Developer Tab. Field isian interaktif (text field, dropdown) harus ditambahkan di aplikasi PDF editor terpisah setelah ekspor. Untuk formulir digital yang langsung bisa diisi online tanpa PDF, gunakan Google Forms (Materi 7).
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 7: GOOGLE FORMS -->
+  <div class="section" id="gdocs-forms">
+    <div class="section-header">
+      <div class="section-num gdocs">7</div>
+      <div>
+        <div class="section-title">Membuat Formulir dengan Google Forms</div>
+        <div class="section-sub">Formulir online interaktif yang langsung bisa diisi dan dikumpulkan datanya</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout gdocs">
+        <span class="callout-icon">📊</span>
+        <div class="callout-text">
+          <strong>Apa itu Google Forms?</strong>
+          Google Forms adalah aplikasi gratis dari Google untuk membuat formulir online. Responden mengisi langsung di browser — tanpa perlu mengunduh file. Semua jawaban terkumpul otomatis di Google Sheets yang bisa dianalisis langsung.
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">A. Membuat formulir baru</p>
+        <ol class="steps gdocs">
+          <li>Buka <strong>forms.google.com</strong> → klik tombol <strong>+</strong> (Formulir Kosong) atau pilih template yang tersedia</li>
+          <li>Atau dari Google Drive: klik <strong>+ Baru</strong> → <strong>Lainnya</strong> → <strong>Google Formulir</strong></li>
+          <li>Isi judul formulir di bagian atas dan deskripsi singkat tujuan formulir</li>
+          <li>Klik ikon <strong>⚙ (Setelan/Settings)</strong> untuk mengatur: siapa yang bisa mengisi, batas pengisian, pengumpulan email responden</li>
+        </ol>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">B. Menambahkan pertanyaan/field</p>
+        <ol class="steps gdocs">
+          <li>Klik tombol <strong>+</strong> di panel kanan untuk menambah pertanyaan baru</li>
+          <li>Ketik teks pertanyaan (label field) di kotak yang muncul</li>
+          <li>Klik dropdown jenis jawaban untuk memilih tipe field:</li>
+          <li>Aktifkan toggle <strong>Wajib diisi</strong> untuk field yang tidak boleh dikosongkan</li>
+          <li>Klik ikon <strong>⋮</strong> di setiap pertanyaan untuk opsi tambahan: deskripsi bantuan, validasi input, logika percabangan</li>
+        </ol>
+      </div>
+
+      <!-- TIPE FIELD GOOGLE FORMS -->
+      <p style="font-weight:600; font-size:14px; margin: 1.25rem 0 0.75rem;">Jenis field yang tersedia di Google Forms</p>
+      <table class="field-table">
+        <thead>
+          <tr>
+            <th style="background:var(--gdocs-800);">Tipe Field</th>
+            <th style="background:var(--gdocs-800);">Tampilan</th>
+            <th style="background:var(--gdocs-800);">Cocok untuk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Jawaban singkat</strong></td>
+            <td>Kotak teks satu baris</td>
+            <td>Nama, nomor, email, kode</td>
+          </tr>
+          <tr>
+            <td><strong>Paragraf</strong></td>
+            <td>Area teks multi-baris</td>
+            <td>Alamat, keterangan panjang</td>
+          </tr>
+          <tr>
+            <td><strong>Pilihan ganda</strong></td>
+            <td>Radio button (pilih 1)</td>
+            <td>Jenis kelamin, status, kategori</td>
+          </tr>
+          <tr>
+            <td><strong>Kotak centang</strong></td>
+            <td>Checkbox (pilih banyak)</td>
+            <td>Minat, kebutuhan, persetujuan</td>
+          </tr>
+          <tr>
+            <td><strong>Dropdown</strong></td>
+            <td>Menu pilihan lipat</td>
+            <td>Provinsi, tahun, kota</td>
+          </tr>
+          <tr>
+            <td><strong>Upload file</strong></td>
+            <td>Tombol unggah</td>
+            <td>Foto KTP, sertifikat, dokumen</td>
+          </tr>
+          <tr>
+            <td><strong>Skala linier</strong></td>
+            <td>Slider 1–10</td>
+            <td>Penilaian, kepuasan</td>
+          </tr>
+          <tr>
+            <td><strong>Kisi pilihan ganda</strong></td>
+            <td>Tabel radio button</td>
+            <td>Survei multi-aspek</td>
+          </tr>
+          <tr>
+            <td><strong>Tanggal</strong></td>
+            <td>Pemilih kalender</td>
+            <td>Tanggal lahir, jadwal</td>
+          </tr>
+          <tr>
+            <td><strong>Waktu</strong></td>
+            <td>Pemilih jam</td>
+            <td>Jam kehadiran, jadwal</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin: 1.25rem 0;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">C. Mengorganisasi dengan section (bagian)</p>
+        <ol class="steps gdocs">
+          <li>Klik ikon <strong>≡+ (Tambahkan bagian)</strong> di panel kanan untuk membuat halaman baru dalam formulir</li>
+          <li>Beri judul tiap bagian, misalnya: "Data Pribadi", "Kontak", "Pilihan Program"</li>
+          <li>Di tiap bagian, atur <strong>Go to section based on answer</strong> untuk membuat formulir bercabang (conditional logic)</li>
+          <li>Contoh: jika responden memilih "Mahasiswa" → loncat ke bagian data kampus; jika "Umum" → loncat ke bagian lain</li>
+        </ol>
+      </div>
+
+      <div style="margin: 1.25rem 0;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">D. Mengatur tampilan (tema) formulir</p>
+        <ol class="steps gdocs">
+          <li>Klik ikon <strong>🎨 (Sesuaikan tema)</strong> di toolbar kanan atas</li>
+          <li>Pilih warna header, warna latar, dan font yang sesuai identitas institusi</li>
+          <li>Unggah gambar atau logo untuk dijadikan header formulir</li>
+          <li>Pratinjau hasil dengan klik ikon <strong>👁 (Pratinjau)</strong> — formulir ditampilkan persis seperti yang akan dilihat responden</li>
+        </ol>
+      </div>
+
+      <div style="margin: 1.25rem 0;">
+        <p style="font-weight:600; font-size:14px; margin-bottom:0.75rem;">E. Membagikan dan mengumpulkan respons</p>
+        <ol class="steps gdocs">
+          <li>Klik tombol <strong>Kirim</strong> (biru, pojok kanan atas) untuk membagikan formulir</li>
+          <li><strong>Via email:</strong> masukkan alamat email responden langsung dari dialog ini</li>
+          <li><strong>Via link:</strong> salin URL formulir → bagikan melalui WhatsApp, LMS, atau media lain. Klik <em>Persingkat URL</em> untuk link yang lebih pendek</li>
+          <li><strong>Via embed:</strong> salin kode HTML untuk menyematkan formulir di website/portal kampus</li>
+          <li>Respons masuk bisa dilihat di tab <strong>Respons</strong> dalam editor formulir, atau klik ikon Sheets untuk membuka semua jawaban di Google Sheets secara real-time</li>
+        </ol>
+      </div>
+
+      <div class="callout success">
+        <span class="callout-icon">✅</span>
+        <div class="callout-text">
+          <strong>Keunggulan Google Forms untuk data collection</strong>
+          Semua respons otomatis tersimpan di Google Sheets. Tersedia ringkasan grafis otomatis (pie chart, bar chart) di tab Respons. Formulir bisa dibagikan tanpa batas responden, dan tidak memerlukan instalasi apapun dari sisi responden.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 8: PERBANDINGAN -->
+  <div class="section" id="perbandingan">
+    <div class="section-header">
+      <div class="section-num" style="background:#f0f0f0; color:#444;">⚖</div>
+      <div>
+        <div class="section-title">Perbandingan: Word vs Google Docs vs Google Forms</div>
+        <div class="section-sub">Pilih pendekatan yang tepat sesuai kebutuhan</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th class="feature-col" style="width:25%;">Aspek</th>
+            <th class="word-col" style="width:25%;">⬛ MS Word</th>
+            <th class="gdocs-col" style="width:25%;">🔵 Google Docs</th>
+            <th class="gdocs-col" style="width:25%;">📊 Google Forms</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tujuan utama</strong></td>
+            <td>Formulir cetak & PDF interaktif</td>
+            <td>Formulir cetak & PDF dasar</td>
+            <td>Pengumpulan data online</td>
+          </tr>
+          <tr>
+            <td><strong>Kontrol layout</strong></td>
+            <td class="good">★★★ Sangat detail</td>
+            <td class="mid">★★☆ Cukup baik</td>
+            <td class="bad">★☆☆ Terbatas</td>
+          </tr>
+          <tr>
+            <td><strong>Field interaktif</strong></td>
+            <td class="good">Ada (Content Controls)</td>
+            <td class="bad">Tidak ada bawaan</td>
+            <td class="good">Lengkap & variatif</td>
+          </tr>
+          <tr>
+            <td><strong>Kolaborasi real-time</strong></td>
+            <td class="mid">Terbatas (versi 365)</td>
+            <td class="good">Penuh, multi-user</td>
+            <td class="good">Penuh, multi-editor</td>
+          </tr>
+          <tr>
+            <td><strong>Pengumpulan respons</strong></td>
+            <td class="bad">Manual (kirim file)</td>
+            <td class="bad">Manual (kirim PDF)</td>
+            <td class="good">Otomatis ke Sheets</td>
+          </tr>
+          <tr>
+            <td><strong>Akses responden</strong></td>
+            <td>Butuh Word/PDF reader</td>
+            <td>Butuh PDF reader</td>
+            <td class="good">Browser saja</td>
+          </tr>
+          <tr>
+            <td><strong>Biaya</strong></td>
+            <td class="mid">Berbayar (lisensi)</td>
+            <td class="good">Gratis</td>
+            <td class="good">Gratis</td>
+          </tr>
+          <tr>
+            <td><strong>Ekspor ke PDF</strong></td>
+            <td class="good">Sangat baik + field</td>
+            <td class="good">Baik (tanpa field)</td>
+            <td class="mid">Bisa, tapi terbatas</td>
+          </tr>
+          <tr>
+            <td><strong>Cocok untuk</strong></td>
+            <td>Formulir resmi, kontrak, blangko cetak</td>
+            <td>Dokumen kolaboratif yang perlu dicetak</td>
+            <td>Pendaftaran, survei, kuis online</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="tips-grid" style="margin-top:1.25rem;">
+        <div class="tip-card">
+          <div class="tip-icon">⬛</div>
+          <div class="tip-title">Pilih Word jika…</div>
+          <div class="tip-desc">Butuh formulir cetak dengan layout presisi, atau formulir PDF interaktif untuk dikirim via email dan diisi dengan Adobe Reader.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🔵</div>
+          <div class="tip-title">Pilih Google Docs jika…</div>
+          <div class="tip-desc">Tim perlu berkolaborasi membuat formulir bersama secara online, dan hasilnya akan dicetak atau diekspor ke PDF sederhana.</div>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">📊</div>
+          <div class="tip-title">Pilih Google Forms jika…</div>
+          <div class="tip-desc">Perlu mengumpulkan banyak respons secara online, analisis otomatis, tanpa repot mengelola file dari tiap responden.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RINGKASAN LENGKAP -->
+  <div style="background: var(--blue-800); border-radius: 12px; padding: 1.5rem 2rem; color: #fff; margin-bottom: 1rem;">
+    <h2 style="font-size:18px; font-weight:600; margin-bottom:1rem;">📌 Ringkasan Alur Kerja — Microsoft Word</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:0.75rem;">
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">📐</div>
+        <div style="font-size:12px; margin-top:5px; color:var(--blue-100);">Rencanakan struktur</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; color:var(--blue-200); font-size:18px;">→</div>
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">📊</div>
+        <div style="font-size:12px; margin-top:5px; color:var(--blue-100);">Buat tabel di Word</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; color:var(--blue-200); font-size:18px;">→</div>
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">🎨</div>
+        <div style="font-size:12px; margin-top:5px; color:var(--blue-100);">Format & merge sel</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; color:var(--blue-200); font-size:18px;">→</div>
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">📄</div>
+        <div style="font-size:12px; margin-top:5px; color:var(--blue-100);">Ekspor ke PDF</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; color:var(--blue-200); font-size:18px;">→</div>
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">✍️</div>
+        <div style="font-size:12px; margin-top:5px; color:var(--blue-100);">Tambah field di Acrobat</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background: var(--gdocs-800); border-radius: 12px; padding: 1.5rem 2rem; color: #fff;">
+    <h2 style="font-size:18px; font-weight:600; margin-bottom:1rem;">📌 Ringkasan Alur Kerja — Google Docs & Forms</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:0.75rem;">
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">🔵</div>
+        <div style="font-size:12px; margin-top:5px; color:#c5d8fc;">Buka Google Docs</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; color:#9bbef9; font-size:18px;">→</div>
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">📊</div>
+        <div style="font-size:12px; margin-top:5px; color:#c5d8fc;">Insert tabel & merge</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; color:#9bbef9; font-size:18px;">→</div>
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">🎨</div>
+        <div style="font-size:12px; margin-top:5px; color:#c5d8fc;">Format warna & border</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; color:#9bbef9; font-size:18px;">→</div>
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">⬇️</div>
+        <div style="font-size:12px; margin-top:5px; color:#c5d8fc;">Download sebagai PDF</div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; color:#9bbef9; font-size:18px;">→</div>
+      <div style="text-align:center; padding:0.875rem; background:rgba(255,255,255,0.1); border-radius:8px;">
+        <div style="font-size:24px;">📊</div>
+        <div style="font-size:12px; margin-top:5px; color:#c5d8fc;">Atau pakai Google Forms untuk versi online</div>
       </div>
     </div>
   </div>
