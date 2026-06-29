@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Form Access &mdash; Sistem Penjualan</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f3ff;--bg2:#ede9fe;--surface:#ffffff;
+  --text:#1e1a38;--text2:#3d3660;--text3:#7c74a0;--border:#cdc5f0;--ink:#1e1a38;
+  --purple:#4f35c2;--purple-bg:#ede9fe;--purple-border:#a89ce8;
+  --violet:#6d28d9;
+  --indigo:#1e40af;--indigo-bg:#eff6ff;--indigo-border:#bfdbfe;
+  --teal:#0f766e;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
+  --amber:#92400e;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --green:#166534;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --rose:#9f1239;--rose-bg:#fff1f2;--rose-border:#fecdd3;
+  --gray:#374151;--gray-bg:#f9fafb;--gray-border:#e5e7eb;
+  --radius:8px;
+  --mono:'Courier New',Courier,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.75}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,#2c1875 0%,#4f35c2 60%,#7c3aed 100%);
+  color:#fff;padding:3.5rem 2rem 3rem;text-align:center;position:relative;overflow:hidden;
+}
+.header::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+.header .pill{position:relative;display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 16px;margin-bottom:1.25rem;color:rgba(255,255,255,.8)}
+.header h1{position:relative;font-size:34px;font-weight:900;line-height:1.15;letter-spacing:-.03em;margin-bottom:.6rem}
+.header h1 em{font-style:normal;color:#c4b5fd}
+.header .sub{position:relative;font-size:14px;color:rgba(255,255,255,.6);max-width:520px;margin:0 auto}
+
+/* ── META BAR ── */
+.meta-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;background:var(--surface);border-bottom:1px solid var(--border);padding:.8rem 2rem}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-size:11.5px;font-weight:600;padding:4px 12px;color:var(--text2)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* ── LAYOUT ── */
+.page{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+section{margin-bottom:3.75rem}
+
+/* ── SECTION HEADER ── */
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:1.5rem;padding-bottom:.875rem;border-bottom:2px solid var(--border)}
+.sec-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ic-purple{background:var(--purple-bg)}
+.ic-indigo{background:var(--indigo-bg)}
+.ic-teal{background:var(--teal-bg)}
+.sec-title{font-size:20px;font-weight:800;letter-spacing:-.015em;color:var(--text)}
+.sec-sub{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* ── CALLOUT ── */
+.callout{display:flex;align-items:flex-start;gap:10px;border-radius:var(--radius);padding:.85rem 1rem;margin:1rem 0;border:1px solid;font-size:13.5px}
+.c-warn{background:var(--amber-bg);border-color:var(--amber-border);color:#78350f}
+.c-info{background:var(--indigo-bg);border-color:var(--indigo-border);color:#1e3a8a}
+.c-ok{background:var(--green-bg);border-color:var(--green-border);color:#14532d}
+.c-purple{background:var(--purple-bg);border-color:var(--purple-border);color:#3b0764}
+.c-icon{font-size:15px;flex-shrink:0;margin-top:2px}
+.callout p{margin:0;font-size:13.5px;color:inherit}
+.callout strong{color:inherit}
+
+/* ── SCHEMA ── */
+.schema-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:1.25rem}
+.schema-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.sc-top{padding:.6rem 1rem;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.sc-cust{background:var(--amber-bg);color:var(--amber);border-bottom:1px solid var(--amber-border)}
+.sc-brg{background:var(--indigo-bg);color:var(--indigo);border-bottom:1px solid var(--indigo-border)}
+.sc-trx{background:var(--purple-bg);color:var(--purple);border-bottom:1px solid var(--purple-border)}
+.sc-rows{padding:.4rem 0}
+.sc-row{display:flex;align-items:center;justify-content:space-between;padding:.3rem 1rem;font-size:12px;border-bottom:.5px solid var(--bg2);gap:8px}
+.sc-row:last-child{border-bottom:none}
+.sc-col{font-family:var(--mono)}
+.sc-pk{color:var(--amber);font-weight:700}
+.sc-fk{color:var(--purple);font-weight:600}
+.sc-type{font-size:10.5px;font-weight:600;background:var(--bg2);padding:2px 7px;border-radius:4px;color:var(--text3);white-space:nowrap}
+.badge-pk{background:var(--amber-bg);color:var(--amber)}
+.badge-fk{background:var(--purple-bg);color:var(--purple)}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:2.5rem 0}
+
+/* ── TASK CARD ── */
+.task-list{display:flex;flex-direction:column;gap:20px}
+.task-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.05)}
+
+.task-head{display:flex;align-items:center;gap:14px;padding:1rem 1.25rem;border-bottom:1px solid var(--bg2)}
+.task-num{
+  min-width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;flex-shrink:0;
+}
+.tn-easy{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.tn-med{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.tn-hard{background:var(--rose-bg);color:var(--rose);border:1px solid var(--rose-border)}
+
+.task-head-body{}
+.task-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.35rem}
+.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px}
+.t-default{background:var(--bg2);color:var(--text3)}
+.t-easy{background:var(--green-bg);color:var(--green)}
+.t-med{background:var(--amber-bg);color:var(--amber)}
+.t-hard{background:var(--rose-bg);color:var(--rose)}
+.t-purple{background:var(--purple-bg);color:var(--purple)}
+.t-teal{background:var(--teal-bg);color:var(--teal)}
+
+.task-title{font-size:15px;font-weight:800;color:var(--text);line-height:1.35}
+
+.task-body{padding:1rem 1.25rem}
+.task-desc{font-size:14px;color:var(--text2);margin-bottom:1rem;line-height:1.65}
+.task-desc strong{color:var(--text)}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step-num{
+  min-width:24px;height:24px;border-radius:50%;
+  background:var(--purple-bg);color:var(--purple);
+  border:1.5px solid var(--purple-border);
+  font-size:11px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;
+}
+.step-text{font-size:13.5px;color:var(--text2);line-height:1.6}
+.step-text strong{color:var(--text)}
+.step-text code{font-family:var(--mono);font-size:12.5px;background:var(--bg2);padding:1px 6px;border-radius:4px;color:var(--purple)}
+
+/* ── RESULT BOX ── */
+.result-box{
+  margin-top:1rem;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.result-head{
+  padding:.5rem 1rem;
+  background:var(--bg2);
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text3);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.result-body{padding:1rem 1.25rem}
+
+/* ── MOCKUP FORM ── */
+.mockup{
+  background:#f0eff8;
+  border:2px solid #9d8fe0;
+  border-radius:6px;
+  overflow:hidden;
+  font-size:12.5px;
+  margin-top:.75rem;
+  box-shadow:0 2px 8px rgba(79,53,194,.1);
+}
+.mockup-bar{
+  background:linear-gradient(90deg,#4f35c2,#6d28d9);
+  padding:.45rem 1rem;
+  display:flex;align-items:center;gap:8px;
+}
+.mockup-bar span{color:rgba(255,255,255,.9);font-size:11.5px;font-weight:700;letter-spacing:.04em}
+.mockup-dot{width:10px;height:10px;border-radius:50%}
+.mockup-body{padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.6rem}
+.mock-row{display:flex;align-items:center;gap:10px}
+.mock-label{width:110px;font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0;text-align:right}
+.mock-field{
+  flex:1;height:22px;background:#fff;
+  border:1px solid #9d8fe0;border-radius:3px;
+  padding:0 6px;font-size:11.5px;color:var(--text3);
+  display:flex;align-items:center;
+}
+.mock-field.combo::after{content:'▼';margin-left:auto;font-size:9px;color:var(--text3)}
+.mock-field.num{max-width:80px}
+.mock-field.readonly{background:#e8e4f8;color:#7c74a0}
+.mock-sep{height:1px;background:#cdc5f0;margin:.25rem 0}
+.mock-sub-head{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);padding:.2rem 0}
+.mock-sub-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4px;margin-top:2px}
+.mock-sub-cell{height:20px;background:#fff;border:1px solid #cdc5f0;border-radius:2px;padding:0 5px;font-size:10.5px;display:flex;align-items:center;color:var(--text3)}
+.mock-sub-cell.header{background:#e8e4f8;color:var(--text2);font-weight:700;font-size:10px}
+.mock-sub-cell.calc{background:#f0ffe8;color:var(--green);font-weight:600}
+.mock-total-row{display:flex;justify-content:flex-end;gap:8px;margin-top:.5rem;align-items:center}
+.mock-total-label{font-size:11.5px;font-weight:700;color:var(--text2)}
+.mock-total-val{height:22px;min-width:100px;background:#e8ffe8;border:1.5px solid var(--green-border);border-radius:3px;font-size:11.5px;font-weight:700;color:var(--green);display:flex;align-items:center;padding:0 8px}
+.mock-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:.75rem}
+.mock-btn{padding:4px 12px;border-radius:3px;font-size:11px;font-weight:700;cursor:default}
+.mb-primary{background:#4f35c2;color:#fff}
+.mb-secondary{background:#e8e4f8;color:var(--purple)}
+.mb-danger{background:#fff1f2;color:var(--rose);border:1px solid var(--rose-border)}
+
+/* ── CHECKLIST ── */
+.checklist{display:flex;flex-direction:column;gap:7px;margin-top:.75rem}
+.check-item{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--text2)}
+.check-box{
+  width:18px;height:18px;border-radius:4px;
+  border:1.5px solid var(--purple-border);
+  background:var(--surface);
+  flex-shrink:0;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--purple);
+}
+
+/* ── PROPERTY TABLE ── */
+.prop-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:.75rem}
+.prop-tbl th{background:var(--bg2);padding:.45rem .875rem;text-align:left;font-weight:700;font-size:11.5px;border-bottom:1px solid var(--border);color:var(--text2)}
+.prop-tbl td{padding:.4rem .875rem;border-bottom:.5px solid var(--bg2);vertical-align:top}
+.prop-tbl tr:last-child td{border-bottom:none}
+.prop-tbl td:first-child{font-family:var(--mono);font-size:11.5px;color:var(--purple);font-weight:600;white-space:nowrap}
+.prop-tbl td:nth-child(2){color:var(--text3);font-size:11.5px;width:130px;white-space:nowrap}
+.prop-tbl td:nth-child(3){color:var(--text2)}
+
+/* ── PETA TUGAS ── */
+.map-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.map-tbl th{background:var(--bg2);padding:.55rem .875rem;text-align:left;font-weight:700;border-bottom:1px solid var(--border);font-size:12px;letter-spacing:.03em}
+.map-tbl td{padding:.5rem .875rem;border-bottom:.5px solid var(--bg2)}
+.map-tbl tr:last-child td{border-bottom:none}
+.map-tbl td:first-child{color:var(--text3);font-weight:700;font-size:12px}
+.lvl-easy{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--green-bg);color:var(--green)}
+.lvl-med{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--amber-bg);color:var(--amber)}
+.lvl-hard{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--rose-bg);color:var(--rose)}
+
+footer{text-align:center;padding:2rem;font-size:12px;color:var(--text3);border-top:1px solid var(--border);background:var(--surface)}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div class="pill">&#x1F5A5;&#xFE0F; Modul 4 &mdash; Microsoft Access</div>
+  <h1>Latihan Form &amp; Subform<br><em>Sistem Penjualan</em></h1>
+  <p class="sub">Rancang antarmuka entri data menggunakan Form Utama dan Subform berbasis tabel customer, barang, dan transaksi</p>
+</div>
+
+<div class="meta-bar">
+  <div class="chip"><div class="dot" style="background:var(--purple)"></div> Microsoft Access</div>
+  <div class="chip"><div class="dot" style="background:var(--indigo)"></div> 3 Tabel Relasional</div>
+  <div class="chip"><div class="dot" style="background:var(--teal)"></div> 7 Tugas Bertahap</div>
+  <div class="chip"><div class="dot" style="background:var(--green)"></div> Form &amp; Subform</div>
+</div>
+
+<!-- ═══ PAGE ═══ -->
+<div class="page">
+
+  <!-- BAGIAN A: PERSIAPAN -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon ic-purple">&#x1F5C4;&#xFE0F;</div>
+      <div>
+        <div class="sec-title">Bagian A &mdash; Persiapan Database</div>
+        <div class="sec-sub">Pastikan struktur tabel dan relasi sudah benar sebelum membuat form</div>
+      </div>
+    </div>
+
+    <div class="callout c-warn">
+      <span class="c-icon">&#x26A0;&#xFE0F;</span>
+      <p><strong>Prasyarat:</strong> Modul ini menggunakan database yang sama dengan Modul 2 (Advanced Queries). Pastikan tabel <code>customer</code>, <code>barang</code>, dan <code>transaksi</code> sudah ada dan terisi data sebelum melanjutkan.</p>
+    </div>
+
+    <h3 style="font-size:14.5px;font-weight:700;margin:1.5rem 0 .7rem">Struktur Tabel yang Digunakan</h3>
+    <div class="schema-grid">
+      <div class="schema-card">
+        <div class="sc-top sc-cust">&#x1F7E0; customer</div>
+        <div class="sc-rows">
+          <div class="sc-row"><span class="sc-col sc-pk">id</span><span class="sc-type badge-pk">PK &middot; INT</span></div>
+          <div class="sc-row"><span class="sc-col">nama</span><span class="sc-type">Text</span></div>
+          <div class="sc-row"><span class="sc-col">email</span><span class="sc-type">Text</span></div>
+          <div class="sc-row"><span class="sc-col">kota</span><span class="sc-type">Text</span></div>
+          <div class="sc-row"><span class="sc-col">tgl_daftar</span><span class="sc-type">Date/Time</span></div>
+        </div>
+      </div>
+      <div class="schema-card">
+        <div class="sc-top sc-brg">&#x1F535; barang</div>
+        <div class="sc-rows">
+          <div class="sc-row"><span class="sc-col sc-pk">id</span><span class="sc-type badge-pk">PK &middot; INT</span></div>
+          <div class="sc-row"><span class="sc-col">nama_barang</span><span class="sc-type">Text</span></div>
+          <div class="sc-row"><span class="sc-col">kategori</span><span class="sc-type">Text</span></div>
+          <div class="sc-row"><span class="sc-col">harga</span><span class="sc-type">Currency</span></div>
+          <div class="sc-row"><span class="sc-col">stok</span><span class="sc-type">Number</span></div>
+        </div>
+      </div>
+      <div class="schema-card">
+        <div class="sc-top sc-trx">&#x1F7E3; transaksi</div>
+        <div class="sc-rows">
+          <div class="sc-row"><span class="sc-col sc-pk">id</span><span class="sc-type badge-pk">PK &middot; INT</span></div>
+          <div class="sc-row"><span class="sc-col sc-fk">customer_id</span><span class="sc-type badge-fk">FK</span></div>
+          <div class="sc-row"><span class="sc-col sc-fk">barang_id</span><span class="sc-type badge-fk">FK</span></div>
+          <div class="sc-row"><span class="sc-col">jumlah</span><span class="sc-type">Number</span></div>
+          <div class="sc-row"><span class="sc-col">tgl_transaksi</span><span class="sc-type">Date/Time</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout c-info">
+      <span class="c-icon">&#x1F4CC;</span>
+      <p><strong>Catatan Relasi:</strong> Pastikan <em>Enforce Referential Integrity</em> sudah diaktifkan di jendela Relationships antara <code>customer&rarr;transaksi</code> dan <code>barang&rarr;transaksi</code>. Form tidak akan bekerja dengan benar tanpa relasi yang valid.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- BAGIAN B: TUGAS -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon ic-indigo">&#x1F4CB;</div>
+      <div>
+        <div class="sec-title">Bagian B &mdash; 7 Tugas Praktikum</div>
+        <div class="sec-sub">Kerjakan secara berurutan &mdash; setiap tugas membangun di atas tugas sebelumnya</div>
+      </div>
+    </div>
+
+    <div class="task-list">
+
+      <!-- ── TUGAS 1 ── -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-easy">1</div>
+          <div class="task-head-body">
+            <div class="task-tags">
+              <span class="tag t-default">Form Wizard</span>
+              <span class="tag t-default">Tabel: customer</span>
+              <span class="tag t-easy">&#x25CF; Mudah</span>
+            </div>
+            <div class="task-title">Membuat Form Data Customer</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Buat sebuah <strong>Form tunggal</strong> untuk menampilkan dan mengedit data customer. Form ini akan menjadi <em>Form Utama</em> pada tugas berikutnya.</p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text">Di panel <strong>Navigation</strong>, klik kanan tabel <code>customer</code> &rarr; pilih <strong>Form</strong> (bukan Form Wizard) untuk membuat form otomatis.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text">Access akan membuat form dengan semua field. Beralih ke <strong>Design View</strong> dengan klik ikon di pojok kanan bawah.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">Atur layout: pindahkan dan sejajarkan label &amp; field agar rapi. Gunakan <strong>Arrange &rarr; Tabular</strong> atau <strong>Stacked</strong> sesuai preferensi.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-text">Ubah <strong>Caption</strong> form (di Property Sheet &rarr; Format &rarr; Caption) menjadi: <em>"Form Data Customer"</em>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-text">Simpan form dengan nama <code>frm_Customer</code>.</div>
+            </div>
+          </div>
+
+          <div class="result-box" style="margin-top:1.25rem">
+            <div class="result-head">&#x1F4F8; Tampilan yang Diharapkan</div>
+            <div class="result-body">
+              <div class="mockup">
+                <div class="mockup-bar">
+                  <div class="mockup-dot" style="background:#ff5f57"></div>
+                  <div class="mockup-dot" style="background:#ffbd2e"></div>
+                  <div class="mockup-dot" style="background:#28c840"></div>
+                  <span>Form Data Customer</span>
+                </div>
+                <div class="mockup-body">
+                  <div class="mock-row"><span class="mock-label">ID Customer</span><div class="mock-field readonly">1</div></div>
+                  <div class="mock-row"><span class="mock-label">Nama</span><div class="mock-field">Andi Setiawan</div></div>
+                  <div class="mock-row"><span class="mock-label">Email</span><div class="mock-field">andi@email.com</div></div>
+                  <div class="mock-row"><span class="mock-label">Kota</span><div class="mock-field">Yogyakarta</div></div>
+                  <div class="mock-row"><span class="mock-label">Tgl Daftar</span><div class="mock-field">10/01/2023</div></div>
+                  <div class="mock-btns">
+                    <div class="mock-btn mb-secondary">&#x276E; Sebelumnya</div>
+                    <div class="mock-btn mb-secondary">Selanjutnya &#x276F;</div>
+                    <div class="mock-btn mb-primary">+ Baru</div>
+                    <div class="mock-btn mb-danger">Hapus</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout c-purple" style="margin-top:1rem">
+            <span class="c-icon">&#x1F4A1;</span>
+            <p><strong>Tip:</strong> Field <code>id</code> sebaiknya dibuat <em>read-only</em> (Enabled = No, Locked = Yes) karena merupakan Primary Key yang diisi otomatis.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TUGAS 2 ── -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-easy">2</div>
+          <div class="task-head-body">
+            <div class="task-tags">
+              <span class="tag t-default">Form Wizard</span>
+              <span class="tag t-default">Tabel: barang</span>
+              <span class="tag t-easy">&#x25CF; Mudah</span>
+            </div>
+            <div class="task-title">Membuat Form Data Barang dengan Validasi</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Buat form untuk mengelola data barang. Tambahkan <strong>Validation Rule</strong> untuk memastikan harga dan stok tidak boleh bernilai negatif.</p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text">Buat form dari tabel <code>barang</code> menggunakan <strong>Create &rarr; Form</strong>. Simpan dengan nama <code>frm_Barang</code>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text">Masuk ke <strong>Design View</strong>. Klik field <code>harga</code>, buka <strong>Property Sheet</strong> (F4), tab <strong>Data</strong>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">Isi properti <strong>Validation Rule</strong>: <code>&gt;=0</code> dan <strong>Validation Text</strong>: <em>"Harga tidak boleh negatif!"</em></div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-text">Ulangi langkah 2&ndash;3 untuk field <code>stok</code> dengan Validation Rule: <code>&gt;=0</code> dan teks: <em>"Stok tidak boleh negatif!"</em></div>
+            </div>
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-text">Ubah field <code>kategori</code> menjadi <strong>Combo Box</strong>: klik kanan field &rarr; Change To &rarr; Combo Box. Isi Row Source dengan: <code>"Elektronik";"Aksesoris";"Buku"</code></div>
+            </div>
+          </div>
+
+          <div class="result-box" style="margin-top:1.25rem">
+            <div class="result-head">&#x2699;&#xFE0F; Property Sheet yang Harus Diatur</div>
+            <div class="result-body">
+              <table class="prop-tbl">
+                <thead><tr><th>Properti</th><th>Field</th><th>Nilai</th></tr></thead>
+                <tbody>
+                  <tr><td>Validation Rule</td><td>harga</td><td><code>&gt;=0</code></td></tr>
+                  <tr><td>Validation Text</td><td>harga</td><td>Harga tidak boleh negatif!</td></tr>
+                  <tr><td>Validation Rule</td><td>stok</td><td><code>&gt;=0</code></td></tr>
+                  <tr><td>Validation Text</td><td>stok</td><td>Stok tidak boleh negatif!</td></tr>
+                  <tr><td>Row Source Type</td><td>kategori (combo)</td><td>Value List</td></tr>
+                  <tr><td>Row Source</td><td>kategori (combo)</td><td>"Elektronik";"Aksesoris";"Buku"</td></tr>
+                  <tr><td>Format</td><td>harga</td><td>Currency</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TUGAS 3 ── -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-med">3</div>
+          <div class="task-head-body">
+            <div class="task-tags">
+              <span class="tag t-default">Subform Wizard</span>
+              <span class="tag t-default">Form &amp; Subform</span>
+              <span class="tag t-med">&#x25CF; Menengah</span>
+            </div>
+            <div class="task-title">Membuat Form Transaksi dengan Subform</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Ini adalah inti dari modul ini. Buat <strong>Form Utama</strong> berbasis tabel <code>customer</code> yang di dalamnya terdapat <strong>Subform</strong> berisi riwayat transaksi customer tersebut.</p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text"><strong>Buat Subform terlebih dahulu.</strong> Gunakan <strong>Create &rarr; Form Wizard</strong>, pilih tabel <code>transaksi</code>. Masukkan field: <code>id</code>, <code>barang_id</code>, <code>jumlah</code>, <code>tgl_transaksi</code>. Pilih layout <strong>Datasheet</strong>. Simpan sebagai <code>subfrm_Transaksi</code>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text"><strong>Buat Form Utama.</strong> Buka form <code>frm_Customer</code> yang sudah dibuat di Tugas 1 dalam <strong>Design View</strong>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">Perbesar area <strong>Detail</strong> form untuk memberi ruang bagi subform. Dari panel <strong>Design &rarr; Controls</strong>, klik ikon <strong>Subform/Subreport</strong> lalu gambar area di bawah field-field customer.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-text">Pada wizard yang muncul, pilih <strong>"Use an existing form"</strong> dan pilih <code>subfrm_Transaksi</code>. Klik Next.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-text">Pada dialog <em>Link Master/Child</em>, pastikan Access sudah mendeteksi otomatis: <strong>Link Master Fields: <code>id</code></strong> dan <strong>Link Child Fields: <code>customer_id</code></strong>. Klik Finish.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">6</div>
+              <div class="step-text">Simpan form utama dengan nama <code>frm_TransaksiCustomer</code>.</div>
+            </div>
+          </div>
+
+          <div class="result-box" style="margin-top:1.25rem">
+            <div class="result-head">&#x1F4F8; Tampilan yang Diharapkan</div>
+            <div class="result-body">
+              <div class="mockup">
+                <div class="mockup-bar">
+                  <div class="mockup-dot" style="background:#ff5f57"></div>
+                  <div class="mockup-dot" style="background:#ffbd2e"></div>
+                  <div class="mockup-dot" style="background:#28c840"></div>
+                  <span>frm_TransaksiCustomer</span>
+                </div>
+                <div class="mockup-body">
+                  <div class="mock-row"><span class="mock-label">ID</span><div class="mock-field readonly">1</div></div>
+                  <div class="mock-row"><span class="mock-label">Nama</span><div class="mock-field">Andi Setiawan</div></div>
+                  <div class="mock-row"><span class="mock-label">Kota</span><div class="mock-field">Yogyakarta</div></div>
+                  <div class="mock-sep"></div>
+                  <div class="mock-sub-head">&#x1F4CB; Riwayat Transaksi</div>
+                  <div class="mock-sub-grid">
+                    <div class="mock-sub-cell header">ID Transaksi</div>
+                    <div class="mock-sub-cell header">Barang ID</div>
+                    <div class="mock-sub-cell header">Jumlah</div>
+                    <div class="mock-sub-cell header">Tgl Transaksi</div>
+                    <div class="mock-sub-cell">TRX001</div>
+                    <div class="mock-sub-cell">1</div>
+                    <div class="mock-sub-cell">1</div>
+                    <div class="mock-sub-cell">05/01/2024</div>
+                    <div class="mock-sub-cell">TRX002</div>
+                    <div class="mock-sub-cell">2</div>
+                    <div class="mock-sub-cell">2</div>
+                    <div class="mock-sub-cell">05/01/2024</div>
+                    <div class="mock-sub-cell">TRX010</div>
+                    <div class="mock-sub-cell">4</div>
+                    <div class="mock-sub-cell">2</div>
+                    <div class="mock-sub-cell">20/02/2024</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout c-ok" style="margin-top:1rem">
+            <span class="c-icon">&#x2705;</span>
+            <p><strong>Cara Menguji:</strong> Saat berpindah record customer (gunakan navigation bar di bawah), subform harus <em>otomatis menampilkan</em> transaksi milik customer yang sedang aktif. Jika tidak berubah, periksa kembali Link Master/Child Fields.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TUGAS 4 ── -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-med">4</div>
+          <div class="task-head-body">
+            <div class="task-tags">
+              <span class="tag t-default">Combo Box</span>
+              <span class="tag t-default">Lookup</span>
+              <span class="tag t-med">&#x25CF; Menengah</span>
+            </div>
+            <div class="task-title">Mengganti Barang ID dengan Combo Box Lookup</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Saat ini subform menampilkan <code>barang_id</code> berupa angka yang tidak informatif. Ubah field ini menjadi <strong>Combo Box</strong> yang menampilkan nama barang, namun tetap menyimpan ID-nya.</p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text">Buka <code>subfrm_Transaksi</code> dalam <strong>Design View</strong>. Klik field <code>barang_id</code>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text">Klik kanan &rarr; <strong>Change To &rarr; Combo Box</strong>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">Buka <strong>Property Sheet</strong> (F4), tab <strong>Data</strong>. Atur properti berikut:</div>
+            </div>
+          </div>
+
+          <div class="result-box">
+            <div class="result-head">&#x2699;&#xFE0F; Property Sheet &mdash; Combo Box barang_id</div>
+            <div class="result-body">
+              <table class="prop-tbl">
+                <thead><tr><th>Properti</th><th>Tab</th><th>Nilai</th></tr></thead>
+                <tbody>
+                  <tr><td>Row Source Type</td><td>Data</td><td>Table/Query</td></tr>
+                  <tr><td>Row Source</td><td>Data</td><td><code>SELECT id, nama_barang, harga FROM barang ORDER BY nama_barang;</code></td></tr>
+                  <tr><td>Bound Column</td><td>Data</td><td>1 (kolom pertama = id)</td></tr>
+                  <tr><td>Column Count</td><td>Format</td><td>3</td></tr>
+                  <tr><td>Column Widths</td><td>Format</td><td>0cm;4cm;2cm</td></tr>
+                  <tr><td>List Width</td><td>Format</td><td>6cm</td></tr>
+                  <tr><td>Limit To List</td><td>Data</td><td>Yes</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="steps" style="margin-top:.875rem">
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-text">Column Width pertama <code>0cm</code> menyembunyikan kolom ID. Yang terlihat hanya nama barang dan harganya. Kolom ID tetap tersimpan sebagai nilai.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-text">Simpan dan uji: saat mengklik field barang di subform, dropdown harus menampilkan daftar nama barang beserta harganya.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TUGAS 5 ── -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-med">5</div>
+          <div class="task-head-body">
+            <div class="task-tags">
+              <span class="tag t-default">Calculated Field</span>
+              <span class="tag t-default">Text Box</span>
+              <span class="tag t-med">&#x25CF; Menengah</span>
+            </div>
+            <div class="task-title">Menambah Kolom Kalkulasi Total Harga</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Tambahkan kolom <strong>Total Harga</strong> yang menghitung otomatis <code>harga &times; jumlah</code> di setiap baris transaksi dalam subform, serta <strong>Grand Total</strong> di footer subform.</p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text">Buka <code>subfrm_Transaksi</code> dalam <strong>Design View</strong>. Aktifkan <strong>Form Footer</strong>: klik kanan di area detail &rarr; <strong>Form Header/Footer</strong>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text">Di bagian <strong>Detail</strong>, tambah <strong>Text Box</strong> baru di sebelah kanan kolom jumlah. Ubah labelnya menjadi <em>"Total Harga"</em>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">Klik text box tersebut, buka Property Sheet. Di tab <strong>Data &rarr; Control Source</strong>, ketik ekspresi: <code>=[jumlah]*[barang_id].[Column](2)</code></div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-text">Atur <strong>Format</strong>: Currency, <strong>Enabled</strong>: No, <strong>Locked</strong>: Yes (field ini hanya untuk tampilan, tidak bisa diedit).</div>
+            </div>
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-text">Di area <strong>Form Footer</strong>, tambahkan Text Box baru dengan Control Source: <code>=Sum([jumlah]*[barang_id].[Column](2))</code> dan beri label <em>"Grand Total:"</em>.</div>
+            </div>
+          </div>
+
+          <div class="result-box" style="margin-top:1.25rem">
+            <div class="result-head">&#x1F4F8; Tampilan Subform dengan Kalkulasi</div>
+            <div class="result-body">
+              <div class="mockup">
+                <div class="mockup-bar">
+                  <div class="mockup-dot" style="background:#ff5f57"></div>
+                  <div class="mockup-dot" style="background:#ffbd2e"></div>
+                  <div class="mockup-dot" style="background:#28c840"></div>
+                  <span>subfrm_Transaksi</span>
+                </div>
+                <div class="mockup-body">
+                  <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.2fr;gap:4px">
+                    <div class="mock-sub-cell header">Nama Barang</div>
+                    <div class="mock-sub-cell header">Jumlah</div>
+                    <div class="mock-sub-cell header">Tgl Transaksi</div>
+                    <div class="mock-sub-cell header">Total Harga</div>
+                    <div class="mock-sub-cell header">&nbsp;</div>
+                    <div class="mock-sub-cell">Laptop ASUS 14"</div>
+                    <div class="mock-sub-cell">1</div>
+                    <div class="mock-sub-cell">05/01/2024</div>
+                    <div class="mock-sub-cell calc">Rp8.500.000</div>
+                    <div class="mock-sub-cell">&nbsp;</div>
+                    <div class="mock-sub-cell">Mouse Wireless</div>
+                    <div class="mock-sub-cell">2</div>
+                    <div class="mock-sub-cell">05/01/2024</div>
+                    <div class="mock-sub-cell calc">Rp300.000</div>
+                    <div class="mock-sub-cell">&nbsp;</div>
+                    <div class="mock-sub-cell">Buku Algoritma</div>
+                    <div class="mock-sub-cell">2</div>
+                    <div class="mock-sub-cell">20/02/2024</div>
+                    <div class="mock-sub-cell calc">Rp250.000</div>
+                    <div class="mock-sub-cell">&nbsp;</div>
+                  </div>
+                  <div class="mock-total-row">
+                    <span class="mock-total-label">Grand Total:</span>
+                    <div class="mock-total-val">Rp9.050.000</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout c-purple" style="margin-top:1rem">
+            <span class="c-icon">&#x1F4A1;</span>
+            <p><strong>Alternatif:</strong> Jika ekspresi <code>[barang_id].[Column](2)</code> tidak bekerja, buat <strong>Query</strong> yang sudah meng-join tabel transaksi dan barang, lalu gunakan query tersebut sebagai Record Source subform. Kemudian gunakan ekspresi: <code>=[jumlah]*[harga]</code></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TUGAS 6 ── -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-hard">6</div>
+          <div class="task-head-body">
+            <div class="task-tags">
+              <span class="tag t-default">Command Button</span>
+              <span class="tag t-default">Navigasi</span>
+              <span class="tag t-purple">VBA / Macro</span>
+              <span class="tag t-hard">&#x25CF; Sulit</span>
+            </div>
+            <div class="task-title">Menambahkan Tombol Navigasi dan Aksi</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Tambahkan <strong>Command Button</strong> pada Form Utama untuk mempermudah navigasi dan operasi data tanpa harus menggunakan navigation bar default Access.</p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text">Buka <code>frm_TransaksiCustomer</code> dalam <strong>Design View</strong>. Tambahkan area <strong>Form Footer</strong>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text">Dari <strong>Design &rarr; Controls</strong>, klik ikon <strong>Button</strong> dan gambar di Form Footer. <strong>Command Button Wizard</strong> akan terbuka.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">Buat 5 tombol dengan pengaturan berikut:</div>
+            </div>
+          </div>
+
+          <div class="result-box">
+            <div class="result-head">&#x1F527; Daftar Command Button yang Harus Dibuat</div>
+            <div class="result-body">
+              <table class="prop-tbl">
+                <thead><tr><th>Nama Tombol</th><th>Kategori Wizard</th><th>Aksi Wizard</th></tr></thead>
+                <tbody>
+                  <tr><td>btn_Prev</td><td>Record Navigation</td><td>Go To Previous Record</td></tr>
+                  <tr><td>btn_Next</td><td>Record Navigation</td><td>Go To Next Record</td></tr>
+                  <tr><td>btn_New</td><td>Record Operations</td><td>Add New Record</td></tr>
+                  <tr><td>btn_Save</td><td>Record Operations</td><td>Save Record</td></tr>
+                  <tr><td>btn_Delete</td><td>Record Operations</td><td>Delete Record</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="steps" style="margin-top:.875rem">
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-text">Sembunyikan navigation bar bawaan: buka Property Sheet form (klik area abu-abu di luar form) &rarr; tab <strong>Format</strong> &rarr; <strong>Navigation Buttons: No</strong>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-text">Sejajarkan kelima tombol dengan rapi menggunakan <strong>Arrange &rarr; Align &rarr; Bottom</strong> dan <strong>Size/Space &rarr; Equal Horizontal</strong>.</div>
+            </div>
+          </div>
+
+          <div class="callout c-warn" style="margin-top:1rem">
+            <span class="c-icon">&#x26A0;&#xFE0F;</span>
+            <p><strong>Perhatian untuk btn_Delete:</strong> Saat tombol hapus diklik, Access akan meminta konfirmasi. Ini perilaku default yang <em>tidak perlu diubah</em> karena melindungi data dari penghapusan tidak sengaja.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TUGAS 7 ── -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-hard">7</div>
+          <div class="task-head-body">
+            <div class="task-tags">
+              <span class="tag t-default">Search Box</span>
+              <span class="tag t-default">Filter</span>
+              <span class="tag t-purple">VBA / Macro</span>
+              <span class="tag t-hard">&#x25CF; Sulit</span>
+            </div>
+            <div class="task-title">Menambahkan Fitur Pencarian Customer</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Tambahkan <strong>kotak pencarian</strong> di bagian atas Form Utama agar pengguna bisa mencari customer berdasarkan nama tanpa harus berpindah record satu per satu.</p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text">Buka <code>frm_TransaksiCustomer</code> dalam <strong>Design View</strong>. Tambahkan area <strong>Form Header</strong>: klik kanan &rarr; Form Header/Footer.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text">Di Form Header, tambahkan <strong>Label</strong> bertuliskan <em>"Cari Customer:"</em> dan sebuah <strong>Text Box</strong> di sebelahnya. Ubah nama text box (Property Sheet &rarr; Other &rarr; Name) menjadi <code>txt_Cari</code>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">Tambah juga <strong>Command Button</strong> dengan label <em>"Cari"</em>, beri nama <code>btn_Cari</code>. Pilih <strong>Miscellaneous &rarr; Run Macro</strong> atau langsung gunakan Event Procedure.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-text">Klik tombol <code>btn_Cari</code> &rarr; Property Sheet &rarr; tab <strong>Event</strong> &rarr; <strong>On Click</strong> &rarr; klik <strong>[...]</strong> &rarr; pilih <strong>Code Builder</strong>. Ketik kode VBA berikut:</div>
+            </div>
+          </div>
+
+          <div class="result-box">
+            <div class="result-head" style="background:var(--ink);border-color:transparent">
+              <span style="color:rgba(255,255,255,.4);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">VBA &mdash; Event On Click btn_Cari</span>
+            </div>
+            <div style="background:#1e1a38;padding:1rem 1.25rem;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:#ccc8e8;overflow-x:auto">
+<span style="color:#7dd3fc;font-weight:700">Private Sub</span> btn_Cari_Click()
+    <span style="color:#86efac">Dim</span> strCari <span style="color:#7dd3fc;font-weight:700">As String</span>
+    strCari = Me.txt_Cari.Value
+
+    <span style="color:#7dd3fc;font-weight:700">If</span> strCari = <span style="color:#86efac">""</span> <span style="color:#7dd3fc;font-weight:700">Then</span>
+        Me.FilterOn = <span style="color:#fbbf24">False</span>  <span style="color:#4a4a78">' Hapus filter jika kosong</span>
+    <span style="color:#7dd3fc;font-weight:700">Else</span>
+        Me.Filter = <span style="color:#86efac">"nama LIKE '*"</span> & strCari & <span style="color:#86efac">"*'"</span>
+        Me.FilterOn = <span style="color:#fbbf24">True</span>
+    <span style="color:#7dd3fc;font-weight:700">End If</span>
+<span style="color:#7dd3fc;font-weight:700">End Sub</span>
+            </div>
+          </div>
+
+          <div class="steps" style="margin-top:.875rem">
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-text">Tambahkan juga tombol <code>btn_Reset</code> dengan label <em>"Tampilkan Semua"</em> dan kode: <code>Me.FilterOn = False</code> pada event On Click-nya.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">6</div>
+              <div class="step-text">Uji: ketik sebagian nama customer (misal <em>"Andi"</em>) lalu klik tombol Cari. Form harus memfilter dan hanya menampilkan customer yang namanya mengandung kata tersebut.</div>
+            </div>
+          </div>
+
+          <div class="callout c-ok" style="margin-top:1rem">
+            <span class="c-icon">&#x2705;</span>
+            <p><strong>Hasil Akhir yang Diharapkan:</strong> Form yang lengkap dengan header pencarian, data customer di bagian utama, subform transaksi yang terhubung otomatis, kalkulasi total harga, dan tombol navigasi di footer.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end task-list -->
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CHECKLIST PENILAIAN -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon ic-teal">&#x2705;</div>
+      <div>
+        <div class="sec-title">Checklist Penilaian</div>
+        <div class="sec-sub">Centang semua item sebelum mengumpulkan tugas</div>
+      </div>
+    </div>
+
+    <div class="callout c-info">
+      <span class="c-icon">&#x1F4CC;</span>
+      <p>Kumpulkan file <strong>.accdb</strong> yang sudah berisi semua form. Pastikan data sample sudah ada dan semua form dapat dibuka tanpa error.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:1.25rem">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:.75rem">&#x1F7E2; Form Dasar</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><span><code>frm_Customer</code> dapat menampilkan dan mengedit data customer</span></div>
+          <div class="check-item"><div class="check-box"></div><span><code>frm_Barang</code> memiliki validasi harga dan stok &ge; 0</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Field kategori di <code>frm_Barang</code> berupa Combo Box dengan pilihan yang benar</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Field ID bersifat read-only pada kedua form</span></div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);margin-bottom:.75rem">&#x1F7E1; Form &amp; Subform</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><span>Subform transaksi tampil di dalam form customer</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Subform berubah otomatis saat record customer berganti</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Field barang_id menggunakan Combo Box yang menampilkan nama barang</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Kolom Total Harga menghitung harga &times; jumlah dengan benar</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Grand Total di footer subform menjumlahkan semua transaksi</span></div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--rose);margin-bottom:.75rem">&#x1F534; Fitur Lanjutan</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><span>5 Command Button navigasi berfungsi dengan benar</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Navigation bar default Access disembunyikan</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Kotak pencarian memfilter customer berdasarkan nama</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Tombol "Tampilkan Semua" menghapus filter dengan benar</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PETA TUGAS -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon ic-purple">&#x1F4CC;</div>
+      <div>
+        <div class="sec-title">Peta Tugas &amp; Kompetensi</div>
+        <div class="sec-sub">Ringkasan topik yang dilatih per tugas</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="map-tbl">
+        <thead>
+          <tr><th>No</th><th>Nama Tugas</th><th>Fitur Access</th><th>Tingkat</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Form Data Customer</td><td>Form, Design View, Property Sheet</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>2</td><td>Form Barang + Validasi</td><td>Validation Rule, Combo Box (Value List)</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>3</td><td>Form Utama + Subform</td><td>Subform Wizard, Link Master/Child</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>4</td><td>Combo Box Lookup Barang</td><td>Row Source Query, Bound Column, Column Widths</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>5</td><td>Kolom Kalkulasi &amp; Grand Total</td><td>Calculated Text Box, Form Footer, Sum()</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>6</td><td>Command Button Navigasi</td><td>Command Button Wizard, Form Footer</td><td><span class="lvl-hard">Sulit</span></td></tr>
+          <tr><td>7</td><td>Fitur Pencarian Customer</td><td>VBA, Me.Filter, Me.FilterOn</td><td><span class="lvl-hard">Sulit</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Lembar Tugas Form &amp; Subform &mdash; Sistem Penjualan &nbsp;&middot;&nbsp; Microsoft Access &nbsp;&middot;&nbsp; Modul 4 Administrasi Basis Data
+</footer>
+
+</body>
+</html>
