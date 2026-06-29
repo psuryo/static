@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Latihan: Pembuatan Laporan (Report) Microsoft Access</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2, h3 {
+            color: #2980b9;
+            margin-top: 25px;
+        }
+        .step-box {
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            border-left: 5px solid #3498db;
+            background: #ecf0f1;
+            border-radius: 0 4px 4px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        code {
+            background: #dfe6e9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: #d35400;
+        }
+        .rubric {
+            background-color: #e8f8f5;
+            border-left: 5px solid #1abc9c;
+            padding: 15px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Latihan Praktikum: Desain Report Penjualan Terintegrasi</h1>
+    
+    <h2>A. Tujuan Pembelajaran</h2>
+    <ul>
+        <li>Mahasiswa mampu mengimplementasikan relasi antar tabel (Entity Relationship) di Microsoft Access.</li>
+        <li>Mahasiswa mampu membuat dan menggunakan <strong>Query</strong> untuk menggabungkan data dari berbagai tabel dan membuat <em>Calculated Field</em>.</li>
+        <li>Mahasiswa mampu mendesain <strong>Report</strong> dengan fitur <em>Grouping</em> dan <em>Summary/Total</em>.</li>
+    </ul>
+
+    <h2>B. Skenario & Dataset</h2>
+    <p>Sebuah toko membutuhkan laporan penjualan bulanan yang dikelompokkan berdasarkan pelanggan (Customer). Anda diminta menggunakan 3 tabel berikut untuk menghasilkan satu laporan utuh.</p>
+
+    <h3>1. Tabel Barang (tbl_barang)</h3>
+    <table>
+        <tr><th>ID</th><th>Nama Barang</th><th>Kategori</th><th>Harga</th><th>Stok</th></tr>
+        <tr><td>1</td><td>Laptop ASUS 14"</td><td>Elektronik</td><td>8.500.000</td><td>15</td></tr>
+        <tr><td>2</td><td>Mouse Wireless</td><td>Elektronik</td><td>150.000</td><td>80</td></tr>
+        <tr><td>3</td><td>Tas Ransel</td><td>Aksesoris</td><td>350.000</td><td>40</td></tr>
+        <tr><td>4</td><td>Buku Algoritma</td><td>Buku</td><td>125.000</td><td>60</td></tr>
+        <tr><td>5</td><td>Keyboard Mekanikal</td><td>Elektronik</td><td>750.000</td><td>25</td></tr>
+    </table>
+
+    <h3>2. Tabel Customer (tbl_customer)</h3>
+    <table>
+        <tr><th>ID</th><th>Nama</th><th>Email</th><th>Kota</th><th>Tgl Daftar</th></tr>
+        <tr><td>1</td><td>Andi Setiawan</td><td>andi@email.com</td><td>Yogyakarta</td><td>2023-01-10</td></tr>
+        <tr><td>2</td><td>Budi Santoso</td><td>budi@email.com</td><td>Jakarta</td><td>2023-03-05</td></tr>
+        <tr><td>3</td><td>Citra Lestari</td><td>citra@email.com</td><td>Bandung</td><td>2023-05-20</td></tr>
+    </table>
+
+    <h3>3. Tabel Transaksi (tbl_transaksi)</h3>
+    <table>
+        <tr><th>ID</th><th>Customer_ID</th><th>Barang_ID</th><th>Jumlah</th><th>Tgl Transaksi</th></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>2024-01-05</td></tr>
+        <tr><td>2</td><td>1</td><td>2</td><td>2</td><td>2024-01-05</td></tr>
+        <tr><td>3</td><td>2</td><td>3</td><td>1</td><td>2024-01-10</td></tr>
+        <tr><td>4</td><td>2</td><td>5</td><td>1</td><td>2024-01-10</td></tr>
+        <tr><td>5</td><td>3</td><td>4</td><td>3</td><td>2024-01-15</td></tr>
+    </table>
+    <p><em>*Catatan: Input seluruh data dari dataset JSON yang diberikan ke dalam tabel Access di atas.</em></p>
+
+    <h2>C. Langkah Pengerjaan</h2>
+
+    <div class="step-box">
+        <h3>Langkah 1: Relasi Tabel (Database Tools -> Relationships)</h3>
+        <p>Tarik garis relasi (Enforce Referential Integrity) antara:</p>
+        <ul>
+            <li><code>ID</code> pada <em>tbl_customer</em> ke <code>Customer_ID</code> pada <em>tbl_transaksi</em> (One-to-Many).</li>
+            <li><code>ID</code> pada <em>tbl_barang</em> ke <code>Barang_ID</code> pada <em>tbl_transaksi</em> (One-to-Many).</li>
+        </ul>
+    </div>
+
+    <div class="step-box">
+        <h3>Langkah 2: Pembuatan Query (Create -> Query Design)</h3>
+        <p>Buat query baru dengan nama <strong>qry_rekap_penjualan</strong>. Masukkan ketiga tabel ke dalam workspace. Tarik field berikut ke grid di bawah:</p>
+        <ol>
+            <li><strong>Nama</strong> (dari tbl_customer)</li>
+            <li><strong>Tgl_Transaksi</strong> (dari tbl_transaksi)</li>
+            <li><strong>Nama_Barang</strong> (dari tbl_barang)</li>
+            <li><strong>Harga</strong> (dari tbl_barang)</li>
+            <li><strong>Jumlah</strong> (dari tbl_transaksi)</li>
+        </ol>
+        <p>Buat field kalkulasi baru pada kolom kosong dengan format sintaks Access berikut:<br>
+        <code>Total_Harga: [Harga]*[Jumlah]</code></p>
+    </div>
+
+    <div class="step-box">
+        <h3>Langkah 3: Pembuatan Report (Create -> Report Wizard)</h3>
+        <p>Gunakan <strong>qry_rekap_penjualan</strong> sebagai sumber data report Anda.</p>
+        <ul>
+            <li><strong>Fields:</strong> Pindah semua field (>>).</li>
+            <li><strong>Grouping:</strong> Lakukan Grouping berdasarkan <code>Nama</code> (Customer).</li>
+            <li><strong>Sorting:</strong> Urutkan berdasarkan <code>Tgl_Transaksi</code> secara Ascending.</li>
+            <li><strong>Summary Options:</strong> Centang kotak <em>Sum</em> pada field <code>Total_Harga</code> untuk menampilkan total belanja per customer.</li>
+            <li><strong>Layout:</strong> Pilih <em>Stepped</em> atau <em>Block</em>, orientasi Portrait atau Landscape sesuai kebutuhan ruang.</li>
+        </ul>
+        <p>Simpan dengan nama <strong>rpt_penjualan_customer</strong>.</p>
+    </div>
+
+    <div class="step-box">
+        <h3>Langkah 4: Formatting (Design View)</h3>
+        <p>Masuk ke Design View pada Report yang baru dibuat. Lakukan penyesuaian User Interface (UI):</p>
+        <ul>
+            <li>Ubah format angka pada <code>Harga</code> dan <code>Total_Harga</code> menjadi Currency (Rp).</li>
+            <li>Rapikan label judul (misal: "Nama_Barang" menjadi "Nama Produk").</li>
+            <li>Beri warna background yang berbeda pada bagian <em>Customer Name Header</em> agar mudah dibaca.</li>
+        </ul>
+    </div>
+
+    <div class="rubric">
+        <h2>D. Rubrik Penilaian (Asesmen)</h2>
+        <table>
+            <tr>
+                <th>Kriteria Penilaian</th>
+                <th>Bobot</th>
+            </tr>
+            <tr>
+                <td>Kesesuaian Relasi Tabel (Referential Integrity)</td>
+                <td>20%</td>
+            </tr>
+            <tr>
+                <td>Keberhasilan Query (Integrasi 3 tabel & Calculated Field)</td>
+                <td>30%</td>
+            </tr>
+            <tr>
+                <td>Keberhasilan Report Grouping (Data terkelompok per Customer)</td>
+                <td>30%</td>
+            </tr>
+            <tr>
+                <td>Kerapian UI dan Formatting Label/Currency</td>
+                <td>20%</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
