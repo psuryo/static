@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan SQL &mdash; Sistem Perpustakaan</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f5f0;--bg2:#eeebe3;--surface:#ffffff;
+  --text:#1c1a14;--text2:#4a4640;--text3:#8a8478;--border:#ddd9cf;--ink:#1c1a14;
+  --amber:#a05c00;--amber-bg:#fff8ee;--amber-border:#f0d090;
+  --teal:#0a5c52;--teal-bg:#edfaf7;--teal-border:#8ed4c8;
+  --rose:#8a1c2a;--rose-bg:#fff2f4;--rose-border:#f0b0ba;
+  --indigo:#2a3c8a;--indigo-bg:#eef1ff;--indigo-border:#b0bef0;
+  --green:#1a6e3a;--green-bg:#edfaf3;--green-border:#9ddcbc;
+  --tag-bg:#e4e0d6;
+  --radius:8px;
+  --mono:'Courier New',Courier,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.75}
+
+/* HEADER */
+.header{background:var(--ink);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'&#x1F4DA;';position:absolute;font-size:140px;opacity:.04;top:-20px;right:40px;line-height:1}
+.header .pill{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 14px;margin-bottom:1.25rem;color:rgba(255,255,255,.65)}
+.header h1{font-size:32px;font-weight:800;line-height:1.15;letter-spacing:-.025em;margin-bottom:.55rem}
+.header h1 em{font-style:normal;color:#f5c060}
+.header .sub{font-size:13.5px;color:rgba(255,255,255,.55);max-width:480px;margin:0 auto}
+
+/* META */
+.meta-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;background:var(--surface);border-bottom:1px solid var(--border);padding:.75rem 2rem}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-size:11.5px;font-weight:600;padding:4px 12px;color:var(--text2)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* LAYOUT */
+.page{max-width:840px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+section{margin-bottom:3.5rem}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding-bottom:.875rem;border-bottom:2px solid var(--border)}
+.sec-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.icon-amber{background:var(--amber-bg)}
+.icon-teal{background:var(--teal-bg)}
+.icon-indigo{background:var(--indigo-bg)}
+.sec-title{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.sec-sub{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* SCHEMA */
+.schema-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:1.5rem}
+.schema-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.sc-top{padding:.65rem 1rem;font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.sc-cust{background:var(--amber-bg);color:var(--amber);border-bottom:1px solid var(--amber-border)}
+.sc-buku{background:var(--teal-bg);color:var(--teal);border-bottom:1px solid var(--teal-border)}
+.sc-trx{background:var(--indigo-bg);color:var(--indigo);border-bottom:1px solid var(--indigo-border)}
+.sc-rows{padding:.4rem 0}
+.sc-row{display:flex;align-items:center;justify-content:space-between;padding:.3rem 1rem;font-size:12px;border-bottom:.5px solid var(--bg2);gap:8px}
+.sc-row:last-child{border-bottom:none}
+.sc-col{font-family:var(--mono)}
+.sc-pk{color:var(--amber);font-weight:700}
+.sc-fk{color:var(--indigo);font-weight:600}
+.sc-type{font-size:10.5px;font-weight:600;background:var(--tag-bg);padding:2px 7px;border-radius:4px;color:var(--text3);white-space:nowrap}
+.badge-pk{background:var(--amber-bg);color:var(--amber)}
+.badge-fk{background:var(--indigo-bg);color:var(--indigo)}
+
+/* REL BOX */
+.rel-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:13px;color:var(--text2)}
+.rel-box p{margin-bottom:.3rem}
+.rel-box p:last-child{margin-bottom:0}
+.rel-note{font-size:11.5px;color:var(--text3);margin-top:.5rem;font-style:italic}
+.arr{color:var(--amber);font-weight:700;margin:0 5px}
+
+/* CALLOUT */
+.callout{display:flex;align-items:flex-start;gap:10px;border-radius:var(--radius);padding:.8rem 1rem;margin:1rem 0;border:1px solid;font-size:13.5px}
+.c-warn{background:var(--amber-bg);border-color:var(--amber-border);color:#6a3c00}
+.c-info{background:var(--indigo-bg);border-color:var(--indigo-border);color:#1a2d6a}
+.c-ok{background:var(--green-bg);border-color:var(--green-border);color:#0f4525}
+.c-icon{font-size:15px;flex-shrink:0;margin-top:2px}
+.callout p{margin:0;font-size:13.5px;color:inherit}
+
+/* CODE */
+.code-wrap{background:var(--ink);border-radius:var(--radius);overflow:hidden;margin:.875rem 0}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:.45rem 1rem;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.07)}
+.code-lbl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.copy-btn{font-size:11px;font-weight:600;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);padding:3px 10px;border-radius:5px;cursor:pointer;transition:background .15s}
+.copy-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+.copy-btn.ok{background:#1a6e3a;color:#fff}
+pre{padding:1.1rem 1.25rem;font-family:var(--mono);font-size:12.5px;line-height:1.75;color:#ccc8c0;overflow-x:auto;white-space:pre}
+.kw{color:#7dd3fc;font-weight:700}.str{color:#86efac}.cmt{color:#52524a;font-style:italic}
+.num{color:#fbbf24}.fn{color:#c4b5fd}.tbl{color:#fde68a}.col{color:#ccc8c0}
+
+/* SAMPLE TABLE */
+.sample-wrap{overflow-x:auto;margin:.875rem 0}
+.sample-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.sample-tbl th{background:var(--bg2);padding:.45rem .8rem;text-align:left;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap}
+.sample-tbl td{padding:.4rem .8rem;border-bottom:.5px solid var(--bg2);font-family:var(--mono);color:var(--text);white-space:nowrap}
+.sample-tbl tr:last-child td{border-bottom:none}
+.sample-tbl tr:hover td{background:var(--bg2)}
+
+/* SOAL */
+.soal-list{display:flex;flex-direction:column;gap:14px}
+.soal-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.soal-inner{display:flex;align-items:flex-start;gap:14px;padding:1rem 1.25rem .9rem}
+.soal-num{min-width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;margin-top:1px}
+.num-easy{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.num-med{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.num-hard{background:var(--rose-bg);color:var(--rose);border:1px solid var(--rose-border)}
+.soal-body{}
+.soal-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.5rem}
+.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--tag-bg);color:var(--text3)}
+.tag-lvl-easy{background:var(--green-bg);color:var(--green)}
+.tag-lvl-med{background:var(--amber-bg);color:var(--amber)}
+.tag-lvl-hard{background:var(--rose-bg);color:var(--rose)}
+.soal-q{font-size:14.5px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:.3rem}
+.soal-hint{font-size:12.5px;color:var(--text3);font-style:italic}
+.soal-foot{border-top:1px solid var(--bg2);background:var(--bg);padding:.75rem 1.25rem}
+.ans-line{font-size:12.5px;color:var(--text3);font-style:italic}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:2rem 0}
+
+/* MAP TABLE */
+.map-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.map-tbl th{background:var(--bg2);padding:.55rem .875rem;text-align:left;font-weight:700;font-size:11.5px;border-bottom:1px solid var(--border)}
+.map-tbl td{padding:.5rem .875rem;border-bottom:.5px solid var(--bg2)}
+.map-tbl tr:last-child td{border-bottom:none}
+.map-tbl td:first-child{color:var(--text3);font-weight:600}
+.map-tbl td:nth-child(3){font-family:var(--mono);font-size:11.5px}
+.lvl-easy{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--green-bg);color:var(--green)}
+.lvl-med{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--amber-bg);color:var(--amber)}
+.lvl-hard{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--rose-bg);color:var(--rose)}
+
+footer{text-align:center;padding:2rem;font-size:12px;color:var(--text3);border-top:1px solid var(--border);background:var(--surface)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="pill">&#x1F4DA; Lembar Soal Praktikum SQL</div>
+  <h1>Latihan SQL<br><em>Sistem Perpustakaan</em></h1>
+  <p class="sub">Gunakan data customer, buku, dan transaksi peminjaman untuk menjawab 15 soal berikut</p>
+</div>
+
+<div class="meta-bar">
+  <div class="chip"><div class="dot" style="background:var(--amber)"></div> 3 Tabel Relasional</div>
+  <div class="chip"><div class="dot" style="background:var(--indigo)"></div> 15 Soal</div>
+  <div class="chip"><div class="dot" style="background:var(--teal)"></div> SELECT + JOIN + AGREGASI</div>
+  <div class="chip"><div class="dot" style="background:var(--rose)"></div> Kunci Jawaban Terpisah</div>
+</div>
+
+<div class="page">
+
+  <!-- BAGIAN A -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon icon-amber">&#x1F5C4;&#xFE0F;</div>
+      <div>
+        <div class="sec-title">Bagian A &mdash; Struktur Database</div>
+        <div class="sec-sub">Buat tabel dan masukkan data sebelum menjawab soal</div>
+      </div>
+    </div>
+
+    <div class="callout c-warn">
+      <span class="c-icon">&#x26A0;&#xFE0F;</span>
+      <p><strong>Penting:</strong> Jalankan DDL dan INSERT data terlebih dahulu secara berurutan sebelum mengerjakan soal.</p>
+    </div>
+
+    <h3 style="font-size:14.5px;font-weight:700;margin:1.5rem 0 .7rem">Relasi Antar Tabel</h3>
+    <div class="rel-box">
+      <p>&#x1F7E1; <strong>customer</strong> <span class="arr">1 &mdash;&mdash;&mdash;&mdash; N</span> <strong style="color:var(--indigo)">transaksi</strong> &nbsp;(via <code>idcust</code>)</p>
+      <p>&#x1F7E2; <strong>buku</strong> <span class="arr">1 &mdash;&mdash;&mdash;&mdash; N</span> <strong style="color:var(--indigo)">transaksi</strong> &nbsp;(via <code>idbuku</code>)</p>
+      <p class="rel-note">Satu customer bisa meminjam banyak buku. Satu buku bisa dipinjam berkali-kali oleh customer berbeda.</p>
+    </div>
+
+    <div class="schema-grid">
+      <div class="schema-card">
+        <div class="sc-top sc-cust">&#x1F7E1; Tabel: customer</div>
+        <div class="sc-rows">
+          <div class="sc-row"><span class="sc-col sc-pk">id</span><span class="sc-type badge-pk">PK &middot; VARCHAR</span></div>
+          <div class="sc-row"><span class="sc-col">nama</span><span class="sc-type">VARCHAR(100)</span></div>
+          <div class="sc-row"><span class="sc-col">alamat</span><span class="sc-type">VARCHAR(150)</span></div>
+          <div class="sc-row"><span class="sc-col">kota</span><span class="sc-type">VARCHAR(50)</span></div>
+          <div class="sc-row"><span class="sc-col">nohp</span><span class="sc-type">VARCHAR(20)</span></div>
+        </div>
+      </div>
+      <div class="schema-card">
+        <div class="sc-top sc-buku">&#x1F7E2; Tabel: buku</div>
+        <div class="sc-rows">
+          <div class="sc-row"><span class="sc-col sc-pk">id</span><span class="sc-type badge-pk">PK &middot; VARCHAR</span></div>
+          <div class="sc-row"><span class="sc-col">judul</span><span class="sc-type">VARCHAR(150)</span></div>
+          <div class="sc-row"><span class="sc-col">pengarang</span><span class="sc-type">VARCHAR(100)</span></div>
+          <div class="sc-row"><span class="sc-col">tahun</span><span class="sc-type">INT</span></div>
+          <div class="sc-row"><span class="sc-col">status</span><span class="sc-type">VARCHAR(20)</span></div>
+        </div>
+      </div>
+      <div class="schema-card">
+        <div class="sc-top sc-trx">&#x1F7E3; Tabel: transaksi</div>
+        <div class="sc-rows">
+          <div class="sc-row"><span class="sc-col sc-pk">id</span><span class="sc-type badge-pk">PK &middot; VARCHAR</span></div>
+          <div class="sc-row"><span class="sc-col sc-fk">idcust</span><span class="sc-type badge-fk">FK &middot; VARCHAR</span></div>
+          <div class="sc-row"><span class="sc-col sc-fk">idbuku</span><span class="sc-type badge-fk">FK &middot; VARCHAR</span></div>
+          <div class="sc-row"><span class="sc-col">tglpinjam</span><span class="sc-type">DATE</span></div>
+          <div class="sc-row"><span class="sc-col">tglkembali</span><span class="sc-type">DATE / NULL</span></div>
+          <div class="sc-row"><span class="sc-col">denda</span><span class="sc-type">INT</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14.5px;font-weight:700;margin:1.5rem 0 .7rem">A1. DDL &mdash; Buat Tabel</h3>
+    <div class="code-wrap">
+      <div class="code-head"><span class="code-lbl">SQL &mdash; CREATE TABLE</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+      <pre><span class="kw">CREATE TABLE</span> <span class="tbl">customer</span> (
+  <span class="col">id</span>       <span class="fn">VARCHAR</span>(<span class="num">10</span>)  <span class="kw">PRIMARY KEY</span>,
+  <span class="col">nama</span>     <span class="fn">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  <span class="col">alamat</span>   <span class="fn">VARCHAR</span>(<span class="num">150</span>),
+  <span class="col">kota</span>     <span class="fn">VARCHAR</span>(<span class="num">50</span>),
+  <span class="col">nohp</span>     <span class="fn">VARCHAR</span>(<span class="num">20</span>)
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tbl">buku</span> (
+  <span class="col">id</span>          <span class="fn">VARCHAR</span>(<span class="num">10</span>)  <span class="kw">PRIMARY KEY</span>,
+  <span class="col">judul</span>       <span class="fn">VARCHAR</span>(<span class="num">150</span>) <span class="kw">NOT NULL</span>,
+  <span class="col">pengarang</span>   <span class="fn">VARCHAR</span>(<span class="num">100</span>),
+  <span class="col">tahun</span>       INT,
+  <span class="col">status</span>      <span class="fn">VARCHAR</span>(<span class="num">20</span>)
+);
+
+<span class="kw">CREATE TABLE</span> <span class="tbl">transaksi</span> (
+  <span class="col">id</span>           <span class="fn">VARCHAR</span>(<span class="num">10</span>) <span class="kw">PRIMARY KEY</span>,
+  <span class="col">idcust</span>       <span class="fn">VARCHAR</span>(<span class="num">10</span>) <span class="kw">NOT NULL</span>,
+  <span class="col">idbuku</span>       <span class="fn">VARCHAR</span>(<span class="num">10</span>) <span class="kw">NOT NULL</span>,
+  <span class="col">tglpinjam</span>    DATE,
+  <span class="col">tglkembali</span>   DATE,
+  <span class="col">denda</span>        INT <span class="kw">DEFAULT</span> <span class="num">0</span>,
+  <span class="kw">FOREIGN KEY</span> (<span class="col">idcust</span>) <span class="kw">REFERENCES</span> <span class="tbl">customer</span>(<span class="col">id</span>),
+  <span class="kw">FOREIGN KEY</span> (<span class="col">idbuku</span>) <span class="kw">REFERENCES</span> <span class="tbl">buku</span>(<span class="col">id</span>)
+);</pre>
+    </div>
+
+    <h3 style="font-size:14.5px;font-weight:700;margin:1.5rem 0 .7rem">A2. DML &mdash; Insert Data</h3>
+    <div class="callout c-info">
+      <span class="c-icon">&#x1F4CC;</span>
+      <p>Data lengkap tersedia dalam file <strong>customer.csv</strong>, <strong>buku.csv</strong>, dan <strong>transaksi.csv</strong>. Import file CSV tersebut ke dalam masing-masing tabel, atau gunakan perintah INSERT sesuai panduan dosen.</p>
+    </div>
+
+    <h3 style="font-size:14.5px;font-weight:700;margin:1.25rem 0 .6rem">Cuplikan Data</h3>
+    <p style="font-size:12.5px;color:var(--text3);margin-bottom:.6rem">Tabel <strong>customer</strong> (5 dari 20 baris)</p>
+    <div class="sample-wrap">
+      <table class="sample-tbl">
+        <thead><tr><th>id</th><th>nama</th><th>kota</th><th>nohp</th></tr></thead>
+        <tbody>
+          <tr><td>CUST001</td><td>Ahmad Fauzi</td><td>Semarang</td><td>081234560001</td></tr>
+          <tr><td>CUST002</td><td>Budi Santoso</td><td>Bandung</td><td>081234560002</td></tr>
+          <tr><td>CUST003</td><td>Citra Dewi</td><td>Surabaya</td><td>081234560003</td></tr>
+          <tr><td>CUST004</td><td>Dedi Wijaya</td><td>Jakarta</td><td>081234560004</td></tr>
+          <tr><td>CUST005</td><td>Eka Putri</td><td>Medan</td><td>081234560005</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12.5px;color:var(--text3);margin:.875rem 0 .6rem">Tabel <strong>buku</strong> (5 dari 50 baris)</p>
+    <div class="sample-wrap">
+      <table class="sample-tbl">
+        <thead><tr><th>id</th><th>judul</th><th>pengarang</th><th>tahun</th><th>status</th></tr></thead>
+        <tbody>
+          <tr><td>BUKU001</td><td>Laskar Pelangi</td><td>Andrea Hirata</td><td>2011</td><td>dipinjam</td></tr>
+          <tr><td>BUKU002</td><td>Bumi Manusia</td><td>Pramoedya Ananta Toer</td><td>2011</td><td>tersedia</td></tr>
+          <tr><td>BUKU003</td><td>Negeri 5 Menara</td><td>Ahmad Fuadi</td><td>2006</td><td>tersedia</td></tr>
+          <tr><td>BUKU011</td><td>Hujan</td><td>Tere Liye</td><td>2020</td><td>rusak</td></tr>
+          <tr><td>BUKU045</td><td>Atomic Habits</td><td>James Clear</td><td>2004</td><td>dipinjam</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12.5px;color:var(--text3);margin:.875rem 0 .6rem">Tabel <strong>transaksi</strong> (5 dari 200 baris)</p>
+    <div class="sample-wrap">
+      <table class="sample-tbl">
+        <thead><tr><th>id</th><th>idcust</th><th>idbuku</th><th>tglpinjam</th><th>tglkembali</th><th>denda</th></tr></thead>
+        <tbody>
+          <tr><td>TRX001</td><td>CUST018</td><td>BUKU017</td><td>2026-01-01</td><td>2026-01-14</td><td>10000</td></tr>
+          <tr><td>TRX002</td><td>CUST008</td><td>BUKU009</td><td>2026-01-02</td><td>2026-01-07</td><td>2000</td></tr>
+          <tr><td>TRX005</td><td>CUST018</td><td>BUKU001</td><td>2026-01-04</td><td>2026-01-18</td><td>11000</td></tr>
+          <tr><td>TRX176</td><td>CUST013</td><td>BUKU001</td><td>2026-04-12</td><td style="color:var(--text3)">NULL</td><td>0</td></tr>
+          <tr><td>TRX200</td><td>CUST001</td><td>BUKU004</td><td>2026-04-26</td><td>2026-05-06</td><td>7000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout c-ok" style="margin-top:1.25rem">
+      <span class="c-icon">&#x2705;</span>
+      <p>Data siap? Sekarang kerjakan 15 soal di bawah ini!</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- BAGIAN B: SOAL -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon icon-indigo">&#x1F4CB;</div>
+      <div>
+        <div class="sec-title">Bagian B &mdash; 15 Soal SQL</div>
+        <div class="sec-sub">Tulis query SQL untuk menjawab setiap pertanyaan &mdash; kunci jawaban dibagikan setelah penilaian</div>
+      </div>
+    </div>
+
+    <div class="callout c-info">
+      <span class="c-icon">&#x1F4A1;</span>
+      <p>Catatan: Kolom <code>tglkembali</code> bisa bernilai <strong>NULL</strong> (buku belum dikembalikan). Perhatikan kondisi ini pada soal yang relevan.</p>
+    </div>
+
+    <div class="soal-list" style="margin-top:1.25rem">
+
+      <!-- 1 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-easy">1</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">SELECT</span><span class="tag">WHERE</span><span class="tag tag-lvl-easy">Mudah</span></div>
+            <div class="soal-q">Tampilkan seluruh data buku yang statusnya <strong>&ldquo;rusak&rdquo;</strong>. Tampilkan id, judul, pengarang, dan tahun terbit.</div>
+            <div class="soal-hint">Petunjuk: Gunakan WHERE status = 'rusak'.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 2 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-easy">2</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">SELECT</span><span class="tag">WHERE</span><span class="tag">ORDER BY</span><span class="tag tag-lvl-easy">Mudah</span></div>
+            <div class="soal-q">Tampilkan nama dan kota semua customer yang berasal dari kota <strong>Semarang</strong> atau <strong>Bandung</strong>, diurutkan alfabetis berdasarkan nama.</div>
+            <div class="soal-hint">Petunjuk: Gunakan WHERE dengan operator IN atau OR.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 3 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-easy">3</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">SELECT</span><span class="tag">LIKE</span><span class="tag tag-lvl-easy">Mudah</span></div>
+            <div class="soal-q">Cari semua buku yang ditulis oleh pengarang bernama <strong>Dee Lestari</strong>. Tampilkan judul, tahun terbit, dan statusnya.</div>
+            <div class="soal-hint">Petunjuk: Gunakan WHERE pengarang = 'Dee Lestari' atau LIKE.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 4 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-easy">4</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">SELECT</span><span class="tag">IS NULL</span><span class="tag tag-lvl-easy">Mudah</span></div>
+            <div class="soal-q">Tampilkan semua transaksi yang buku-nya <strong>belum dikembalikan</strong> (kolom <code>tglkembali</code> masih kosong). Tampilkan id transaksi, idcust, idbuku, dan tglpinjam.</div>
+            <div class="soal-hint">Petunjuk: Gunakan WHERE tglkembali IS NULL.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 5 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-easy">5</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">UPDATE</span><span class="tag">DML</span><span class="tag tag-lvl-easy">Mudah</span></div>
+            <div class="soal-q">Buku <strong>BUKU001 (Laskar Pelangi)</strong> baru saja dikembalikan dan kondisinya baik. Ubah statusnya menjadi <strong>&ldquo;tersedia&rdquo;</strong>.</div>
+            <div class="soal-hint">Petunjuk: Gunakan UPDATE &hellip; SET &hellip; WHERE id = 'BUKU001'.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 6 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-med">6</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">INNER JOIN</span><span class="tag tag-lvl-med">Menengah</span></div>
+            <div class="soal-q">Tampilkan riwayat peminjaman lengkap: nama customer, judul buku, tanggal pinjam, dan tanggal kembali. Urutkan dari tanggal pinjam terbaru.</div>
+            <div class="soal-hint">Petunjuk: JOIN ketiga tabel &mdash; transaksi, customer, dan buku.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 7 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-med">7</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">JOIN</span><span class="tag">WHERE</span><span class="tag tag-lvl-med">Menengah</span></div>
+            <div class="soal-q">Tampilkan nama customer dan judul buku untuk semua peminjaman yang <strong>dikenakan denda lebih dari Rp5.000</strong>. Urutkan dari denda terbesar.</div>
+            <div class="soal-hint">Petunjuk: JOIN transaksi dengan customer dan buku, lalu filter WHERE denda &gt; 5000.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 8 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-med">8</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">GROUP BY</span><span class="tag">COUNT</span><span class="tag tag-lvl-med">Menengah</span></div>
+            <div class="soal-q">Hitung <strong>berapa kali masing-masing customer meminjam buku</strong>. Tampilkan nama customer dan jumlah peminjamannya, diurutkan dari yang paling banyak.</div>
+            <div class="soal-hint">Petunjuk: JOIN transaksi dan customer, GROUP BY nama customer, gunakan COUNT(*).</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 9 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-med">9</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">GROUP BY</span><span class="tag">SUM</span><span class="tag tag-lvl-med">Menengah</span></div>
+            <div class="soal-q">Tampilkan <strong>total denda yang telah dibayar</strong> oleh masing-masing customer. Hanya tampilkan customer yang total dendanya <strong>lebih dari Rp0</strong>, diurutkan dari terbesar.</div>
+            <div class="soal-hint">Petunjuk: JOIN transaksi dan customer, GROUP BY customer, SUM(denda), lalu filter dengan HAVING.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 10 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-med">10</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">GROUP BY</span><span class="tag">COUNT</span><span class="tag tag-lvl-med">Menengah</span></div>
+            <div class="soal-q">Tampilkan <strong>judul buku beserta berapa kali buku itu dipinjam</strong>. Urutkan dari yang paling sering dipinjam (top 10 saja).</div>
+            <div class="soal-hint">Petunjuk: JOIN transaksi dan buku, GROUP BY judul, COUNT(*), ORDER BY DESC, LIMIT 10.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 11 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-med">11</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">LEFT JOIN</span><span class="tag">IS NULL</span><span class="tag tag-lvl-med">Menengah</span></div>
+            <div class="soal-q">Temukan buku-buku yang <strong>tidak pernah dipinjam sama sekali</strong> sepanjang periode data. Tampilkan id, judul, dan pengarangnya.</div>
+            <div class="soal-hint">Petunjuk: LEFT JOIN buku ke transaksi, filter WHERE transaksi.id IS NULL.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 12 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-hard">12</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">JOIN</span><span class="tag">GROUP BY</span><span class="tag">HAVING</span><span class="tag tag-lvl-hard">Sulit</span></div>
+            <div class="soal-q">Tampilkan nama <strong>pengarang</strong> beserta total berapa kali buku-buku karya mereka dipinjam. Hanya tampilkan pengarang yang buku-bukunya dipinjam <strong>10 kali atau lebih</strong>.</div>
+            <div class="soal-hint">Petunjuk: JOIN transaksi dan buku, GROUP BY pengarang, COUNT(*), HAVING COUNT(*) &gt;= 10.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 13 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-hard">13</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">JOIN</span><span class="tag">WHERE</span><span class="tag">IS NULL</span><span class="tag tag-lvl-hard">Sulit</span></div>
+            <div class="soal-q">Tampilkan nama customer, judul buku, dan tanggal pinjam untuk semua peminjaman yang <strong>belum dikembalikan dan sudah dipinjam lebih dari 14 hari</strong> (dihitung dari tanggal pinjam ke hari ini).</div>
+            <div class="soal-hint">Petunjuk: JOIN ketiga tabel, filter tglkembali IS NULL AND DATEDIFF(CURDATE(), tglpinjam) &gt; 14.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 14 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-hard">14</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">GROUP BY</span><span class="tag">SUM</span><span class="tag">ORDER BY</span><span class="tag">LIMIT</span><span class="tag tag-lvl-hard">Sulit</span></div>
+            <div class="soal-q">Siapakah <strong>customer dengan total denda terbesar</strong> sepanjang semua transaksi? Tampilkan nama customer, kota asal, dan total denda-nya. Tampilkan hanya 1 baris.</div>
+            <div class="soal-hint">Petunjuk: Kembangkan query Soal 9 &mdash; tambahkan kolom kota, ORDER BY DESC, LIMIT 1.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+      <!-- 15 -->
+      <div class="soal-card">
+        <div class="soal-inner">
+          <div class="soal-num num-hard">15</div>
+          <div class="soal-body">
+            <div class="soal-tags"><span class="tag">GROUP BY</span><span class="tag">COUNT</span><span class="tag">Subquery / CTE</span><span class="tag tag-lvl-hard">Sulit</span></div>
+            <div class="soal-q">Tampilkan <strong>kota asal customer</strong> beserta <strong>jumlah total peminjaman</strong> yang berasal dari kota tersebut, diurutkan dari kota dengan aktivitas peminjaman terbanyak.</div>
+            <div class="soal-hint">Petunjuk: JOIN transaksi dan customer, GROUP BY c.kota, COUNT(*), ORDER BY DESC.</div>
+          </div>
+        </div>
+        <div class="soal-foot"><div class="ans-line">&#x270F;&#xFE0F; Tulis query-mu di sini&hellip;</div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PETA MATERI -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon icon-teal">&#x1F4CC;</div>
+      <div>
+        <div class="sec-title">Peta Materi per Soal</div>
+        <div class="sec-sub">Referensi topik SQL yang diuji</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="map-tbl">
+        <thead>
+          <tr>
+            <th>No</th><th>Topik Utama</th><th>Perintah SQL</th><th>Tingkat</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Filter status kolom</td><td>SELECT, WHERE</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>2</td><td>Filter multi-nilai &amp; pengurutan</td><td>WHERE IN / OR, ORDER BY</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>3</td><td>Filter pengarang</td><td>WHERE, LIKE / =</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>4</td><td>Deteksi nilai NULL</td><td>WHERE IS NULL</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>5</td><td>Modifikasi data</td><td>UPDATE, SET, WHERE</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>6</td><td>Gabung 3 tabel</td><td>INNER JOIN (&times;2), ORDER BY</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>7</td><td>Filter setelah JOIN</td><td>JOIN, WHERE denda</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>8</td><td>Hitung frekuensi per customer</td><td>JOIN, GROUP BY, COUNT</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>9</td><td>Jumlah denda per customer</td><td>JOIN, GROUP BY, SUM, HAVING</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>10</td><td>Buku terpopuler</td><td>JOIN, GROUP BY, COUNT, LIMIT</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>11</td><td>Buku yang tidak pernah dipinjam</td><td>LEFT JOIN, IS NULL</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>12</td><td>Pengarang paling banyak dipinjam</td><td>JOIN, GROUP BY, HAVING</td><td><span class="lvl-hard">Sulit</span></td></tr>
+          <tr><td>13</td><td>Daftar keterlambatan aktif</td><td>JOIN, IS NULL, DATEDIFF</td><td><span class="lvl-hard">Sulit</span></td></tr>
+          <tr><td>14</td><td>Customer denda terbesar</td><td>JOIN, GROUP BY, SUM, LIMIT</td><td><span class="lvl-hard">Sulit</span></td></tr>
+          <tr><td>15</td><td>Aktivitas peminjaman per kota</td><td>JOIN, GROUP BY kota, COUNT</td><td><span class="lvl-hard">Sulit</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Lembar Soal SQL &mdash; Sistem Perpustakaan &nbsp;&middot;&nbsp; Berdasarkan data customer.csv, buku.csv, transaksi.csv &nbsp;&middot;&nbsp; Untuk kebutuhan pembelajaran
+</footer>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '\u2713 Disalin';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Salin'; btn.classList.remove('ok'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>
