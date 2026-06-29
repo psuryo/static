@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kunci Jawaban SQL &mdash; Sistem Perpustakaan</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0faf5;--bg2:#e2f5ec;--surface:#ffffff;
+  --text:#0f2a1c;--text2:#2a4a38;--text3:#6a8a78;--border:#b8ddc8;--ink:#0f2a1c;
+  --green:#0a5c30;--green-bg:#e6f8ee;--green-border:#7dd4a8;
+  --amber:#7a4400;--amber-bg:#fff8ee;--amber-border:#f0d090;
+  --rose:#7a1020;--rose-bg:#fff2f4;--rose-border:#f0b0ba;
+  --indigo:#1a2d7a;--indigo-bg:#eef1ff;--indigo-border:#b0bef0;
+  --tag-bg:#d8eed8;
+  --radius:8px;
+  --mono:'Courier New',Courier,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.75}
+
+.header{background:var(--ink);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'&#x1F5DD;&#xFE0F;';position:absolute;font-size:120px;opacity:.05;top:-10px;right:40px;line-height:1}
+.header .pill{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 14px;margin-bottom:1.25rem;color:rgba(255,255,255,.6)}
+.header h1{font-size:30px;font-weight:800;line-height:1.2;letter-spacing:-.02em;margin-bottom:.5rem}
+.header h1 em{font-style:normal;color:#6ee7a0}
+.header .sub{font-size:13.5px;color:rgba(255,255,255,.5);max-width:460px;margin:0 auto}
+
+.meta-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;background:var(--surface);border-bottom:1px solid var(--border);padding:.75rem 2rem}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-size:11.5px;font-weight:600;padding:4px 12px;color:var(--text2)}
+
+.page{max-width:840px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:1.75rem;padding-bottom:.875rem;border-bottom:2px solid var(--border)}
+.sec-badge{min-width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--green-bg)}
+.sec-title{font-size:19px;font-weight:800;letter-spacing:-.01em}
+.sec-sub{font-size:12px;color:var(--text3);margin-top:2px}
+
+.callout{display:flex;align-items:flex-start;gap:10px;border-radius:var(--radius);padding:.8rem 1rem;margin:1rem 0;border:1px solid;font-size:13.5px}
+.c-warn{background:var(--amber-bg);border-color:var(--amber-border);color:#5a3000}
+.c-icon{font-size:15px;flex-shrink:0;margin-top:2px}
+.callout p{margin:0;font-size:13.5px;color:inherit}
+
+.kunci-list{display:flex;flex-direction:column;gap:20px}
+.kunci-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.kunci-head{display:flex;align-items:center;gap:12px;padding:.875rem 1.25rem;border-bottom:1px solid var(--green-border);background:var(--green-bg)}
+.k-num{min-width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0}
+.k-easy{background:#d0f0e0;color:var(--green);border:1px solid var(--green-border)}
+.k-med{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.k-hard{background:var(--rose-bg);color:var(--rose);border:1px solid var(--rose-border)}
+.k-title{font-size:13.5px;font-weight:700;color:var(--text)}
+.k-tag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--tag-bg);color:var(--green);padding:2px 8px;border-radius:4px;margin-left:6px}
+.k-tag-med{background:var(--amber-bg);color:var(--amber)}
+.k-tag-hard{background:var(--rose-bg);color:var(--rose)}
+
+.code-wrap{background:var(--ink);overflow:hidden;margin:0}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:.4rem 1rem;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07)}
+.code-lbl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.copy-btn{font-size:11px;font-weight:600;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);padding:3px 10px;border-radius:5px;cursor:pointer;transition:background .15s}
+.copy-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+.copy-btn.ok{background:#1a6e3a;color:#fff}
+pre{padding:1rem 1.25rem;font-family:var(--mono);font-size:12.5px;line-height:1.75;color:#ccc8c0;overflow-x:auto;white-space:pre}
+.kw{color:#7dd3fc;font-weight:700}.str{color:#86efac}.cmt{color:#4a4a42;font-style:italic}
+.num{color:#fbbf24}.fn{color:#c4b5fd}.tbl{color:#fde68a}.col{color:#ccc8c0}
+
+.k-note{padding:.75rem 1.25rem;font-size:12.5px;color:var(--text3);background:var(--bg);border-top:1px solid var(--bg2);font-style:italic}
+
+footer{text-align:center;padding:2rem;font-size:12px;color:var(--text3);border-top:1px solid var(--border);background:var(--surface)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="pill">&#x1F5DD;&#xFE0F; Khusus Pengajar</div>
+  <h1>Kunci Jawaban SQL<br><em>Sistem Perpustakaan</em></h1>
+  <p class="sub">Dokumen ini hanya dibagikan setelah latihan selesai dinilai</p>
+</div>
+
+<div class="meta-bar">
+  <div class="chip">&#x1F4DA; 15 Kunci Jawaban</div>
+  <div class="chip">&#x1F4CC; Berdasarkan customer.csv, buku.csv, transaksi.csv</div>
+</div>
+
+<div class="page">
+
+  <div class="callout c-warn">
+    <span class="c-icon">&#x26A0;&#xFE0F;</span>
+    <p><strong>Dokumen ini RAHASIA.</strong> Bagikan hanya setelah seluruh lembar jawab mahasiswa telah dikumpulkan dan dinilai. Query di bawah adalah referensi &mdash; jawaban mahasiswa yang berbeda struktur namun menghasilkan output sama tetap dapat dinilai benar.</p>
+  </div>
+
+  <div class="sec-head" style="margin-top:1.75rem">
+    <div class="sec-badge">&#x2705;</div>
+    <div>
+      <div class="sec-title">Kunci Jawaban &mdash; 15 Soal</div>
+      <div class="sec-sub">MySQL / MariaDB syntax</div>
+    </div>
+  </div>
+
+  <div class="kunci-list">
+
+    <!-- 1 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-easy">1</div>
+        <div><span class="k-title">Buku dengan status &ldquo;rusak&rdquo;</span><span class="k-tag">Mudah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span> id, judul, pengarang, tahun
+<span class="kw">FROM</span>   <span class="tbl">buku</span>
+<span class="kw">WHERE</span>  status = <span class="str">'rusak'</span>;</pre>
+      </div>
+      <div class="k-note">Hasil: BUKU011 (Hujan) dan BUKU018 (Nebula), keduanya karya Tere Liye.</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-easy">2</div>
+        <div><span class="k-title">Customer dari Semarang atau Bandung</span><span class="k-tag">Mudah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span> nama, kota
+<span class="kw">FROM</span>   <span class="tbl">customer</span>
+<span class="kw">WHERE</span>  kota <span class="kw">IN</span> (<span class="str">'Semarang'</span>, <span class="str">'Bandung'</span>)
+<span class="kw">ORDER BY</span> nama <span class="kw">ASC</span>;</pre>
+      </div>
+      <div class="k-note">Alternatif: WHERE kota = 'Semarang' OR kota = 'Bandung'. Keduanya valid.</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-easy">3</div>
+        <div><span class="k-title">Buku karya Dee Lestari</span><span class="k-tag">Mudah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span> judul, tahun, status
+<span class="kw">FROM</span>   <span class="tbl">buku</span>
+<span class="kw">WHERE</span>  pengarang = <span class="str">'Dee Lestari'</span>
+<span class="kw">ORDER BY</span> tahun;</pre>
+      </div>
+      <div class="k-note">Dee Lestari memiliki 14 judul dalam dataset (BUKU005, BUKU009, BUKU021&ndash;BUKU030). Cara LIKE '%Dee%' juga diterima.</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-easy">4</div>
+        <div><span class="k-title">Transaksi yang belum dikembalikan</span><span class="k-tag">Mudah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span> id, idcust, idbuku, tglpinjam
+<span class="kw">FROM</span>   <span class="tbl">transaksi</span>
+<span class="kw">WHERE</span>  tglkembali <span class="kw">IS NULL</span>
+<span class="kw">ORDER BY</span> tglpinjam;</pre>
+      </div>
+      <div class="k-note">Ada 7 transaksi dengan tglkembali NULL: TRX176, TRX177, TRX178, TRX181, TRX187, TRX191, TRX196.</div>
+    </div>
+
+    <!-- 5 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-easy">5</div>
+        <div><span class="k-title">Update status buku BUKU001</span><span class="k-tag">Mudah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">UPDATE</span> <span class="tbl">buku</span>
+<span class="kw">SET</span>    status = <span class="str">'tersedia'</span>
+<span class="kw">WHERE</span>  id = <span class="str">'BUKU001'</span>;</pre>
+      </div>
+      <div class="k-note">Wajib ada WHERE! Tanpa WHERE akan mengubah status SEMUA buku menjadi 'tersedia'.</div>
+    </div>
+
+    <!-- 6 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-med">6</div>
+        <div><span class="k-title">Riwayat peminjaman lengkap (3 tabel)</span><span class="k-tag k-tag-med">Menengah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  c.nama          <span class="kw">AS</span> nama_customer,
+  b.judul         <span class="kw">AS</span> judul_buku,
+  t.tglpinjam,
+  t.tglkembali
+<span class="kw">FROM</span>        <span class="tbl">transaksi</span> t
+<span class="kw">INNER JOIN</span>  <span class="tbl">customer</span>  c <span class="kw">ON</span> t.idcust = c.id
+<span class="kw">INNER JOIN</span>  <span class="tbl">buku</span>      b <span class="kw">ON</span> t.idbuku = b.id
+<span class="kw">ORDER BY</span>  t.tglpinjam <span class="kw">DESC</span>;</pre>
+      </div>
+      <div class="k-note">200 baris hasil. Urutan JOIN boleh dibalik selama klausa ON-nya konsisten.</div>
+    </div>
+
+    <!-- 7 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-med">7</div>
+        <div><span class="k-title">Peminjaman dengan denda &gt; Rp5.000</span><span class="k-tag k-tag-med">Menengah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  c.nama          <span class="kw">AS</span> nama_customer,
+  b.judul         <span class="kw">AS</span> judul_buku,
+  t.denda
+<span class="kw">FROM</span>        <span class="tbl">transaksi</span> t
+<span class="kw">INNER JOIN</span>  <span class="tbl">customer</span>  c <span class="kw">ON</span> t.idcust = c.id
+<span class="kw">INNER JOIN</span>  <span class="tbl">buku</span>      b <span class="kw">ON</span> t.idbuku = b.id
+<span class="kw">WHERE</span>  t.denda > <span class="num">5000</span>
+<span class="kw">ORDER BY</span>  t.denda <span class="kw">DESC</span>;</pre>
+      </div>
+      <div class="k-note">Denda tertinggi adalah Rp12.000 yang muncul di beberapa transaksi.</div>
+    </div>
+
+    <!-- 8 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-med">8</div>
+        <div><span class="k-title">Frekuensi peminjaman per customer</span><span class="k-tag k-tag-med">Menengah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  c.nama              <span class="kw">AS</span> nama_customer,
+  <span class="fn">COUNT</span>(t.id)         <span class="kw">AS</span> jumlah_pinjam
+<span class="kw">FROM</span>        <span class="tbl">transaksi</span> t
+<span class="kw">INNER JOIN</span>  <span class="tbl">customer</span>  c <span class="kw">ON</span> t.idcust = c.id
+<span class="kw">GROUP BY</span>  c.id, c.nama
+<span class="kw">ORDER BY</span>  jumlah_pinjam <span class="kw">DESC</span>;</pre>
+      </div>
+      <div class="k-note">CUST018 (Siti Aminah) adalah peminjam paling aktif dengan 18 transaksi.</div>
+    </div>
+
+    <!-- 9 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-med">9</div>
+        <div><span class="k-title">Total denda per customer (hanya yang berdendam)</span><span class="k-tag k-tag-med">Menengah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  c.nama                <span class="kw">AS</span> nama_customer,
+  <span class="fn">SUM</span>(t.denda)          <span class="kw">AS</span> total_denda
+<span class="kw">FROM</span>        <span class="tbl">transaksi</span> t
+<span class="kw">INNER JOIN</span>  <span class="tbl">customer</span>  c <span class="kw">ON</span> t.idcust = c.id
+<span class="kw">GROUP BY</span>  c.id, c.nama
+<span class="kw">HAVING</span>    <span class="fn">SUM</span>(t.denda) > <span class="num">0</span>
+<span class="kw">ORDER BY</span>  total_denda <span class="kw">DESC</span>;</pre>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-med">10</div>
+        <div><span class="k-title">Top 10 buku terpopuler</span><span class="k-tag k-tag-med">Menengah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  b.judul                 <span class="kw">AS</span> judul_buku,
+  b.pengarang,
+  <span class="fn">COUNT</span>(t.id)             <span class="kw">AS</span> jumlah_dipinjam
+<span class="kw">FROM</span>        <span class="tbl">transaksi</span>  t
+<span class="kw">INNER JOIN</span>  <span class="tbl">buku</span>       b <span class="kw">ON</span> t.idbuku = b.id
+<span class="kw">GROUP BY</span>  b.id, b.judul, b.pengarang
+<span class="kw">ORDER BY</span>  jumlah_dipinjam <span class="kw">DESC</span>
+<span class="kw">LIMIT</span>     <span class="num">10</span>;</pre>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-med">11</div>
+        <div><span class="k-title">Buku yang tidak pernah dipinjam</span><span class="k-tag k-tag-med">Menengah</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  b.id,
+  b.judul,
+  b.pengarang
+<span class="kw">FROM</span>       <span class="tbl">buku</span>       b
+<span class="kw">LEFT JOIN</span>  <span class="tbl">transaksi</span>  t <span class="kw">ON</span> b.id = t.idbuku
+<span class="kw">WHERE</span>  t.id <span class="kw">IS NULL</span>;</pre>
+      </div>
+      <div class="k-note">Buku yang tidak pernah dipinjam antara lain: BUKU034 (Ancika 1995), BUKU044 (Rich Dad Poor Dad), BUKU047 (Filosofi Teras), dan beberapa lainnya.</div>
+    </div>
+
+    <!-- 12 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-hard">12</div>
+        <div><span class="k-title">Pengarang dengan total peminjaman &ge; 10</span><span class="k-tag k-tag-hard">Sulit</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  b.pengarang,
+  <span class="fn">COUNT</span>(t.id)       <span class="kw">AS</span> total_dipinjam
+<span class="kw">FROM</span>        <span class="tbl">transaksi</span>  t
+<span class="kw">INNER JOIN</span>  <span class="tbl">buku</span>       b <span class="kw">ON</span> t.idbuku = b.id
+<span class="kw">GROUP BY</span>  b.pengarang
+<span class="kw">HAVING</span>    <span class="fn">COUNT</span>(t.id) >= <span class="num">10</span>
+<span class="kw">ORDER BY</span>  total_dipinjam <span class="kw">DESC</span>;</pre>
+      </div>
+      <div class="k-note">Dee Lestari dan Tere Liye mendominasi daftar ini karena memiliki banyak judul dalam koleksi.</div>
+    </div>
+
+    <!-- 13 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-hard">13</div>
+        <div><span class="k-title">Peminjaman belum kembali &gt; 14 hari</span><span class="k-tag k-tag-hard">Sulit</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  c.nama              <span class="kw">AS</span> nama_customer,
+  b.judul             <span class="kw">AS</span> judul_buku,
+  t.tglpinjam,
+  <span class="fn">DATEDIFF</span>(<span class="fn">CURDATE</span>(), t.tglpinjam) <span class="kw">AS</span> hari_terlambat
+<span class="kw">FROM</span>        <span class="tbl">transaksi</span>  t
+<span class="kw">INNER JOIN</span>  <span class="tbl">customer</span>   c <span class="kw">ON</span> t.idcust = c.id
+<span class="kw">INNER JOIN</span>  <span class="tbl">buku</span>       b <span class="kw">ON</span> t.idbuku = b.id
+<span class="kw">WHERE</span>  t.tglkembali <span class="kw">IS NULL</span>
+  <span class="kw">AND</span>  <span class="fn">DATEDIFF</span>(<span class="fn">CURDATE</span>(), t.tglpinjam) > <span class="num">14</span>
+<span class="kw">ORDER BY</span>  hari_terlambat <span class="kw">DESC</span>;</pre>
+      </div>
+      <div class="k-note">Fungsi DATEDIFF dan CURDATE() adalah MySQL-specific. Untuk PostgreSQL gunakan: CURRENT_DATE - tglpinjam. Hasilnya bergantung pada tanggal eksekusi query.</div>
+    </div>
+
+    <!-- 14 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-hard">14</div>
+        <div><span class="k-title">Customer dengan total denda terbesar</span><span class="k-tag k-tag-hard">Sulit</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  c.nama              <span class="kw">AS</span> nama_customer,
+  c.kota,
+  <span class="fn">SUM</span>(t.denda)        <span class="kw">AS</span> total_denda
+<span class="kw">FROM</span>        <span class="tbl">transaksi</span>  t
+<span class="kw">INNER JOIN</span>  <span class="tbl">customer</span>   c <span class="kw">ON</span> t.idcust = c.id
+<span class="kw">GROUP BY</span>  c.id, c.nama, c.kota
+<span class="kw">ORDER BY</span>  total_denda <span class="kw">DESC</span>
+<span class="kw">LIMIT</span>     <span class="num">1</span>;</pre>
+      </div>
+      <div class="k-note">CUST018 (Siti Aminah, Medan) adalah customer dengan total denda tertinggi.</div>
+    </div>
+
+    <!-- 15 -->
+    <div class="kunci-card">
+      <div class="kunci-head">
+        <div class="k-num k-hard">15</div>
+        <div><span class="k-title">Total peminjaman per kota</span><span class="k-tag k-tag-hard">Sulit</span></div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-head"><span class="code-lbl">SQL</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+        <pre><span class="kw">SELECT</span>
+  c.kota,
+  <span class="fn">COUNT</span>(t.id)           <span class="kw">AS</span> total_peminjaman
+<span class="kw">FROM</span>        <span class="tbl">transaksi</span>  t
+<span class="kw">INNER JOIN</span>  <span class="tbl">customer</span>   c <span class="kw">ON</span> t.idcust = c.id
+<span class="kw">GROUP BY</span>  c.kota
+<span class="kw">ORDER BY</span>  total_peminjaman <span class="kw">DESC</span>;</pre>
+      </div>
+      <div class="k-note">Kota dengan aktivitas peminjaman tertinggi adalah Medan karena CUST018 (Siti Aminah) yang sangat aktif berasal dari sana.</div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Kunci Jawaban SQL &mdash; Sistem Perpustakaan &nbsp;&middot;&nbsp; Dokumen Rahasia Pengajar &nbsp;&middot;&nbsp; Bagikan setelah penilaian selesai
+</footer>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '\u2713 Disalin';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Salin'; btn.classList.remove('ok'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>
