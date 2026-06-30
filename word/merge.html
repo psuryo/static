@@ -1,1 +1,1058 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul 4: Mail Merge — Word & Google Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #F0F1F6;
+    --surface:   #FFFFFF;
+    --border:    #DEE1EC;
+    --text:      #15172A;
+    --muted:     #5C5F7D;
+    --indigo:    #2A2D43;
+    --orange:    #E8633C;
+    --orange-lt: #FDEAE3;
+    --orange-md: #F5B8A1;
+    --word:      #2B579A;
+    --word-lt:   #EEF3FB;
+    --gdocs:     #1A73E8;
+    --gdocs-lt:  #E8F0FE;
+    --green:     #1A8C4A;
+    --green-lt:  #E6F4EC;
+    --warn-bg:   #FEF3C7;
+    --warn-bdr:  #F59E0B;
+    --warn-txt:  #78350F;
+    --diff-bg:   #FFF1F2;
+    --diff-bdr:  #F43F5E;
+    --diff-txt:  #881337;
+    --r:         12px;
+    --r-sm:      7px;
+  }
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--indigo);
+    padding: 9px 28px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase;
+    color: rgba(255,255,255,.38);
+  }
+  .topbar a { color: rgba(255,255,255,.38); text-decoration: none; transition: color .2s; }
+  .topbar a:hover { color: #fff; }
+  .topbar .sep { color: rgba(255,255,255,.15); }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--indigo) 0%, #3D2B5C 55%, #5C2E4A 100%);
+    padding: 52px 28px 0;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 980px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .hero-top {
+    display: grid; grid-template-columns: 1fr; gap: 8px;
+    margin-bottom: 36px;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(232,99,60,.18);
+    border: 1px solid rgba(232,99,60,.35);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase;
+    color: #F5B8A1; margin-bottom: 16px;
+  }
+  .hero-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(28px, 5vw, 44px);
+    color: #fff; line-height: 1.13; margin-bottom: 12px;
+    font-weight: 400; max-width: 560px;
+  }
+  .hero-title em { font-style: italic; color: #F5B8A1; }
+  .hero-desc {
+    font-size: 14.5px; color: rgba(255,255,255,.58);
+    max-width: 480px; line-height: 1.65;
+  }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .hp { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; font-size: 13px; font-weight: 700; }
+  .hp-word  { background: var(--word-lt); color: var(--word); }
+  .hp-gdocs { background: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* ── SIGNATURE: merge flow diagram ── */
+  .merge-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding-bottom: 32px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .flow-box {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0,0,0,.3);
+    padding: 14px 16px;
+    flex-shrink: 0;
+  }
+  /* Template box */
+  .flow-template { width: 150px; }
+  .flow-template-label {
+    font-size: 9px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--word); margin-bottom: 8px;
+  }
+  .flow-line { height: 5px; border-radius: 3px; background: #EAEAEA; margin-bottom: 5px; }
+  .flow-line.f { width: 100%; } .flow-line.m { width: 75%; } .flow-line.s { width: 50%; }
+  .flow-field {
+    display: inline-block; background: var(--orange-lt); color: var(--orange);
+    font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 700;
+    padding: 1px 5px; border-radius: 3px; margin: 1px 0;
+  }
+
+  /* Data source box */
+  .flow-data { width: 150px; }
+  .flow-data-label {
+    font-size: 9px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--green); margin-bottom: 8px;
+  }
+  .flow-table { width: 100%; border-collapse: collapse; font-size: 7.5px; }
+  .flow-table th {
+    background: var(--green-lt); color: var(--green);
+    padding: 3px 5px; font-weight: 800; text-align: left;
+  }
+  .flow-table td { padding: 3px 5px; border-top: 1px solid #EEE; color: #777; }
+
+  /* Plus / arrow connectors */
+  .flow-connector {
+    font-size: 20px; color: rgba(255,255,255,.3);
+    padding: 0 14px; flex-shrink: 0;
+  }
+
+  /* Output stack */
+  .flow-output-stack {
+    position: relative;
+    width: 130px; height: 90px;
+    flex-shrink: 0;
+  }
+  .flow-output {
+    position: absolute;
+    width: 110px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    padding: 8px 10px;
+  }
+  .flow-output:nth-child(1) { top: 0; left: 0; z-index: 3; }
+  .flow-output:nth-child(2) { top: 8px; left: 8px; z-index: 2; opacity: .75; }
+  .flow-output:nth-child(3) { top: 16px; left: 16px; z-index: 1; opacity: .5; }
+  .flow-output-name {
+    font-size: 8px; font-weight: 800; color: var(--orange);
+    margin-bottom: 4px;
+  }
+  .flow-output .flow-line { height: 3px; margin-bottom: 3px; }
+
+  /* ── NAV TABS ── */
+  .nav-wrap {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+  }
+  .nav-tabs {
+    display: flex; gap: 2px; padding: 0 24px;
+    max-width: 980px; margin: 0 auto;
+  }
+  .nav-tab {
+    padding: 13px 16px; font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; white-space: nowrap;
+    border: none; background: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: all .2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+  .tab-section { display: none; padding: 36px 0 52px; }
+  .tab-section.active { display: block; }
+  .sec-hd { margin-bottom: 26px; }
+  .sec-hd h2 { font-size: 21px; font-weight: 800; margin-bottom: 5px; }
+  .sec-hd p  { color: var(--muted); font-size: 14px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 14px; overflow: hidden;
+  }
+  .card-hd {
+    display: flex; align-items: center; gap: 14px;
+    padding: 17px 22px; cursor: pointer; user-select: none;
+  }
+  .card-ico {
+    width: 40px; height: 40px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; flex-shrink: 0;
+  }
+  .card-hd h3 { font-size: 15px; font-weight: 700; flex: 1; }
+  .chevron { color: var(--muted); font-size: 11px; transition: transform .25s; }
+  .card.open .chevron { transform: rotate(180deg); }
+  .card-bd { display: none; border-top: 1px solid var(--border); }
+  .card.open .card-bd { display: block; }
+
+  /* ── COMPARE GRID ── */
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; }
+  .cmp-col { padding: 22px; min-width: 0; overflow: hidden; }
+  .cmp-col:first-child { border-right: 1px solid var(--border); }
+  .app-lbl {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 100px;
+    font-size: 12px; font-weight: 700; margin-bottom: 14px;
+  }
+  .lbl-w { background: var(--word-lt); color: var(--word); }
+  .lbl-g { background: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* ── STEPS ── */
+  .steps { list-style: none; }
+  .steps li {
+    display: flex; gap: 10px; margin-bottom: 9px;
+    font-size: 14px; line-height: 1.55; align-items: flex-start;
+  }
+  .sn {
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .sn-w { background: var(--word-lt); color: var(--word); }
+  .sn-g { background: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* ── MENU PATH ── */
+  .menu-path {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 3px;
+    background: #F2F4FA; border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 6px 12px;
+    font-size: 12px; font-family: 'JetBrains Mono', monospace;
+    margin: 8px 0; line-height: 1.5; max-width: 100%;
+  }
+  .mp-sep { color: var(--muted); }
+
+  /* ── NOTES ── */
+  .note {
+    border-radius: var(--r-sm); padding: 11px 14px;
+    font-size: 13px; display: flex; flex-wrap: wrap;
+    gap: 4px 9px; align-items: flex-start;
+    margin-top: 12px; line-height: 1.65;
+  }
+  .n-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .n-body { flex: 1; min-width: 180px; }
+  .n-tip  { background: var(--orange-lt); border-left: 3px solid var(--orange); color: #7C2D12; }
+  .n-warn { background: var(--warn-bg); border-left: 3px solid var(--warn-bdr); color: var(--warn-txt); }
+  .n-diff { background: var(--diff-bg); border-left: 3px solid var(--diff-bdr); color: var(--diff-txt); }
+  .n-ok   { background: var(--green-lt); border-left: 3px solid var(--green); color: #14532D; }
+  .n-info { background: var(--word-lt); border-left: 3px solid var(--word); color: #1e3a6e; }
+
+  kbd {
+    display: inline-block;
+    background: #ECEEF5; border: 1px solid #CDD1E0;
+    border-radius: 4px; padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--text); white-space: nowrap;
+  }
+  .field-code {
+    display: inline-block;
+    background: var(--orange-lt); color: var(--orange);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+    padding: 1px 7px; border-radius: 4px;
+  }
+
+  /* ── DATA TABLE EXAMPLE ── */
+  .data-table-demo {
+    width: 100%; border-collapse: collapse; font-size: 12.5px;
+    margin: 10px 0;
+  }
+  .data-table-demo th {
+    background: var(--green-lt); color: var(--green);
+    padding: 8px 12px; text-align: left; font-weight: 700;
+    border: 1px solid #BBE5CC;
+  }
+  .data-table-demo td {
+    padding: 7px 12px; border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .data-table-demo tr:nth-child(even) td { background: #FAFBFF; }
+
+  /* ── DOCUMENT/LETTER PREVIEW ── */
+  .letter-preview {
+    background: #FAFBFF;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 18px 20px;
+    margin: 10px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    position: relative;
+  }
+  .letter-preview-label {
+    position: absolute; top: -10px; left: 14px;
+    background: var(--orange); color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 10px; border-radius: 100px;
+  }
+
+  /* ── QUICK REF ── */
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .ref-table th {
+    background: var(--indigo); color: #fff;
+    padding: 10px 14px; text-align: left;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase;
+  }
+  .ref-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    vertical-align: top; line-height: 1.5;
+  }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table tr:hover td { background: #F5F7FF; }
+
+  /* Tips grid */
+  .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+  .tip-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 18px;
+  }
+  .tip-icon { font-size: 26px; margin-bottom: 10px; }
+  .tip-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+  .tip-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+  /* Process steps (numbered, since merge IS a real sequence) */
+  .process-rail {
+    display: flex; flex-direction: column; gap: 0;
+    margin: 16px 0;
+  }
+  .process-step {
+    display: flex; gap: 14px; position: relative; padding-bottom: 20px;
+  }
+  .process-step:last-child { padding-bottom: 0; }
+  .process-step::before {
+    content: ''; position: absolute; left: 15px; top: 32px; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .process-step:last-child::before { display: none; }
+  .process-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--orange); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace; z-index: 1;
+  }
+  .process-content { flex: 1; padding-top: 4px; }
+  .process-content strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  .process-content span { font-size: 13px; color: var(--muted); }
+
+  @media (max-width: 640px) {
+    .cmp { grid-template-columns: 1fr; }
+    .cmp-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero { padding: 36px 20px 0; }
+    .merge-flow { justify-content: flex-start; padding: 0 4px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html">🏠 Beranda</a>
+  <span class="sep">/</span>
+  Modul 4 — Mail Merge
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="hero-eyebrow">✉️ Modul 4 dari 5</div>
+      <h1 class="hero-title">Mail <em>Merge</em></h1>
+      <p class="hero-desc">Gabungkan satu template surat dengan data dari spreadsheet untuk menghasilkan puluhan dokumen personal sekaligus — tanpa mengetik ulang satu per satu.</p>
+      <div class="hero-pills">
+        <span class="hp hp-word">⬛ Microsoft Word</span>
+        <span class="hp hp-gdocs">🔵 Google Docs</span>
+      </div>
+    </div>
+
+    <!-- SIGNATURE: merge flow diagram -->
+    <div class="merge-flow">
+      <!-- Template -->
+      <div class="flow-box flow-template">
+        <div class="flow-template-label">📄 Template Surat</div>
+        <div class="flow-line m"></div>
+        <span class="flow-field">«Nama»</span>
+        <div class="flow-line f"></div>
+        <div class="flow-line s"></div>
+        <span class="flow-field">«Alamat»</span>
+        <div class="flow-line f"></div>
+      </div>
+
+      <div class="flow-connector">+</div>
+
+      <!-- Data -->
+      <div class="flow-box flow-data">
+        <div class="flow-data-label">📊 Sumber Data</div>
+        <table class="flow-table">
+          <tr><th>Nama</th><th>Kota</th></tr>
+          <tr><td>Andi</td><td>Surabaya</td></tr>
+          <tr><td>Budi</td><td>Malang</td></tr>
+          <tr><td>Citra</td><td>Jember</td></tr>
+        </table>
+      </div>
+
+      <div class="flow-connector">=</div>
+
+      <!-- Output stack -->
+      <div class="flow-output-stack">
+        <div class="flow-output">
+          <div class="flow-output-name">Surat — Andi</div>
+          <div class="flow-line f"></div>
+          <div class="flow-line m"></div>
+        </div>
+        <div class="flow-output">
+          <div class="flow-output-name">Surat — Budi</div>
+          <div class="flow-line f"></div>
+          <div class="flow-line m"></div>
+        </div>
+        <div class="flow-output">
+          <div class="flow-output-name">Surat — Citra</div>
+          <div class="flow-line f"></div>
+          <div class="flow-line m"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('konsep')">💡 Konsep Dasar</button>
+    <button class="nav-tab" onclick="showTab('persiapan')">📊 Persiapan Data</button>
+    <button class="nav-tab" onclick="showTab('proses')">🔗 Proses Merge</button>
+    <button class="nav-tab" onclick="showTab('label')">🏷 Label & Amplop</button>
+    <button class="nav-tab" onclick="showTab('quickref')">⚡ Referensi Cepat</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════
+     TAB 1 — KONSEP DASAR
+══════════════════════════════════════ -->
+<div class="tab-section active" id="tab-konsep">
+  <div class="sec-hd">
+    <h2>💡 Konsep Dasar Mail Merge</h2>
+    <p>Memahami tiga komponen utama mail merge sebelum mulai praktik: template, sumber data, dan hasil gabungan.</p>
+  </div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--orange-lt)">🧩</div>
+      <h3>Tiga Komponen Mail Merge</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="process-rail">
+          <div class="process-step">
+            <div class="process-num">1</div>
+            <div class="process-content">
+              <strong>📄 Dokumen Utama (Template)</strong>
+              <span>Surat, undangan, atau label yang isinya sama untuk semua penerima, kecuali bagian yang berubah (nama, alamat, dll.) — ditandai dengan <span class="field-code">«Field»</span>.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">2</div>
+            <div class="process-content">
+              <strong>📊 Sumber Data (Data Source)</strong>
+              <span>Tabel berisi data yang berbeda untuk tiap penerima — biasanya dari Excel, Google Sheets, atau tabel yang dibuat langsung di Word.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">3</div>
+            <div class="process-content">
+              <strong>📑 Hasil Gabungan (Merged Document)</strong>
+              <span>Dokumen akhir — satu halaman/surat untuk setiap baris data. Jika data berisi 30 baris, hasilnya 30 surat berbeda.</span>
+            </div>
+          </div>
+        </div>
+        <div class="note n-tip">
+          <span class="n-icon">💡</span>
+          <span class="n-body">Bayangkan mail merge seperti <strong>mesin fotokopi pintar</strong> — bentuk suratnya sama, tapi nama dan detail penerima otomatis berganti setiap kali "dicetak".</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">📋</div>
+      <h3>Kapan Menggunakan Mail Merge?</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <ul class="steps">
+          <li><span class="sn sn-w">✓</span>Mengirim <strong>surat undangan</strong> ke ratusan tamu dengan nama yang berbeda di tiap surat.</li>
+          <li><span class="sn sn-w">✓</span>Membuat <strong>sertifikat peserta</strong> pelatihan/seminar untuk puluhan peserta sekaligus.</li>
+          <li><span class="sn sn-w">✓</span>Mencetak <strong>label amplop</strong> dengan alamat berbeda untuk pengiriman massal.</li>
+          <li><span class="sn sn-w">✓</span>Mengirim <strong>surat tagihan</strong> atau pemberitahuan dengan nominal yang berbeda per penerima.</li>
+          <li><span class="sn sn-w">✓</span>Membuat <strong>kartu nama atau ID card</strong> untuk banyak karyawan/mahasiswa dari satu template.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--green-lt)">⚖️</div>
+      <h3>Mail Merge di Word vs Google Docs — Gambaran Umum</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <p style="font-size:13.5px; color:var(--muted); line-height:1.6;">Memiliki fitur <strong>Mail Merge bawaan</strong> yang sangat lengkap — wizard langkah demi langkah, mendukung sumber data dari Excel, akses langsung dari menu <em>Mailings</em>. Cocok untuk pemula maupun pengguna lanjutan.</p>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <p style="font-size:13.5px; color:var(--muted); line-height:1.6;">Tidak punya fitur Mail Merge bawaan. Solusi: menggunakan <strong>Google Apps Script</strong> sederhana, atau add-on dari Google Workspace Marketplace seperti <strong>"Mail Merge for Gmail/Docs"</strong>.</p>
+          <div class="note n-diff">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Ini perbedaan paling signifikan di modul ini — Google Docs butuh <strong>add-on tambahan</strong>, sementara Word sudah siap pakai.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 2 — PERSIAPAN DATA
+══════════════════════════════════════ -->
+<div class="tab-section" id="tab-persiapan">
+  <div class="sec-hd">
+    <h2>📊 Persiapan Sumber Data</h2>
+    <p>Menyiapkan tabel data yang rapi sebelum memulai proses mail merge — kunci keberhasilan ada di sini.</p>
+  </div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--green-lt)">📐</div>
+      <h3>Aturan Membuat Sumber Data yang Benar</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <p style="font-size:13.5px; color:var(--muted); margin-bottom:14px;">Contoh struktur data yang benar untuk surat undangan:</p>
+        <table class="data-table-demo">
+          <tr><th>Nama</th><th>Jabatan</th><th>Perusahaan</th><th>Kota</th></tr>
+          <tr><td>Andi Saputra</td><td>Manajer HRD</td><td>PT Solusi Digital</td><td>Surabaya</td></tr>
+          <tr><td>Budi Santoso</td><td>Kepala Divisi IT</td><td>CV Maju Jaya</td><td>Malang</td></tr>
+          <tr><td>Citra Dewi</td><td>Direktur Operasional</td><td>PT Sinar Abadi</td><td>Jember</td></tr>
+        </table>
+        <ul class="steps" style="margin-top:14px;">
+          <li><span class="sn sn-w">✓</span><strong>Baris pertama = nama kolom (header)</strong> — jangan ada baris kosong di atasnya.</li>
+          <li><span class="sn sn-w">✓</span>Satu kolom hanya berisi <strong>satu jenis data</strong> (jangan campur nama dan kota dalam satu kolom).</li>
+          <li><span class="sn sn-w">✓</span>Nama kolom <strong>tidak boleh ada spasi di awal/akhir</strong> dan sebaiknya tanpa karakter spesial.</li>
+          <li><span class="sn sn-w">✓</span>Pastikan <strong>tidak ada baris atau kolom kosong</strong> di tengah data.</li>
+          <li><span class="sn sn-w">✓</span>Simpan data sebagai <strong>file terpisah</strong> dari dokumen template (Excel/Sheets, bukan di dalam Word).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sumber data yang didukung -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">🗂</div>
+      <h3>Sumber Data yang Bisa Digunakan</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ul class="steps">
+            <li><span class="sn sn-w">•</span><strong>Microsoft Excel</strong> (.xlsx) — paling umum dan direkomendasikan.</li>
+            <li><span class="sn sn-w">•</span><strong>Outlook Contacts</strong> — untuk surat ke daftar kontak email.</li>
+            <li><span class="sn sn-w">•</span><strong>Tabel di dalam Word</strong> — bisa dibuat manual, tapi kurang fleksibel untuk data besar.</li>
+            <li><span class="sn sn-w">•</span><strong>File CSV</strong> — kompatibel jika diekspor dengan format yang benar.</li>
+          </ul>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ul class="steps">
+            <li><span class="sn sn-g">•</span><strong>Google Sheets</strong> — sumber data utama, harus berada di Google Drive yang sama.</li>
+            <li><span class="sn sn-g">•</span>Sheet harus memiliki <strong>header di baris pertama</strong>, sama seperti aturan Excel.</li>
+          </ul>
+          <div class="note n-info">
+            <span class="n-icon">📌</span>
+            <span class="n-body">Add-on Mail Merge di Google Docs umumnya membaca data dari <strong>Google Sheets</strong> — pastikan sheet sudah di-share atau berada di akun yang sama dengan dokumen.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menyiapkan template -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--orange-lt)">📄</div>
+      <h3>Menyiapkan Dokumen Template</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <p style="font-size:13.5px; color:var(--muted); margin-bottom:14px;">Buat surat seperti biasa, tapi sisakan bagian yang akan diisi otomatis. Contoh template surat undangan:</p>
+        <div class="letter-preview">
+          <div class="letter-preview-label">TEMPLATE</div>
+          <p style="margin-top:8px;">Surabaya, 30 Juni 2026</p>
+          <p style="margin-top:10px;">Kepada Yth.<br>
+          <span class="field-code">«Nama»</span><br>
+          <span class="field-code">«Jabatan»</span>, <span class="field-code">«Perusahaan»</span><br>
+          di <span class="field-code">«Kota»</span></p>
+          <p style="margin-top:10px;">Dengan hormat,<br>
+          Kami mengundang Bapak/Ibu <span class="field-code">«Nama»</span> untuk menghadiri acara wisuda di kampus kami…</p>
+        </div>
+        <div class="note n-tip">
+          <span class="n-icon">💡</span>
+          <span class="n-body">Format dokumen template <strong>sebelum</strong> menyisipkan field merge — atur font, margin, dan heading style terlebih dahulu agar hasil akhirnya konsisten.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 3 — PROSES MERGE
+══════════════════════════════════════ -->
+<div class="tab-section" id="tab-proses">
+  <div class="sec-hd">
+    <h2>🔗 Menjalankan Proses Mail Merge</h2>
+    <p>Langkah lengkap menghubungkan template dengan sumber data hingga menghasilkan dokumen akhir.</p>
+  </div>
+
+  <!-- Word: wizard lengkap -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">⬛</div>
+      <h3>Microsoft Word — Mail Merge Wizard (Lengkap)</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="process-rail">
+          <div class="process-step">
+            <div class="process-num">1</div>
+            <div class="process-content">
+              <strong>Mulai Mail Merge</strong>
+              <span>Tab <strong>Mailings</strong> → <strong>Start Mail Merge</strong> → pilih jenis dokumen: <em>Letters</em>, <em>Email Messages</em>, <em>Envelopes</em>, atau <em>Labels</em>.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">2</div>
+            <div class="process-content">
+              <strong>Hubungkan Sumber Data</strong>
+              <span>Klik <strong>Select Recipients</strong> → <strong>Use an Existing List…</strong> → cari dan pilih file Excel yang sudah disiapkan → pilih sheet yang berisi data.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">3</div>
+            <div class="process-content">
+              <strong>Edit Daftar Penerima (Opsional)</strong>
+              <span>Klik <strong>Edit Recipient List</strong> untuk menyaring/mengurutkan data, atau menghapus baris tertentu yang tidak ingin disertakan.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">4</div>
+            <div class="process-content">
+              <strong>Sisipkan Merge Field</strong>
+              <span>Tempatkan kursor di posisi yang ingin diisi data → klik <strong>Insert Merge Field</strong> → pilih nama kolom (misal: <span class="field-code">«Nama»</span>). Ulangi untuk semua field yang dibutuhkan.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">5</div>
+            <div class="process-content">
+              <strong>Pratinjau Hasil</strong>
+              <span>Klik <strong>Preview Results</strong> untuk melihat bagaimana surat akan tampil dengan data asli. Gunakan tombol panah ◀ ▶ untuk melihat data lain.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">6</div>
+            <div class="process-content">
+              <strong>Selesaikan &amp; Gabungkan</strong>
+              <span>Klik <strong>Finish &amp; Merge</strong> → pilih <em>Edit Individual Documents…</em> untuk membuat satu file berisi semua surat, atau <em>Print Documents…</em> untuk langsung mencetak.</span>
+            </div>
+          </div>
+        </div>
+        <div class="menu-path">Mailings <span class="mp-sep">→</span> Start Mail Merge <span class="mp-sep">→</span> Letters</div>
+        <div class="note n-warn">
+          <span class="n-icon">⚠️</span>
+          <span class="n-body">Pilih <em>"All"</em> saat dialog <strong>Merge to New Document</strong> muncul untuk menggabungkan semua baris data. Pilih <em>"Current Record"</em> hanya jika ingin satu surat untuk data yang sedang ditampilkan.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Docs: via add-on -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--gdocs-lt)">🔵</div>
+      <h3>Google Docs — Mail Merge via Add-on</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="process-rail">
+          <div class="process-step">
+            <div class="process-num">1</div>
+            <div class="process-content">
+              <strong>Pasang Add-on Mail Merge</strong>
+              <span>Buka Google Docs → klik ikon <strong>puzzle (Extensions)</strong> → <strong>Add-ons → Get add-ons</strong> → cari <em>"Mail Merge"</em> (contoh: <em>Mail Merge for Google Docs</em>) → klik <strong>Install</strong>.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">2</div>
+            <div class="process-content">
+              <strong>Siapkan Sheet Data</strong>
+              <span>Buka Google Sheets yang berisi data penerima. Pastikan header kolom jelas (Nama, Alamat, dll.) di baris pertama.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">3</div>
+            <div class="process-content">
+              <strong>Tulis Template dengan Placeholder</strong>
+              <span>Di Google Docs, ketik teks template. Tandai bagian yang akan diganti dengan format <span class="field-code">{{Nama}}</span> atau <span class="field-code">«Nama»</span> sesuai ketentuan add-on yang dipakai.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">4</div>
+            <div class="process-content">
+              <strong>Jalankan Add-on</strong>
+              <span>Klik <strong>Extensions → Mail Merge → Start</strong>. Add-on akan meminta memilih Google Sheets sumber data dan mencocokkan kolom dengan placeholder di dokumen.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">5</div>
+            <div class="process-content">
+              <strong>Pratinjau &amp; Jalankan Merge</strong>
+              <span>Cek pratinjau hasil gabungan untuk beberapa baris data. Jika sudah benar, klik <strong>Merge</strong> atau <strong>Send</strong> (jika add-on juga mendukung pengiriman email langsung).</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">6</div>
+            <div class="process-content">
+              <strong>Unduh / Simpan Hasil</strong>
+              <span>Hasil biasanya tersimpan sebagai dokumen baru di Google Drive, satu file per penerima, atau digabung menjadi satu file PDF besar — tergantung add-on yang digunakan.</span>
+            </div>
+          </div>
+        </div>
+        <div class="note n-diff">
+          <span class="n-icon">⚠️</span>
+          <span class="n-body">Setiap add-on memiliki <strong>format placeholder dan langkah yang sedikit berbeda</strong>. Selalu baca dokumentasi add-on yang dipilih sebelum memulai.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Troubleshooting -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--diff-bg)">🔧</div>
+      <h3>Masalah Umum &amp; Solusinya</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:0 22px 20px;">
+        <table class="ref-table">
+          <thead><tr><th>Masalah</th><th>Penyebab Umum</th><th>Solusi</th></tr></thead>
+          <tbody>
+            <tr><td>Field menampilkan <span class="field-code">«AddressBlock»</span> bukan data</td><td>Belum melakukan Preview Results</td><td>Klik <strong>Preview Results</strong> di tab Mailings</td></tr>
+            <tr><td>Beberapa baris data tidak ikut ter-merge</td><td>Ada baris kosong di Excel di antara data</td><td>Hapus baris kosong, rapikan data berurutan tanpa celah</td></tr>
+            <tr><td>Format angka/tanggal berubah saat merge</td><td>Word membaca format default field code, bukan format Excel</td><td>Klik kanan field → Edit Field Codes → tambahkan switch format (misal <code>\@ "dd MMMM yyyy"</code>)</td></tr>
+            <tr><td>Sumber data tidak muncul di pilihan</td><td>File Excel sedang terbuka di aplikasi lain</td><td>Tutup file Excel sebelum memilihnya sebagai sumber data</td></tr>
+            <tr><td>Add-on Google Docs tidak menemukan Sheets</td><td>Sheet belum di-share atau beda akun Google</td><td>Pastikan Sheets dan Docs berada di akun Google yang sama</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 4 — LABEL & AMPLOP
+══════════════════════════════════════ -->
+<div class="tab-section" id="tab-label">
+  <div class="sec-hd">
+    <h2>🏷 Mail Merge untuk Label &amp; Amplop</h2>
+    <p>Variasi mail merge untuk mencetak label alamat dan amplop dalam jumlah banyak.</p>
+  </div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">🏷</div>
+      <h3>Membuat Label Alamat (Word)</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="process-rail">
+          <div class="process-step">
+            <div class="process-num">1</div>
+            <div class="process-content">
+              <strong>Pilih Jenis Dokumen Label</strong>
+              <span>Tab <strong>Mailings</strong> → <strong>Start Mail Merge</strong> → <strong>Labels…</strong></span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">2</div>
+            <div class="process-content">
+              <strong>Pilih Ukuran Label</strong>
+              <span>Pilih <em>Label vendors</em> (misal Avery US Letter) dan <em>Product number</em> sesuai kertas label fisik yang akan dicetak.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">3</div>
+            <div class="process-content">
+              <strong>Hubungkan Sumber Data &amp; Sisipkan Field</strong>
+              <span>Sama seperti surat — <strong>Select Recipients</strong> lalu <strong>Insert Merge Field</strong> di label pertama saja.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">4</div>
+            <div class="process-content">
+              <strong>Update Semua Label</strong>
+              <span>Klik <strong>Update Labels</strong> agar field yang sama tersalin ke semua kotak label di halaman.</span>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="process-num">5</div>
+            <div class="process-content">
+              <strong>Preview &amp; Finish</strong>
+              <span><strong>Preview Results</strong> untuk cek tampilan, lalu <strong>Finish &amp; Merge</strong> seperti biasa.</span>
+            </div>
+          </div>
+        </div>
+        <div class="note n-tip">
+          <span class="n-icon">💡</span>
+          <span class="n-body">Jangan lupa klik <strong>Update Labels</strong> setelah menyisipkan field di kotak pertama — tanpa langkah ini, hanya label pertama yang terisi data, sisanya kosong.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--orange-lt)">✉️</div>
+      <h3>Membuat Amplop (Word)</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <ul class="steps">
+          <li><span class="sn sn-w">1</span>Tab <strong>Mailings</strong> → <strong>Start Mail Merge</strong> → <strong>Envelopes…</strong></li>
+          <li><span class="sn sn-w">2</span>Pilih ukuran amplop yang sesuai (misal: DL, C5, atau ukuran kustom).</li>
+          <li><span class="sn sn-w">3</span>Hubungkan sumber data, lalu sisipkan field alamat pengirim dan penerima.</li>
+          <li><span class="sn sn-w">4</span>Preview hasil, lalu <strong>Finish &amp; Merge</strong>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--gdocs-lt)">🔵</div>
+      <h3>Label &amp; Amplop di Google Docs</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="note n-diff">
+          <span class="n-icon">⚠️</span>
+          <span class="n-body">Google Docs <strong>tidak memiliki</strong> fitur bawaan untuk label maupun amplop. Solusi yang umum digunakan: add-on khusus seperti <strong>"Create Labels"</strong> atau <strong>"Avery Label Merge"</strong> yang tersedia di Google Workspace Marketplace, atau membuat layout label secara manual menggunakan tabel di Google Docs lalu menggabungkannya dengan add-on Mail Merge biasa.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 5 — QUICK REF
+══════════════════════════════════════ -->
+<div class="tab-section" id="tab-quickref">
+  <div class="sec-hd">
+    <h2>⚡ Referensi Cepat</h2>
+    <p>Ringkasan menu, istilah penting, dan perbandingan fitur dalam satu tempat.</p>
+  </div>
+
+  <div class="card open" style="margin-bottom:16px;">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">⬛</div>
+      <h3>Microsoft Word — Menu Mailings</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="overflow-x:auto;">
+        <table class="ref-table">
+          <thead><tr><th>Fungsi</th><th>Lokasi Menu</th></tr></thead>
+          <tbody>
+            <tr><td>Mulai Mail Merge</td><td>Mailings → Start Mail Merge</td></tr>
+            <tr><td>Pilih sumber data</td><td>Mailings → Select Recipients → Use an Existing List…</td></tr>
+            <tr><td>Edit daftar penerima</td><td>Mailings → Edit Recipient List</td></tr>
+            <tr><td>Sisipkan field nama/alamat lengkap</td><td>Mailings → Address Block / Greeting Line</td></tr>
+            <tr><td>Sisipkan field kustom</td><td>Mailings → Insert Merge Field</td></tr>
+            <tr><td>Cek tampilan hasil</td><td>Mailings → Preview Results</td></tr>
+            <tr><td>Selesaikan proses</td><td>Mailings → Finish & Merge</td></tr>
+            <tr><td>Update semua label</td><td>Mailings → Update Labels</td></tr>
+            <tr><td>Edit format field (tanggal/angka)</td><td>Klik kanan field → Edit Field Codes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card open" style="margin-bottom:16px;">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--gdocs-lt)">🔵</div>
+      <h3>Google Docs — Add-on Mail Merge</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="overflow-x:auto;">
+        <table class="ref-table">
+          <thead><tr><th>Fungsi</th><th>Lokasi Menu</th></tr></thead>
+          <tbody>
+            <tr><td>Pasang add-on</td><td>Extensions → Add-ons → Get add-ons</td></tr>
+            <tr><td>Jalankan mail merge</td><td>Extensions → [Nama Add-on] → Start</td></tr>
+            <tr><td>Hubungkan Google Sheets</td><td>Dalam panel add-on, pilih file Sheets sumber data</td></tr>
+            <tr><td>Placeholder umum</td><td><span class="field-code">{{NamaKolom}}</span> atau <span class="field-code">«NamaKolom»</span> (tergantung add-on)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Perbandingan -->
+  <div class="card open" style="margin-bottom:28px;">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--diff-bg)">⚖️</div>
+      <h3>Perbandingan Word vs Google Docs</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="overflow-x:auto;">
+        <table class="ref-table">
+          <thead><tr><th>Fitur</th><th style="color:#93C5FD">⬛ Word</th><th style="color:#93C5FD">🔵 Google Docs</th></tr></thead>
+          <tbody>
+            <tr><td>Mail Merge bawaan</td><td>✅ Lengkap, siap pakai</td><td>❌ Butuh add-on tambahan</td></tr>
+            <tr><td>Sumber data Excel/Sheets</td><td>✅ Excel native</td><td>✅ Google Sheets (via add-on)</td></tr>
+            <tr><td>Cetak Label</td><td>✅ Built-in (Labels wizard)</td><td>⚠️ Hanya via add-on</td></tr>
+            <tr><td>Cetak Amplop</td><td>✅ Built-in (Envelopes wizard)</td><td>❌ Tidak tersedia native</td></tr>
+            <tr><td>Kirim langsung sebagai Email</td><td>✅ Via Outlook</td><td>✅ Beberapa add-on mendukung Gmail</td></tr>
+            <tr><td>Format kustom (tanggal, angka)</td><td>✅ Via Field Codes</td><td>⚠️ Tergantung kemampuan add-on</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <h3 style="font-size:16px; font-weight:800; margin-bottom:16px;">💡 Tips Penting</h3>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🧹</div>
+      <h4>Rapikan Data Dulu</h4>
+      <p>90% masalah mail merge berasal dari data sumber yang tidak rapi. Cek baris kosong, header ganda, dan konsistensi format sebelum memulai.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">👁</div>
+      <h4>Selalu Preview Sebelum Finish</h4>
+      <p>Klik Preview Results dan cek minimal 3-5 baris data berbeda untuk memastikan semua field terisi dengan benar sebelum menggabungkan semua data.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💾</div>
+      <h4>Simpan Template Terpisah</h4>
+      <p>Simpan file template (.docx dengan field merge) terpisah dari hasil akhir (.docx hasil gabungan). Template bisa dipakai ulang untuk data baru di lain waktu.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔢</div>
+      <h4>Tutup File Excel Saat Merge</h4>
+      <p>Pastikan file Excel sumber data dalam keadaan tertutup saat memilihnya di Word — file yang sedang terbuka kadang tidak terbaca dengan benar.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🏷</div>
+      <h4>Jangan Lupa Update Labels</h4>
+      <p>Saat membuat label, field hanya muncul di kotak pertama. Klik "Update Labels" agar tersalin ke semua kotak — langkah yang paling sering terlewat.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📧</div>
+      <h4>Tes dengan Sedikit Data Dulu</h4>
+      <p>Sebelum menjalankan merge untuk 200 data sekaligus, coba dulu dengan 2-3 baris data untuk memastikan format dan field sudah benar.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div style="background:var(--indigo); color:rgba(255,255,255,.35); text-align:center; padding:20px 16px; font-size:12px; margin-top:32px; line-height:1.9;">
+  <div style="margin-bottom:8px;">
+    <a href="panduan-halaman-daftarisi.html" style="color:rgba(255,255,255,.5); text-decoration:none; font-weight:600;">← Modul 3: Halaman &amp; Daftar Isi</a>
+    &nbsp;·&nbsp;
+    <a href="index.html" style="color:rgba(255,255,255,.5); text-decoration:none; font-weight:600;">🏠 Beranda</a>
+  </div>
+  <strong style="color:rgba(255,255,255,.5);">Modul 4 — Mail Merge</strong><br>
+  Universitas Katolik Widya Mandala Surabaya · Fakultas Teknologi Informasi
+</div>
+
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function toggleCard(hd) { hd.closest('.card').classList.toggle('open'); }
+</script>
+</body>
+</html>
