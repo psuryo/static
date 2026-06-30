@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Report Access &mdash; Sistem Penjualan</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fdf8f0;--bg2:#f5ede0;--surface:#ffffff;
+  --text:#1e1408;--text2:#3d2e18;--text3:#8a7458;--border:#e0cead;--ink:#1e1408;
+  --brown:#7c4a00;--brown-bg:#fff8ee;--brown-border:#f0d090;
+  --teal:#0f5a50;--teal-bg:#f0fdf9;--teal-border:#6ee7c8;
+  --blue:#1a3fa8;--blue-bg:#eff4ff;--blue-border:#bfcffe;
+  --green:#155a2a;--green-bg:#f0fdf4;--green-border:#86efac;
+  --rose:#8a1020;--rose-bg:#fff1f2;--rose-border:#fecdd3;
+  --violet:#5a1d9e;--violet-bg:#f5f0ff;--violet-border:#c4b5fd;
+  --gray:#374151;--gray-bg:#f9fafb;--gray-border:#e5e7eb;
+  --radius:8px;
+  --mono:'Courier New',Courier,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.75}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,#1e1408 0%,#7c4a00 55%,#c47a00 100%);
+  color:#fff;padding:3.5rem 2rem 3rem;text-align:center;position:relative;overflow:hidden;
+}
+.header::after{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2l-6 6V4zm0 4l8-8h2L40 10V8zm0 4L52 0h2L40 14v-2zm0 4L56 0h2L40 18v-2zm0 4L60 0h2L40 22v-2zm0 4L64 0h2L40 26v-2zm0 4L68 0h2L40 30v-2zm0 4L72 0h2L40 34v-2zm0 4L76 0h2L40 38v-2zm0 4L80 0v2L42 40h-2zm4 0L80 4v2L46 40h-2zm4 0L80 8v2L50 40h-2zm4 0L80 12v2L54 40h-2zm4 0L80 16v2L58 40h-2zm4 0L80 20v2L62 40h-2zm4 0L80 24v2L66 40h-2zm4 0L80 28v2L70 40h-2zm4 0L80 32v2L74 40h-2zm4 0L80 36v2L78 40h-2zm4 0L80 40v2l-2-2h2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events:none;
+}
+.header .pill{position:relative;display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 16px;margin-bottom:1.25rem;color:rgba(255,255,255,.8)}
+.header h1{position:relative;font-size:34px;font-weight:900;line-height:1.15;letter-spacing:-.03em;margin-bottom:.6rem}
+.header h1 em{font-style:normal;color:#fde68a}
+.header .sub{position:relative;font-size:14px;color:rgba(255,255,255,.6);max-width:520px;margin:0 auto}
+
+/* META */
+.meta-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;background:var(--surface);border-bottom:1px solid var(--border);padding:.8rem 2rem}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-size:11.5px;font-weight:600;padding:4px 12px;color:var(--text2)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* LAYOUT */
+.page{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+section{margin-bottom:3.75rem}
+
+/* SECTION HEAD */
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:1.5rem;padding-bottom:.875rem;border-bottom:2px solid var(--border)}
+.sec-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.ic-brown{background:var(--brown-bg)}
+.ic-teal{background:var(--teal-bg)}
+.ic-blue{background:var(--blue-bg)}
+.ic-green{background:var(--green-bg)}
+.sec-title{font-size:20px;font-weight:800;letter-spacing:-.015em}
+.sec-sub{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* CALLOUT */
+.callout{display:flex;align-items:flex-start;gap:10px;border-radius:var(--radius);padding:.85rem 1rem;margin:1rem 0;border:1px solid;font-size:13.5px}
+.c-warn{background:var(--brown-bg);border-color:var(--brown-border);color:#5c3400}
+.c-info{background:var(--blue-bg);border-color:var(--blue-border);color:#1a2d6e}
+.c-ok{background:var(--green-bg);border-color:var(--green-border);color:#14532d}
+.c-violet{background:var(--violet-bg);border-color:var(--violet-border);color:#3b0764}
+.c-teal{background:var(--teal-bg);border-color:var(--teal-border);color:#0a3d35}
+.c-icon{font-size:15px;flex-shrink:0;margin-top:2px}
+.callout p{margin:0;font-size:13.5px;color:inherit}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:2.5rem 0}
+
+/* TASK CARD */
+.task-list{display:flex;flex-direction:column;gap:22px}
+.task-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 5px rgba(0,0,0,.05)}
+.task-head{display:flex;align-items:center;gap:14px;padding:1rem 1.25rem;border-bottom:1px solid var(--bg2)}
+.task-num{min-width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0}
+.tn-easy{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.tn-med{background:var(--brown-bg);color:var(--brown);border:1px solid var(--brown-border)}
+.tn-hard{background:var(--rose-bg);color:var(--rose);border:1px solid var(--rose-border)}
+.task-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.35rem}
+.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px}
+.t-default{background:var(--bg2);color:var(--text3)}
+.t-easy{background:var(--green-bg);color:var(--green)}
+.t-med{background:var(--brown-bg);color:var(--brown)}
+.t-hard{background:var(--rose-bg);color:var(--rose)}
+.t-teal{background:var(--teal-bg);color:var(--teal)}
+.t-violet{background:var(--violet-bg);color:var(--violet)}
+.task-title{font-size:15px;font-weight:800;color:var(--text);line-height:1.35}
+.task-body{padding:1rem 1.25rem}
+.task-desc{font-size:14px;color:var(--text2);margin-bottom:1rem;line-height:1.65}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step-num{min-width:24px;height:24px;border-radius:50%;background:var(--brown-bg);color:var(--brown);border:1.5px solid var(--brown-border);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-text{font-size:13.5px;color:var(--text2);line-height:1.6}
+.step-text strong{color:var(--text)}
+.step-text code{font-family:var(--mono);font-size:12.5px;background:var(--bg2);padding:1px 6px;border-radius:4px;color:var(--brown)}
+
+/* RESULT BOX */
+.result-box{margin-top:1rem;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.result-head{padding:.5rem 1rem;background:var(--bg2);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.result-body{padding:1rem 1.25rem}
+
+/* REPORT MOCKUP */
+.report-mock{
+  background:#fff;border:1.5px solid #c0a878;border-radius:6px;overflow:hidden;
+  font-size:12px;box-shadow:0 3px 12px rgba(124,74,0,.12);
+}
+.rm-page-head{
+  background:linear-gradient(90deg,#7c4a00,#c47a00);
+  padding:.6rem 1.25rem;display:flex;align-items:center;justify-content:space-between;
+}
+.rm-page-head .rm-title{color:#fff;font-size:13px;font-weight:800;letter-spacing:.03em}
+.rm-page-head .rm-date{color:rgba(255,255,255,.7);font-size:11px}
+.rm-report-head{
+  background:#fff8ee;border-bottom:2px solid #e0cead;
+  padding:.5rem 1.25rem;display:flex;justify-content:space-between;align-items:center;
+}
+.rm-report-head .rh-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.rm-report-head .rh-val{font-size:12px;font-weight:700;color:var(--brown)}
+.rm-body{padding:.75rem 1.25rem}
+.rm-group-head{
+  background:#f5ede0;border-left:3px solid var(--brown);
+  padding:.3rem .75rem;font-size:11.5px;font-weight:800;color:var(--brown);
+  margin:.5rem 0 .3rem;border-radius:0 3px 3px 0;
+}
+.rm-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.rm-tbl th{padding:.3rem .6rem;text-align:left;font-weight:700;font-size:10.5px;color:var(--text3);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em;background:var(--gray-bg)}
+.rm-tbl td{padding:.3rem .6rem;border-bottom:.5px solid #f0e8d8;color:var(--text2)}
+.rm-tbl td.num-right{text-align:right;font-family:var(--mono);font-size:10.5px}
+.rm-tbl td.subtotal{font-weight:700;color:var(--brown);text-align:right;font-family:var(--mono);font-size:10.5px}
+.rm-footer{
+  background:#f5ede0;border-top:2px solid #e0cead;
+  padding:.5rem 1.25rem;display:flex;justify-content:flex-end;align-items:center;gap:12px;
+}
+.rm-gt-label{font-size:11.5px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+.rm-gt-val{background:#fff3cd;border:1.5px solid var(--brown-border);border-radius:4px;padding:3px 10px;font-size:12px;font-weight:800;color:var(--brown);font-family:var(--mono)}
+.rm-page-foot{background:var(--bg2);border-top:1px solid var(--border);padding:.35rem 1.25rem;display:flex;justify-content:space-between;font-size:10.5px;color:var(--text3)}
+
+/* PROPERTY TABLE */
+.prop-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:.75rem}
+.prop-tbl th{background:var(--bg2);padding:.45rem .875rem;text-align:left;font-weight:700;font-size:11.5px;border-bottom:1px solid var(--border);color:var(--text2)}
+.prop-tbl td{padding:.4rem .875rem;border-bottom:.5px solid var(--bg2);vertical-align:top}
+.prop-tbl tr:last-child td{border-bottom:none}
+.prop-tbl td:first-child{font-family:var(--mono);font-size:11.5px;color:var(--brown);font-weight:600;white-space:nowrap}
+.prop-tbl td:nth-child(2){color:var(--text3);font-size:11.5px;white-space:nowrap;width:120px}
+.prop-tbl td:nth-child(3){color:var(--text2)}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:7px;margin-top:.75rem}
+.check-item{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--text2)}
+.check-box{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--brown-border);background:var(--surface);flex-shrink:0;margin-top:2px}
+
+/* MAP TABLE */
+.map-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.map-tbl th{background:var(--bg2);padding:.55rem .875rem;text-align:left;font-weight:700;border-bottom:1px solid var(--border);font-size:12px}
+.map-tbl td{padding:.5rem .875rem;border-bottom:.5px solid var(--bg2)}
+.map-tbl tr:last-child td{border-bottom:none}
+.map-tbl td:first-child{color:var(--text3);font-weight:700;font-size:12px}
+.lvl-easy{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--green-bg);color:var(--green)}
+.lvl-med{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--brown-bg);color:var(--brown)}
+.lvl-hard{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--rose-bg);color:var(--rose)}
+
+/* VBA CODE */
+.vba-block{background:#1e1408;border-radius:var(--radius);overflow:hidden;margin-top:.75rem}
+.vba-head{padding:.45rem 1rem;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between}
+.vba-lbl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.copy-btn{font-size:11px;font-weight:600;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);padding:3px 10px;border-radius:5px;cursor:pointer;transition:background .15s}
+.copy-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+.copy-btn.ok{background:#155a2a;color:#fff}
+.vba-code{padding:1rem 1.25rem;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:#d4c8a8;overflow-x:auto;white-space:pre}
+.vkw{color:#7dd3fc;font-weight:700}
+.vstr{color:#86efac}
+.vcmt{color:#5a4a2a;font-style:italic}
+.vnum{color:#fbbf24}
+.vfn{color:#c4b5fd}
+
+footer{text-align:center;padding:2rem;font-size:12px;color:var(--text3);border-top:1px solid var(--border);background:var(--surface)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="pill">&#x1F4CA; Modul 6 &mdash; Microsoft Access</div>
+  <h1>Latihan Laporan <em>(Reports)</em><br>Sistem Penjualan</h1>
+  <p class="sub">Rancang laporan manajemen profesional dengan grouping, sorting, kalkulasi, dan ekspor menggunakan data customer, barang, dan transaksi</p>
+</div>
+
+<div class="meta-bar">
+  <div class="chip"><div class="dot" style="background:var(--brown)"></div> Microsoft Access</div>
+  <div class="chip"><div class="dot" style="background:var(--teal)"></div> 3 Tabel Relasional</div>
+  <div class="chip"><div class="dot" style="background:var(--blue)"></div> 6 Tugas Bertahap</div>
+  <div class="chip"><div class="dot" style="background:var(--green)"></div> Report + Grouping + VBA</div>
+</div>
+
+<div class="page">
+
+  <!-- BAGIAN A: PERSIAPAN -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon ic-brown">&#x1F5C4;&#xFE0F;</div>
+      <div>
+        <div class="sec-title">Bagian A &mdash; Persiapan &amp; Query Sumber Data</div>
+        <div class="sec-sub">Semua report dalam modul ini menggunakan Query sebagai sumber data, bukan tabel langsung</div>
+      </div>
+    </div>
+
+    <div class="callout c-warn">
+      <span class="c-icon">&#x26A0;&#xFE0F;</span>
+      <p><strong>Prasyarat:</strong> Modul ini melanjutkan database Modul 2 dan 4. Pastikan tabel <code>customer</code>, <code>barang</code>, dan <code>transaksi</code> sudah ada, terisi data, dan relasi antar tabel sudah dikonfigurasi dengan benar.</p>
+    </div>
+
+    <h3 style="font-size:14.5px;font-weight:700;margin:1.5rem 0 .7rem">Mengapa Menggunakan Query sebagai Sumber?</h3>
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.7;margin-bottom:1rem">Report langsung dari satu tabel saja tidak mampu menampilkan nama customer, nama barang, dan kalkulasi total dalam satu laporan. Query memungkinkan kita <strong>menggabungkan data dari beberapa tabel sekaligus</strong> sebelum dijadikan sumber report.</p>
+
+    <div class="callout c-info">
+      <span class="c-icon">&#x1F4CC;</span>
+      <p><strong>Langkah wajib:</strong> Buat dua Query berikut di Query Design sebelum mengerjakan Tugas 1&ndash;6. Kedua query ini akan menjadi <em>Record Source</em> untuk seluruh report.</p>
+    </div>
+
+    <!-- Query 1 -->
+    <div class="result-box" style="margin-top:1.25rem">
+      <div class="result-head">&#x1F50D; Query 1 &mdash; <strong>qry_TransaksiLengkap</strong> (digunakan di Tugas 1, 2, 3, 5)</div>
+      <div class="result-body">
+        <p style="font-size:12.5px;color:var(--text3);margin-bottom:.75rem">Query ini menggabungkan ketiga tabel dan menambahkan kolom kalkulasi <code>total_harga</code>.</p>
+        <div class="vba-block">
+          <div class="vba-head"><span class="vba-lbl">SQL &mdash; Query Design / SQL View</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+          <div class="vba-code"><span class="vkw">SELECT</span>
+  t.id              <span class="vkw">AS</span> id_transaksi,
+  t.tgl_transaksi,
+  c.nama            <span class="vkw">AS</span> nama_customer,
+  c.kota,
+  b.nama_barang,
+  b.kategori,
+  b.harga,
+  t.jumlah,
+  b.harga * t.jumlah  <span class="vkw">AS</span> total_harga
+<span class="vkw">FROM</span> (transaksi t
+  <span class="vkw">INNER JOIN</span> customer  c <span class="vkw">ON</span> t.customer_id = c.id)
+  <span class="vkw">INNER JOIN</span> barang    b <span class="vkw">ON</span> t.barang_id   = b.id
+<span class="vkw">ORDER BY</span> t.tgl_transaksi, c.nama;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Query 2 -->
+    <div class="result-box" style="margin-top:.875rem">
+      <div class="result-head">&#x1F50D; Query 2 &mdash; <strong>qry_RekapCustomer</strong> (digunakan di Tugas 4)</div>
+      <div class="result-body">
+        <p style="font-size:12.5px;color:var(--text3);margin-bottom:.75rem">Query agregasi yang merangkum total belanja dan jumlah transaksi per customer.</p>
+        <div class="vba-block">
+          <div class="vba-head"><span class="vba-lbl">SQL &mdash; Query Design / SQL View</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+          <div class="vba-code"><span class="vkw">SELECT</span>
+  c.nama              <span class="vkw">AS</span> nama_customer,
+  c.kota,
+  <span class="vfn">Count</span>(t.id)          <span class="vkw">AS</span> jml_transaksi,
+  <span class="vfn">Sum</span>(b.harga*t.jumlah) <span class="vkw">AS</span> total_belanja
+<span class="vkw">FROM</span> (transaksi t
+  <span class="vkw">INNER JOIN</span> customer  c <span class="vkw">ON</span> t.customer_id = c.id)
+  <span class="vkw">INNER JOIN</span> barang    b <span class="vkw">ON</span> t.barang_id   = b.id
+<span class="vkw">GROUP BY</span> c.id, c.nama, c.kota
+<span class="vkw">ORDER BY</span> <span class="vfn">Sum</span>(b.harga*t.jumlah) <span class="vkw">DESC</span>;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout c-ok" style="margin-top:1rem">
+      <span class="c-icon">&#x2705;</span>
+      <p>Simpan kedua query dengan nama persis seperti di atas. Nama query akan direferensi langsung saat membuat report.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- BAGIAN B: TUGAS -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon ic-teal">&#x1F4CB;</div>
+      <div>
+        <div class="sec-title">Bagian B &mdash; 6 Tugas Praktikum</div>
+        <div class="sec-sub">Kerjakan berurutan &mdash; setiap tugas menghasilkan laporan yang berbeda</div>
+      </div>
+    </div>
+
+    <div class="task-list">
+
+      <!-- ══ TUGAS 1 ══ -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-easy">1</div>
+          <div>
+            <div class="task-tags">
+              <span class="tag t-default">Report Wizard</span>
+              <span class="tag t-default">Grouping</span>
+              <span class="tag t-easy">&#x25CF; Mudah</span>
+            </div>
+            <div class="task-title">Laporan Transaksi Dikelompokkan per Customer</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Buat laporan yang menampilkan semua transaksi, <strong>dikelompokkan berdasarkan nama customer</strong>. Setiap kelompok menampilkan subtotal belanja dan di akhir laporan terdapat grand total keseluruhan.</p>
+
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Klik tab <strong>Create &rarr; Report Wizard</strong>. Pada dropdown <em>Tables/Queries</em>, pilih <code>qry_TransaksiLengkap</code>.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text">Pindahkan field berikut ke <em>Selected Fields</em> (urutan penting): <code>nama_customer</code>, <code>kota</code>, <code>tgl_transaksi</code>, <code>nama_barang</code>, <code>jumlah</code>, <code>harga</code>, <code>total_harga</code>. Klik <strong>Next</strong>.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Pada halaman <em>Grouping Levels</em>, klik <code>nama_customer</code> lalu klik tombol <strong>&gt;</strong> untuk menjadikannya grup. Klik <strong>Next</strong>.</div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-text">Pada <em>Sort Order</em>, pilih <code>tgl_transaksi</code> Ascending. Klik tombol <strong>Summary Options</strong>.</div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-text">Di Summary Options, centang <strong>Sum</strong> untuk field <code>total_harga</code>. Pilih <em>"Detail and Summary"</em>. Centang <em>"Calculate percent of total for sums"</em>. Klik OK &rarr; Next.</div></div>
+            <div class="step"><div class="step-num">6</div><div class="step-text">Pilih layout <strong>Stepped</strong>, orientasi <strong>Portrait</strong>. Klik Next. Beri judul: <em>"Laporan Transaksi per Customer"</em>. Pilih <em>"Preview the report"</em> &rarr; Finish.</div></div>
+            <div class="step"><div class="step-num">7</div><div class="step-text">Buka dalam <strong>Design View</strong>. Ubah nama report (Save As) menjadi <code>rpt_TransaksiPerCustomer</code>.</div></div>
+          </div>
+
+          <!-- MOCKUP -->
+          <div class="result-box" style="margin-top:1.25rem">
+            <div class="result-head">&#x1F4F8; Tampilan yang Diharapkan</div>
+            <div class="result-body" style="padding:.75rem">
+              <div class="report-mock">
+                <div class="rm-page-head">
+                  <span class="rm-title">&#x1F4CA; Laporan Transaksi per Customer</span>
+                  <span class="rm-date">Dicetak: 29/06/2026</span>
+                </div>
+                <div class="rm-body">
+                  <div class="rm-group-head">&#x1F464; Andi Setiawan &mdash; Yogyakarta</div>
+                  <table class="rm-tbl">
+                    <thead><tr><th>Tanggal</th><th>Nama Barang</th><th>Jml</th><th>Harga Satuan</th><th>Total</th></tr></thead>
+                    <tbody>
+                      <tr><td>05/01/2024</td><td>Laptop ASUS 14"</td><td class="num-right">1</td><td class="num-right">Rp8.500.000</td><td class="num-right">Rp8.500.000</td></tr>
+                      <tr><td>05/01/2024</td><td>Mouse Wireless</td><td class="num-right">2</td><td class="num-right">Rp150.000</td><td class="num-right">Rp300.000</td></tr>
+                      <tr><td>20/02/2024</td><td>Buku Algoritma</td><td class="num-right">2</td><td class="num-right">Rp125.000</td><td class="num-right">Rp250.000</td></tr>
+                      <tr style="background:var(--brown-bg)"><td colspan="4" style="font-weight:700;color:var(--brown);font-size:11px">Subtotal Andi Setiawan</td><td class="subtotal">Rp9.050.000</td></tr>
+                    </tbody>
+                  </table>
+                  <div class="rm-group-head">&#x1F464; Budi Santoso &mdash; Jakarta</div>
+                  <table class="rm-tbl">
+                    <thead><tr><th>Tanggal</th><th>Nama Barang</th><th>Jml</th><th>Harga Satuan</th><th>Total</th></tr></thead>
+                    <tbody>
+                      <tr><td>10/01/2024</td><td>Tas Ransel</td><td class="num-right">1</td><td class="num-right">Rp350.000</td><td class="num-right">Rp350.000</td></tr>
+                      <tr><td>10/01/2024</td><td>Keyboard Mekanikal</td><td class="num-right">1</td><td class="num-right">Rp750.000</td><td class="num-right">Rp750.000</td></tr>
+                      <tr style="background:var(--brown-bg)"><td colspan="4" style="font-weight:700;color:var(--brown);font-size:11px">Subtotal Budi Santoso</td><td class="subtotal">Rp1.100.000</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="rm-footer">
+                  <span class="rm-gt-label">Grand Total Seluruh Transaksi:</span>
+                  <span class="rm-gt-val">Rp&nbsp;&#x2026;</span>
+                </div>
+                <div class="rm-page-foot"><span>rpt_TransaksiPerCustomer</span><span>Halaman 1 dari N</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TUGAS 2 ══ -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-easy">2</div>
+          <div>
+            <div class="task-tags">
+              <span class="tag t-default">Design View</span>
+              <span class="tag t-default">Formatting</span>
+              <span class="tag t-easy">&#x25CF; Mudah</span>
+            </div>
+            <div class="task-title">Memperindah Tampilan Report (Report Design)</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Setelah report dibuat oleh Wizard, tampilan defaultnya masih terlihat sederhana. Gunakan <strong>Design View</strong> untuk menambahkan judul, warna, logo, dan format angka yang profesional.</p>
+
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Buka <code>rpt_TransaksiPerCustomer</code> dalam <strong>Design View</strong>. Perhatikan bagian-bagian report: <em>Report Header, Page Header, Group Header, Detail, Group Footer, Page Footer, Report Footer</em>.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text">Di <strong>Report Header</strong>: klik judul laporan, ubah ukuran font menjadi <strong>18pt Bold</strong>. Tambahkan Text Box baru dengan Control Source: <code>=Now()</code> dan format: <code>dd mmmm yyyy</code> sebagai tanggal cetak.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Di <strong>Page Header</strong>: ubah background header kolom menjadi warna gelap (misal #2C3E50). Ubah warna teks header kolom menjadi putih. Atur font Bold.</div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-text">Di <strong>Group Header</strong> (<em>nama_customer Header</em>): ubah background menjadi warna terang (misal #EBF5FB). Tambahkan garis bawah dengan <strong>Line</strong> control.</div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-text">Pilih semua field angka (<code>harga</code>, <code>total_harga</code>, field Sum): atur <strong>Format = Currency</strong> di Property Sheet &rarr; tab Format.</div></div>
+            <div class="step"><div class="step-num">6</div><div class="step-text">Di <strong>Page Footer</strong>: tambah Text Box dengan Control Source: <code>="Halaman " &amp; [Page] &amp; " dari " &amp; [Pages]</code> di sisi kanan. Sisi kiri isi nama laporan/instansi.</div></div>
+          </div>
+
+          <div class="result-box" style="margin-top:1.25rem">
+            <div class="result-head">&#x2699;&#xFE0F; Ringkasan Properti Penting</div>
+            <div class="result-body">
+              <table class="prop-tbl">
+                <thead><tr><th>Elemen</th><th>Properti</th><th>Nilai</th></tr></thead>
+                <tbody>
+                  <tr><td>Label judul</td><td>Font Size</td><td>18, Bold, warna gelap</td></tr>
+                  <tr><td>Tanggal cetak</td><td>Control Source</td><td><code>=Format(Now(),"dd mmmm yyyy")</code></td></tr>
+                  <tr><td>Page Header</td><td>Back Color</td><td>#2C3E50 (atau warna pilihan)</td></tr>
+                  <tr><td>Field harga &amp; total</td><td>Format</td><td>Currency</td></tr>
+                  <tr><td>Nomor halaman</td><td>Control Source</td><td><code>="Hal. " &amp; [Page] &amp; "/" &amp; [Pages]</code></td></tr>
+                  <tr><td>Semua field angka</td><td>Text Align</td><td>Right</td></tr>
+                  <tr><td>Detail section</td><td>Back Color Alternate</td><td>#F8F9FA (zebra stripe)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="callout c-teal" style="margin-top:1rem">
+            <span class="c-icon">&#x1F4A1;</span>
+            <p><strong>Tip Zebra Stripe:</strong> Atur <strong>Back Color</strong> detail section ke putih dan <strong>Alternate Back Color</strong> ke abu-abu muda (#F8F9FA) agar baris bergantian warna, memudahkan pembacaan laporan panjang.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TUGAS 3 ══ -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-med">3</div>
+          <div>
+            <div class="task-tags">
+              <span class="tag t-default">Grouping Ganda</span>
+              <span class="tag t-default">Sorting</span>
+              <span class="tag t-med">&#x25CF; Menengah</span>
+            </div>
+            <div class="task-title">Laporan Penjualan Dikelompokkan per Kategori Barang</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Buat laporan kedua yang mengelompokkan transaksi berdasarkan <strong>kategori barang</strong> (Elektronik, Aksesoris, Buku), lalu di dalam setiap kategori diurutkan berdasarkan nama barang dan total penjualan tertinggi.</p>
+
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Buat report baru via <strong>Create &rarr; Report Wizard</strong>, gunakan <code>qry_TransaksiLengkap</code>. Pilih field: <code>kategori</code>, <code>nama_barang</code>, <code>nama_customer</code>, <code>tgl_transaksi</code>, <code>jumlah</code>, <code>total_harga</code>.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text">Di <em>Grouping Levels</em>, tambahkan <strong>dua grup</strong>: pertama <code>kategori</code>, kedua <code>nama_barang</code>. Urutan: <code>kategori</code> &rarr; <code>nama_barang</code>.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Di <em>Sort Order</em>, pilih <code>tgl_transaksi</code> Ascending. Klik <strong>Summary Options</strong> &rarr; centang Sum untuk <code>total_harga</code> &rarr; pilih <em>"Detail and Summary"</em> &rarr; OK.</div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-text">Pilih layout <strong>Outline</strong>, orientasi <strong>Landscape</strong>. Beri judul: <em>"Laporan Penjualan per Kategori"</em>. Simpan sebagai <code>rpt_PenjualanPerKategori</code>.</div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-text">Buka <strong>Design View</strong>. Di <em>Group, Sort, and Total</em> panel (klik <strong>Design &rarr; Group &amp; Sort</strong>): pastikan <code>kategori</code> adalah grup pertama, <code>nama_barang</code> kedua. Aktifkan <em>with a footer section</em> untuk keduanya.</div></div>
+            <div class="step"><div class="step-num">6</div><div class="step-text">Di <strong>kategori Footer</strong>: tambahkan Text Box dengan Control Source <code>=Sum([total_harga])</code> dan label <em>"Total Kategori:"</em>. Format Currency.</div></div>
+            <div class="step"><div class="step-num">7</div><div class="step-text">Di <strong>nama_barang Footer</strong>: tambahkan Text Box <code>=Sum([total_harga])</code> dengan label <em>"Total Barang:"</em> dan Text Box <code>=Count([id_transaksi])</code> dengan label <em>"Jml Transaksi:"</em>.</div></div>
+          </div>
+
+          <div class="result-box" style="margin-top:1.25rem">
+            <div class="result-head">&#x1F4F8; Tampilan yang Diharapkan</div>
+            <div class="result-body" style="padding:.75rem">
+              <div class="report-mock">
+                <div class="rm-page-head">
+                  <span class="rm-title">&#x1F4CA; Laporan Penjualan per Kategori</span>
+                  <span class="rm-date">Landscape</span>
+                </div>
+                <div class="rm-body">
+                  <div class="rm-group-head" style="background:#e8f4f8;border-color:var(--teal);color:var(--teal)">&#x1F4BB; ELEKTRONIK</div>
+                  <div style="font-size:11px;color:var(--brown);font-weight:700;padding:.2rem .5rem .1rem;background:#fff8ee;border-left:2px solid var(--brown-border)">Keyboard Mekanikal</div>
+                  <table class="rm-tbl">
+                    <thead><tr><th>Customer</th><th>Tanggal</th><th>Jumlah</th><th>Total</th></tr></thead>
+                    <tbody>
+                      <tr><td>Budi Santoso</td><td>10/01/2024</td><td class="num-right">1</td><td class="num-right">Rp750.000</td></tr>
+                      <tr style="background:#f5f5f5"><td colspan="2" style="font-size:10.5px;color:var(--text3)">Jml Transaksi: 1</td><td colspan="2" class="subtotal">Total Barang: Rp750.000</td></tr>
+                    </tbody>
+                  </table>
+                  <div style="font-size:11px;color:var(--brown);font-weight:700;padding:.2rem .5rem .1rem;background:#fff8ee;border-left:2px solid var(--brown-border)">Laptop ASUS 14"</div>
+                  <table class="rm-tbl">
+                    <tbody>
+                      <tr><td>Andi Setiawan</td><td>05/01/2024</td><td class="num-right">1</td><td class="num-right">Rp8.500.000</td></tr>
+                      <tr><td>Eko Nugroho</td><td>10/02/2024</td><td class="num-right">1</td><td class="num-right">Rp8.500.000</td></tr>
+                      <tr style="background:#f5f5f5"><td colspan="2" style="font-size:10.5px;color:var(--text3)">Jml Transaksi: 2</td><td colspan="2" class="subtotal">Total Barang: Rp17.000.000</td></tr>
+                    </tbody>
+                  </table>
+                  <div style="text-align:right;padding:.35rem .6rem;background:#e8f4f8;font-size:11px;font-weight:800;color:var(--teal)">Total Kategori ELEKTRONIK: Rp&nbsp;&#x2026;</div>
+                </div>
+                <div class="rm-footer">
+                  <span class="rm-gt-label">Grand Total:</span>
+                  <span class="rm-gt-val">Rp&nbsp;&#x2026;</span>
+                </div>
+                <div class="rm-page-foot"><span>rpt_PenjualanPerKategori</span><span>Hal. 1/N</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TUGAS 4 ══ -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-med">4</div>
+          <div>
+            <div class="task-tags">
+              <span class="tag t-default">Agregasi</span>
+              <span class="tag t-default">Chart / Bar</span>
+              <span class="tag t-med">&#x25CF; Menengah</span>
+            </div>
+            <div class="task-title">Laporan Rekap Customer Terbaik</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Buat laporan ringkasan yang menampilkan <strong>peringkat customer</strong> berdasarkan total belanja, dilengkapi persentase kontribusi dan visual bar sederhana.</p>
+
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Buat report baru via <strong>Create &rarr; Report Wizard</strong>, gunakan <code>qry_RekapCustomer</code>. Pilih semua field: <code>nama_customer</code>, <code>kota</code>, <code>jml_transaksi</code>, <code>total_belanja</code>.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text">Tidak perlu grouping di tahap ini. Untuk Sort: pilih <code>total_belanja</code> <strong>Descending</strong> (terbesar di atas). Klik <strong>Summary Options &rarr; Sum</strong> untuk <code>total_belanja</code> dan <code>jml_transaksi</code>.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Pilih layout <strong>Tabular</strong>, orientasi <strong>Portrait</strong>. Judul: <em>"Rekap Belanja Customer"</em>. Simpan sebagai <code>rpt_RekapCustomer</code>.</div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-text">Buka <strong>Design View</strong>. Di bagian <strong>Detail</strong>, tambah Text Box baru dengan nama <code>txt_Ranking</code>. Atur Control Source: <code>=1</code> kemudian di Property Sheet &rarr; tab Data &rarr; <strong>Running Sum: Over All</strong> untuk nomor urut otomatis.</div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-text">Tambah kolom persentase: Text Box dengan Control Source: <code>=[total_belanja]/DSum("total_belanja","qry_RekapCustomer")</code>. Format: <strong>Percent</strong> dengan 1 decimal.</div></div>
+            <div class="step"><div class="step-num">6</div><div class="step-text">Di <strong>Report Footer</strong>: tambah Text Box <code>=Sum([total_belanja])</code> berlabel <em>"Total Keseluruhan:"</em> dan <code>=Sum([jml_transaksi])</code> berlabel <em>"Total Transaksi:"</em>.</div></div>
+          </div>
+
+          <div class="result-box" style="margin-top:1.25rem">
+            <div class="result-head">&#x1F4F8; Tampilan yang Diharapkan</div>
+            <div class="result-body" style="padding:.75rem">
+              <div class="report-mock">
+                <div class="rm-page-head">
+                  <span class="rm-title">&#x1F3C6; Rekap Belanja Customer</span>
+                  <span class="rm-date">Diurut: Total Belanja Terbesar</span>
+                </div>
+                <div class="rm-body">
+                  <table class="rm-tbl">
+                    <thead><tr><th>#</th><th>Nama Customer</th><th>Kota</th><th>Jml Trx</th><th>Total Belanja</th><th>%</th></tr></thead>
+                    <tbody>
+                      <tr><td class="num-right">1</td><td>Andi Setiawan</td><td>Yogyakarta</td><td class="num-right">3</td><td class="num-right">Rp9.050.000</td><td class="num-right">45,2%</td></tr>
+                      <tr style="background:#f9f9f9"><td class="num-right">2</td><td>Eko Nugroho</td><td>Yogyakarta</td><td class="num-right">1</td><td class="num-right">Rp8.500.000</td><td class="num-right">42,5%</td></tr>
+                      <tr><td class="num-right">3</td><td>Budi Santoso</td><td>Jakarta</td><td class="num-right">2</td><td class="num-right">Rp1.100.000</td><td class="num-right">5,5%</td></tr>
+                      <tr style="background:#f9f9f9"><td class="num-right">4</td><td>Citra Lestari</td><td>Bandung</td><td class="num-right">2</td><td class="num-right">Rp800.000</td><td class="num-right">4,0%</td></tr>
+                      <tr><td class="num-right">5</td><td>Dewi Rahmawati</td><td>Surabaya</td><td class="num-right">2</td><td class="num-right">Rp340.000</td><td class="num-right">1,7%</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="rm-footer" style="flex-direction:column;align-items:flex-end;gap:4px">
+                  <div style="display:flex;gap:12px;align-items:center"><span class="rm-gt-label">Total Transaksi:</span><span class="rm-gt-val">10</span></div>
+                  <div style="display:flex;gap:12px;align-items:center"><span class="rm-gt-label">Total Keseluruhan:</span><span class="rm-gt-val">Rp20.012.000</span></div>
+                </div>
+                <div class="rm-page-foot"><span>rpt_RekapCustomer</span><span>Hal. 1/1</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout c-violet" style="margin-top:1rem">
+            <span class="c-icon">&#x1F4A1;</span>
+            <p><strong>Tentang DSum:</strong> Fungsi <code>DSum("total_belanja","qry_RekapCustomer")</code> menghitung total seluruh baris di query, digunakan sebagai pembagi untuk menghitung persentase tiap baris. Ini adalah <em>Domain Aggregate Function</em> khas Access.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TUGAS 5 ══ -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-med">5</div>
+          <div>
+            <div class="task-tags">
+              <span class="tag t-default">Parameter Query</span>
+              <span class="tag t-default">Filter Tanggal</span>
+              <span class="tag t-med">&#x25CF; Menengah</span>
+            </div>
+            <div class="task-title">Laporan Transaksi dengan Filter Rentang Tanggal</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Buat laporan yang <strong>menampilkan dialog</strong> saat dibuka, meminta pengguna memasukkan rentang tanggal. Hanya transaksi dalam rentang tersebut yang akan ditampilkan.</p>
+
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Buka <code>qry_TransaksiLengkap</code> dalam <strong>Design View</strong>. Di kolom <code>tgl_transaksi</code>, baris <strong>Criteria</strong>, ketik:<br><code>Between [Masukkan Tanggal Awal (dd/mm/yyyy):] And [Masukkan Tanggal Akhir (dd/mm/yyyy):]</code></div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Jangan simpan</strong> perubahan pada query ini (karena akan merusak report lain). Simpan dengan nama baru: <strong>Save As</strong> &rarr; <code>qry_TransaksiByDate</code>.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Buat report baru via <strong>Create &rarr; Report Wizard</strong> dari <code>qry_TransaksiByDate</code>. Pilih field: <code>tgl_transaksi</code>, <code>nama_customer</code>, <code>nama_barang</code>, <code>jumlah</code>, <code>total_harga</code>.</div></div>
+            <div class="step"><div class="step-num">4</div><div class="step-text">Group by: <code>tgl_transaksi</code>. Sort: <code>nama_customer</code> Ascending. Summary Options: Sum <code>total_harga</code>. Layout: Stepped, Portrait.</div></div>
+            <div class="step"><div class="step-num">5</div><div class="step-text">Simpan sebagai <code>rpt_TransaksiByDate</code>. Saat report dibuka di Print Preview, dialog tanggal akan muncul otomatis.</div></div>
+            <div class="step"><div class="step-num">6</div><div class="step-text">Di <strong>Report Header</strong>, tambahkan Text Box dengan Control Source: <code>="Laporan Transaksi: " &amp; Format([Masukkan Tanggal Awal (dd/mm/yyyy):],"dd/mm/yyyy") &amp; " s/d " &amp; Format([Masukkan Tanggal Akhir (dd/mm/yyyy):],"dd/mm/yyyy")</code> agar rentang tanggal tampil di judul laporan.</div></div>
+          </div>
+
+          <div class="callout c-ok" style="margin-top:1rem">
+            <span class="c-icon">&#x2705;</span>
+            <p><strong>Uji Coba:</strong> Buka report. Isi tanggal awal <code>01/01/2024</code> dan tanggal akhir <code>31/01/2024</code>. Report harus menampilkan hanya 6 transaksi yang terjadi di bulan Januari 2024.</p>
+          </div>
+
+          <div class="callout c-warn" style="margin-top:.5rem">
+            <span class="c-icon">&#x26A0;&#xFE0F;</span>
+            <p><strong>Teks dalam kurung siku <code>[ ]</code> adalah nama parameter</strong> &mdash; harus diketik persis sama di semua tempat (criteria query dan Control Source di Report Header). Perbedaan satu huruf akan menyebabkan dialog muncul dua kali.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ TUGAS 6 ══ -->
+      <div class="task-card">
+        <div class="task-head">
+          <div class="task-num tn-hard">6</div>
+          <div>
+            <div class="task-tags">
+              <span class="tag t-default">VBA</span>
+              <span class="tag t-default">DoCmd</span>
+              <span class="tag t-violet">Lanjutan</span>
+              <span class="tag t-hard">&#x25CF; Sulit</span>
+            </div>
+            <div class="task-title">Tombol Cetak &amp; Ekspor Report dari Form</div>
+          </div>
+        </div>
+        <div class="task-body">
+          <p class="task-desc">Tambahkan <strong>Command Button</strong> di form utama (<code>frm_TransaksiCustomer</code> dari Modul 4) yang memungkinkan pengguna mencetak atau mengekspor laporan ke <strong>PDF</strong> langsung dari form, tanpa harus membuka jendela report secara manual.</p>
+
+          <div class="steps">
+            <div class="step"><div class="step-num">1</div><div class="step-text">Buka <code>frm_TransaksiCustomer</code> dalam <strong>Design View</strong>. Tambah area baru atau gunakan Form Footer yang sudah ada.</div></div>
+            <div class="step"><div class="step-num">2</div><div class="step-text">Tambahkan <strong>3 Command Button</strong> berdampingan: <code>btn_PrintTransaksi</code>, <code>btn_PrintRekap</code>, <code>btn_ExportPDF</code>. Beri label yang jelas di setiap tombol.</div></div>
+            <div class="step"><div class="step-num">3</div><div class="step-text">Untuk <code>btn_PrintTransaksi</code>, buka Property Sheet &rarr; Event &rarr; On Click &rarr; Code Builder. Isi kode VBA:</div></div>
+          </div>
+
+          <div class="vba-block">
+            <div class="vba-head"><span class="vba-lbl">VBA &mdash; btn_PrintTransaksi On Click</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+            <div class="vba-code"><span class="vkw">Private Sub</span> btn_PrintTransaksi_Click()
+    <span class="vcmt">' Buka laporan transaksi per customer dalam Print Preview</span>
+    DoCmd.OpenReport <span class="vstr">"rpt_TransaksiPerCustomer"</span>, acViewPreview
+<span class="vkw">End Sub</span></div>
+          </div>
+
+          <div class="steps" style="margin-top:.875rem">
+            <div class="step"><div class="step-num">4</div><div class="step-text">Untuk <code>btn_PrintRekap</code>, isi event On Click:</div></div>
+          </div>
+
+          <div class="vba-block">
+            <div class="vba-head"><span class="vba-lbl">VBA &mdash; btn_PrintRekap On Click</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+            <div class="vba-code"><span class="vkw">Private Sub</span> btn_PrintRekap_Click()
+    <span class="vcmt">' Cetak langsung ke printer default tanpa preview</span>
+    DoCmd.OpenReport <span class="vstr">"rpt_RekapCustomer"</span>, acViewNormal
+<span class="vkw">End Sub</span></div>
+          </div>
+
+          <div class="steps" style="margin-top:.875rem">
+            <div class="step"><div class="step-num">5</div><div class="step-text">Untuk <code>btn_ExportPDF</code>, isi event On Click dengan kode ekspor ke PDF:</div></div>
+          </div>
+
+          <div class="vba-block">
+            <div class="vba-head"><span class="vba-lbl">VBA &mdash; btn_ExportPDF On Click</span><button class="copy-btn" onclick="copyCode(this)">Salin</button></div>
+            <div class="vba-code"><span class="vkw">Private Sub</span> btn_ExportPDF_Click()
+    <span class="vcmt">' Ekspor rekap customer ke PDF di folder yang sama dengan database</span>
+    <span class="vkw">Dim</span> strPath <span class="vkw">As String</span>
+    strPath = CurrentProject.Path & <span class="vstr">"\Rekap_Customer_"</span> _
+              & Format(Now(), <span class="vstr">"yyyymmdd_HHmm"</span>) & <span class="vstr">".pdf"</span>
+
+    DoCmd.OutputTo acOutputReport, _
+                   <span class="vstr">"rpt_RekapCustomer"</span>, _
+                   acFormatPDF, _
+                   strPath, _
+                   <span class="vnum">True</span>  <span class="vcmt">' True = buka file PDF setelah ekspor</span>
+
+    MsgBox <span class="vstr">"Laporan berhasil diekspor ke:"</span> & vbCrLf & strPath, _
+           vbInformation, <span class="vstr">"Ekspor Selesai"</span>
+<span class="vkw">End Sub</span></div>
+          </div>
+
+          <div class="steps" style="margin-top:.875rem">
+            <div class="step"><div class="step-num">6</div><div class="step-text">Simpan form dan uji ketiga tombol. Tombol ekspor PDF akan menyimpan file dengan nama otomatis berisi timestamp, sehingga tidak menimpa ekspor sebelumnya.</div></div>
+          </div>
+
+          <div class="callout c-violet" style="margin-top:1rem">
+            <span class="c-icon">&#x1F4A1;</span>
+            <p><strong>Tentang <code>acViewPreview</code> vs <code>acViewNormal</code>:</strong> <code>acViewPreview</code> membuka Print Preview (pengguna bisa memeriksa sebelum cetak), sedangkan <code>acViewNormal</code> langsung mengirim ke printer default. Gunakan Preview untuk laporan penting agar pengguna bisa memverifikasi terlebih dahulu.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end task-list -->
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CHECKLIST -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon ic-green">&#x2705;</div>
+      <div>
+        <div class="sec-title">Checklist Penilaian</div>
+        <div class="sec-sub">Pastikan semua item terpenuhi sebelum mengumpulkan file .accdb</div>
+      </div>
+    </div>
+
+    <div class="callout c-info">
+      <span class="c-icon">&#x1F4CC;</span>
+      <p>Kumpulkan satu file <strong>.accdb</strong> yang berisi: 2 query, minimal 3 report, dan tombol cetak/ekspor di form utama. Uji semua report dalam Print Preview sebelum dikumpulkan.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px;margin-top:1.25rem">
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:.75rem">&#x1F7E2; Persiapan &amp; Query</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><span>Query <code>qry_TransaksiLengkap</code> menghasilkan data yang benar dengan kolom <code>total_harga</code></span></div>
+          <div class="check-item"><div class="check-box"></div><span>Query <code>qry_RekapCustomer</code> menampilkan agregasi per customer diurutkan dari terbesar</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Query <code>qry_TransaksiByDate</code> menampilkan dialog parameter saat dibuka</span></div>
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--brown);margin-bottom:.75rem">&#x1F7E1; Report Dasar &amp; Format</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><span><code>rpt_TransaksiPerCustomer</code>: grouping per customer, subtotal, grand total</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Semua field angka berformat Currency, rata kanan</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Tanggal cetak otomatis (<code>=Now()</code>) tampil di Report Header</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Nomor halaman tampil di Page Footer</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Zebra stripe (baris bergantian warna) pada section Detail</span></div>
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem">&#x1F535; Report Lanjutan</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><span><code>rpt_PenjualanPerKategori</code>: grouping ganda (kategori &rarr; nama barang), subtotal per level</span></div>
+          <div class="check-item"><div class="check-box"></div><span><code>rpt_RekapCustomer</code>: peringkat otomatis, kolom persentase, total di Report Footer</span></div>
+          <div class="check-item"><div class="check-box"></div><span><code>rpt_TransaksiByDate</code>: dialog tanggal muncul saat dibuka, rentang tanggal tampil di judul</span></div>
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--rose);margin-bottom:.75rem">&#x1F534; Integrasi Form &amp; VBA</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div><span>Tombol "Lihat Laporan Transaksi" membuka <code>rpt_TransaksiPerCustomer</code> di Print Preview</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Tombol "Cetak Rekap Customer" mencetak <code>rpt_RekapCustomer</code> langsung</span></div>
+          <div class="check-item"><div class="check-box"></div><span>Tombol "Ekspor PDF" menyimpan file PDF dengan nama berisi timestamp</span></div>
+          <div class="check-item"><div class="check-box"></div><span>MsgBox konfirmasi muncul setelah ekspor PDF berhasil</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PETA TUGAS -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-icon ic-blue">&#x1F4CC;</div>
+      <div>
+        <div class="sec-title">Peta Tugas &amp; Kompetensi</div>
+        <div class="sec-sub">Ringkasan fitur Access yang dilatih per tugas</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="map-tbl">
+        <thead><tr><th>No</th><th>Nama Tugas</th><th>Fitur Access</th><th>Tingkat</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>Buat Query Sumber Data</td><td>Query Design, SQL View, JOIN, GROUP BY</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>1</td><td>Laporan per Customer</td><td>Report Wizard, Grouping, Summary Options, Grand Total</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>2</td><td>Memperindah Report</td><td>Design View, Format, Color, Page Footer, =Now()</td><td><span class="lvl-easy">Mudah</span></td></tr>
+          <tr><td>3</td><td>Laporan per Kategori</td><td>Grouping Ganda, Group Footer, Sum per Level</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>4</td><td>Rekap Customer Terbaik</td><td>Running Sum, DSum(), Format Percent</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>5</td><td>Filter Rentang Tanggal</td><td>Parameter Query, Between...And, Control Source dinamis</td><td><span class="lvl-med">Menengah</span></td></tr>
+          <tr><td>6</td><td>Cetak &amp; Ekspor PDF via VBA</td><td>DoCmd.OpenReport, DoCmd.OutputTo, acFormatPDF, MsgBox</td><td><span class="lvl-hard">Sulit</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Lembar Tugas Laporan (Reports) &mdash; Sistem Penjualan &nbsp;&middot;&nbsp; Microsoft Access &nbsp;&middot;&nbsp; Modul 5 Administrasi Basis Data
+</footer>
+
+<script>
+function copyCode(btn) {
+  const block = btn.closest('.vba-block') || btn.closest('.result-box');
+  const code = block.querySelector('.vba-code') || block.querySelector('pre');
+  if (!code) return;
+  navigator.clipboard.writeText(code.innerText).then(() => {
+    btn.textContent = '\u2713 Disalin';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Salin'; btn.classList.remove('ok'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>
