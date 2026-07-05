@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul 5: Kolaborasi & Track Changes — Word & Google Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #EDEEF4;
+    --surface:  #FFFFFF;
+    --border:   #D8DAE8;
+    --text:     #151828;
+    --muted:    #5A5E7A;
+    --navy:     #1A2035;
+    --red:      #E63946;    /* deletion / reject */
+    --red-lt:   #FDEAEB;
+    --green:    #2DC653;    /* insertion / accept */
+    --green-lt: #E5F9EB;
+    --blue:     #4361EE;    /* comment */
+    --blue-lt:  #EBF0FF;
+    --amber:    #FF9F1C;    /* sticky note / suggestion */
+    --amber-lt: #FFF3E0;
+    --word:     #2B579A;
+    --word-lt:  #EEF3FB;
+    --gdocs:    #1A73E8;
+    --gdocs-lt: #E8F0FE;
+    --r:        12px;
+    --r-sm:     7px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--navy);
+    padding: 9px 28px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase;
+    color: rgba(255,255,255,.38);
+  }
+  .topbar a { color: rgba(255,255,255,.38); text-decoration: none; transition: color .2s; }
+  .topbar a:hover { color: #fff; }
+  .topbar .sep { color: rgba(255,255,255,.15); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    padding: 52px 28px 0;
+    position: relative; overflow: hidden;
+  }
+  /* Background: diagonal noise lines — evokes editing marks on paper */
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent 0px, transparent 18px,
+      rgba(255,255,255,.018) 18px, rgba(255,255,255,.018) 19px
+    );
+    pointer-events: none;
+  }
+  /* Red accent glow — like a redlining mark */
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(230,57,70,.18) 0%, transparent 70%);
+    top: -60px; right: 80px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 980px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 340px;
+    gap: 44px; align-items: flex-end;
+    position: relative; z-index: 1;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(67,97,238,.2);
+    border: 1px solid rgba(67,97,238,.4);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase;
+    color: #A5B4FF; margin-bottom: 18px;
+  }
+  .hero-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(28px, 5vw, 46px);
+    color: #fff; line-height: 1.1; margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .hero-title em { font-style: normal; color: var(--red); }
+  .hero-title span { color: var(--green); }
+  .hero-desc {
+    font-size: 14.5px; color: rgba(255,255,255,.55);
+    max-width: 460px; line-height: 1.65; margin-bottom: 26px;
+  }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+  .hp { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; font-size: 13px; font-weight: 700; }
+  .hp-word  { background: var(--word-lt); color: var(--word); }
+  .hp-gdocs { background: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* ── SIGNATURE: Live track-changes document mini ── */
+  .tc-doc-wrap {
+    padding-bottom: 28px; align-self: flex-end;
+  }
+  .tc-doc {
+    background: #fff;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 20px 56px rgba(0,0,0,.38), 0 4px 16px rgba(0,0,0,.22);
+    overflow: visible;
+    position: relative;
+  }
+  /* Window chrome */
+  .tc-chrome {
+    background: #F0F0F0; border-radius: 10px 10px 0 0;
+    padding: 8px 12px;
+    display: flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid #E0E0E0;
+  }
+  .tc-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .tc-tab {
+    margin-left: 8px; background: #fff;
+    border-radius: 4px 4px 0 0; padding: 3px 12px;
+    font-size: 9px; font-weight: 700; color: #666;
+    border: 1px solid #E0E0E0; border-bottom: none;
+  }
+  /* Document body */
+  .tc-body {
+    padding: 16px 18px 14px;
+    font-size: 11px; line-height: 1.7;
+    color: #333; font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .tc-line { margin-bottom: 5px; }
+  /* Track changes mark-up */
+  .tc-del {
+    text-decoration: line-through;
+    color: var(--red); background: var(--red-lt);
+    padding: 0 2px; border-radius: 2px;
+  }
+  .tc-ins {
+    color: var(--green);
+    background: var(--green-lt);
+    border-bottom: 1.5px solid var(--green);
+    padding: 0 2px; border-radius: 2px;
+  }
+  /* Comment bubble */
+  .tc-comment-bubble {
+    position: absolute;
+    right: -120px; top: 52px;
+    background: var(--amber-lt);
+    border: 1.5px solid var(--amber);
+    border-radius: 8px;
+    padding: 8px 10px;
+    width: 110px;
+    font-size: 9px;
+    line-height: 1.5;
+    color: #6B4700;
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  }
+  .tc-comment-bubble::before {
+    content: '';
+    position: absolute;
+    left: -8px; top: 12px;
+    border: 5px solid transparent;
+    border-right-color: var(--amber);
+  }
+  .tc-comment-author {
+    font-weight: 800; color: var(--amber);
+    font-size: 8.5px; margin-bottom: 3px;
+    display: block;
+  }
+  /* Accept/reject buttons */
+  .tc-footer {
+    background: #F8F9FF;
+    border-top: 1px solid var(--border);
+    padding: 8px 14px;
+    display: flex; gap: 6px; justify-content: flex-end;
+  }
+  .tc-btn {
+    font-size: 9px; font-weight: 800; padding: 4px 10px;
+    border-radius: 100px; border: none; cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .tc-btn-accept { background: var(--green-lt); color: var(--green); }
+  .tc-btn-reject { background: var(--red-lt); color: var(--red); }
+
+  /* Legend pills */
+  .tc-legend {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+  }
+  .tcl {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,.5);
+  }
+  .tcl-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* ── NAV TABS ── */
+  .nav-wrap {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+  }
+  .nav-tabs {
+    display: flex; gap: 2px; padding: 0 24px;
+    max-width: 980px; margin: 0 auto;
+  }
+  .nav-tab {
+    padding: 13px 16px; font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; white-space: nowrap;
+    border: none; background: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: all .2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+  .tab-section { display: none; padding: 36px 0 52px; }
+  .tab-section.active { display: block; }
+  .sec-hd { margin-bottom: 26px; }
+  .sec-hd h2 { font-size: 21px; font-weight: 800; margin-bottom: 5px; }
+  .sec-hd p  { color: var(--muted); font-size: 14px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 14px; overflow: hidden;
+  }
+  .card-hd {
+    display: flex; align-items: center; gap: 14px;
+    padding: 17px 22px; cursor: pointer; user-select: none;
+  }
+  .card-ico {
+    width: 40px; height: 40px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; flex-shrink: 0;
+  }
+  .card-hd h3 { font-size: 15px; font-weight: 700; flex: 1; }
+  .chevron { color: var(--muted); font-size: 11px; transition: transform .25s; }
+  .card.open .chevron { transform: rotate(180deg); }
+  .card-bd { display: none; border-top: 1px solid var(--border); }
+  .card.open .card-bd { display: block; }
+
+  /* ── COMPARE GRID ── */
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; }
+  .cmp-col { padding: 22px; min-width: 0; overflow: hidden; }
+  .cmp-col:first-child { border-right: 1px solid var(--border); }
+  .app-lbl {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 100px;
+    font-size: 12px; font-weight: 700; margin-bottom: 14px;
+  }
+  .lbl-w { background: var(--word-lt); color: var(--word); }
+  .lbl-g { background: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* ── STEPS ── */
+  .steps { list-style: none; }
+  .steps li {
+    display: flex; gap: 10px; margin-bottom: 9px;
+    font-size: 14px; line-height: 1.55; align-items: flex-start;
+  }
+  .sn {
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .sn-w { background: var(--word-lt); color: var(--word); }
+  .sn-g { background: var(--gdocs-lt); color: var(--gdocs); }
+
+  /* ── MENU PATH ── */
+  .menu-path {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 3px;
+    background: #F2F4FA; border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 6px 12px;
+    font-size: 12px; font-family: 'JetBrains Mono', monospace;
+    margin: 8px 0; line-height: 1.5; max-width: 100%;
+  }
+  .mp-sep { color: var(--muted); }
+
+  /* ── NOTES ── */
+  .note {
+    border-radius: var(--r-sm); padding: 11px 14px;
+    font-size: 13px; display: flex; flex-wrap: wrap;
+    gap: 4px 9px; align-items: flex-start;
+    margin-top: 12px; line-height: 1.65;
+  }
+  .n-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .n-body { flex: 1; min-width: 180px; }
+  .n-tip  { background: var(--blue-lt); border-left: 3px solid var(--blue); color: #1e3a8a; }
+  .n-warn { background: var(--amber-lt); border-left: 3px solid var(--amber); color: #78350F; }
+  .n-diff { background: var(--red-lt); border-left: 3px solid var(--red); color: #7F1D1D; }
+  .n-ok   { background: var(--green-lt); border-left: 3px solid var(--green); color: #14532D; }
+
+  kbd {
+    display: inline-block;
+    background: #ECEEF5; border: 1px solid #CDD1E0;
+    border-radius: 4px; padding: 1px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--text); white-space: nowrap;
+  }
+
+  /* ── VISUAL: track changes document demo ── */
+  .tc-demo {
+    background: #FAFBFF;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 18px 20px;
+    margin: 12px 0;
+    font-size: 13.5px;
+    line-height: 1.8;
+    position: relative;
+    overflow: visible;
+  }
+  .tc-demo-label {
+    position: absolute; top: -10px; left: 14px;
+    font-size: 10px; font-weight: 800; padding: 2px 10px;
+    border-radius: 100px;
+  }
+  .tcd-del {
+    text-decoration: line-through;
+    color: var(--red); background: var(--red-lt);
+    padding: 0 3px; border-radius: 3px;
+  }
+  .tcd-ins {
+    color: var(--green); background: var(--green-lt);
+    border-bottom: 1.5px solid var(--green);
+    padding: 0 3px; border-radius: 3px;
+  }
+  .tcd-comment {
+    background: var(--amber-lt);
+    border: 1.5px solid var(--amber);
+    border-radius: var(--r-sm);
+    padding: 8px 12px;
+    font-size: 12.5px;
+    color: #6B4700;
+    margin-top: 10px;
+    display: flex; gap: 8px;
+  }
+  .tcd-comment-ico { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .tcd-author { font-weight: 800; color: var(--amber); }
+
+  /* ── SHARING VISUAL ── */
+  .share-visual {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin: 12px 0;
+  }
+  .share-box {
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-sm);
+    overflow: hidden; flex: 1; min-width: 140px;
+  }
+  .share-box-head {
+    padding: 7px 12px; font-size: 11px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .sh-view    { background: var(--green-lt); color: var(--green); }
+  .sh-comment { background: var(--blue-lt); color: var(--blue); }
+  .sh-edit    { background: var(--red-lt); color: var(--red); }
+  .share-box-body {
+    padding: 10px 12px; font-size: 12.5px;
+    line-height: 1.5; color: var(--muted);
+    background: #fff;
+  }
+  .share-box-body strong { color: var(--text); }
+
+  /* ── QUICK REF TABLE ── */
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .ref-table th {
+    background: var(--navy); color: #fff;
+    padding: 10px 14px; text-align: left;
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase;
+  }
+  .ref-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    vertical-align: top; line-height: 1.5;
+  }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table tr:hover td { background: #F5F7FF; }
+
+  /* Colour tags for accept/reject */
+  .tag-accept { display:inline-block; background:var(--green-lt); color:var(--green); font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:100px; }
+  .tag-reject { display:inline-block; background:var(--red-lt); color:var(--red); font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:100px; }
+  .tag-comment { display:inline-block; background:var(--blue-lt); color:var(--blue); font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:100px; }
+
+  /* Tips grid */
+  .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+  .tip-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 18px;
+  }
+  .tip-icon { font-size: 26px; margin-bottom: 10px; }
+  .tip-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+  .tip-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+  @media (max-width: 640px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .tc-doc-wrap { display: none; }
+    .cmp { grid-template-columns: 1fr; }
+    .cmp-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+    .hero { padding: 36px 20px 36px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html">🏠 Beranda</a>
+  <span class="sep">/</span>
+  Modul 5 — Kolaborasi &amp; Track Changes
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">🤝 Modul 5 dari 5</div>
+      <h1 class="hero-title">Kolaborasi &amp;<br><em>Track</em> <span>Changes</span></h1>
+      <p class="hero-desc">Bagikan dokumen, berikan komentar, lacak setiap perubahan, dan terima atau tolak revisi — cara kerja tim modern dalam satu dokumen.</p>
+      <div class="hero-pills">
+        <span class="hp hp-word">⬛ Microsoft Word</span>
+        <span class="hp hp-gdocs">🔵 Google Docs</span>
+      </div>
+    </div>
+
+    <!-- SIGNATURE: track-changes mini document -->
+    <div class="tc-doc-wrap">
+      <div class="tc-doc">
+        <div class="tc-chrome">
+          <div class="tc-dot" style="background:#FF5F57"></div>
+          <div class="tc-dot" style="background:#FFBD2E"></div>
+          <div class="tc-dot" style="background:#28C840"></div>
+          <div class="tc-tab">Laporan_PKL.docx</div>
+        </div>
+        <div class="tc-body" style="position:relative;">
+          <!-- Comment bubble -->
+          <div class="tc-comment-bubble">
+            <span class="tc-comment-author">💬 Dosen Pembimbing</span>
+            Kalimat ini kurang spesifik, harap perjelas dengan data.
+          </div>
+          <div class="tc-line">
+            PT. Solusi Digital bergerak di bidang
+            <span class="tc-del">teknologi</span>
+            <span class="tc-ins">pengembangan software dan konsultasi IT</span>.
+          </div>
+          <div class="tc-line">
+            Perusahaan ini berdiri sejak
+            <span class="tc-del">beberapa tahun lalu</span>
+            <span class="tc-ins">tahun 2018</span> di Surabaya.
+          </div>
+          <div class="tc-line" style="background:#FFF3E0; border-left:2px solid var(--amber); padding:4px 8px; border-radius:0 4px 4px 0; margin: 4px 0;">
+            Jumlah karyawan saat ini mencapai 150 orang.
+          </div>
+          <div class="tc-line" style="margin-top:6px; color:#999; font-style:italic; font-size:9.5px;">
+            ✏️ Budi · 2 perubahan · 1 komentar
+          </div>
+        </div>
+        <div class="tc-footer">
+          <button class="tc-btn tc-btn-accept">✓ Terima</button>
+          <button class="tc-btn tc-btn-reject">✗ Tolak</button>
+        </div>
+      </div>
+      <div class="tc-legend">
+        <div class="tcl"><div class="tcl-dot" style="background:var(--red)"></div>Dihapus</div>
+        <div class="tcl"><div class="tcl-dot" style="background:var(--green)"></div>Ditambah</div>
+        <div class="tcl"><div class="tcl-dot" style="background:var(--amber)"></div>Komentar</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('share')">🔗 Berbagi Dokumen</button>
+    <button class="nav-tab" onclick="showTab('komentar')">💬 Komentar</button>
+    <button class="nav-tab" onclick="showTab('track')">📝 Track Changes</button>
+    <button class="nav-tab" onclick="showTab('revisi')">✅ Terima &amp; Tolak Revisi</button>
+    <button class="nav-tab" onclick="showTab('realtime')">⚡ Kolaborasi Real-time</button>
+    <button class="nav-tab" onclick="showTab('quickref')">📋 Referensi Cepat</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════
+     TAB 1 — BERBAGI DOKUMEN
+══════════════════════════════════ -->
+<div class="tab-section active" id="tab-share">
+  <div class="sec-hd">
+    <h2>🔗 Berbagi Dokumen</h2>
+    <p>Mengatur siapa yang boleh mengakses dan apa yang boleh mereka lakukan dengan dokumen.</p>
+  </div>
+
+  <!-- Level akses -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--blue-lt)">👥</div>
+      <h3>Tiga Tingkat Izin Akses</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="share-visual">
+          <div class="share-box">
+            <div class="share-box-head sh-view">👁 Viewer</div>
+            <div class="share-box-body"><strong>Hanya bisa membaca.</strong> Tidak bisa mengedit atau berkomentar. Cocok untuk: dokumen final yang disebarkan.</div>
+          </div>
+          <div class="share-box">
+            <div class="share-box-head sh-comment">💬 Commenter</div>
+            <div class="share-box-body"><strong>Bisa membaca &amp; berkomentar.</strong> Tidak bisa mengubah isi teks langsung. Cocok untuk: dosen pembimbing yang mereview.</div>
+          </div>
+          <div class="share-box">
+            <div class="share-box-head sh-edit">✏️ Editor</div>
+            <div class="share-box-body"><strong>Bisa membaca, berkomentar, dan mengedit.</strong> Akses penuh ke dokumen. Cocok untuk: anggota tim yang mengerjakan bersama.</div>
+          </div>
+        </div>
+        <div class="note n-warn">
+          <span class="n-icon">⚠️</span>
+          <span class="n-body">Berikan akses <strong>Editor</strong> hanya kepada orang yang benar-benar perlu mengedit. Sekali seseorang menghapus konten penting, perlu diambil dari riwayat versi.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cara berbagi -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">🔗</div>
+      <h3>Cara Membagikan Dokumen</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Word berbagi dokumen via OneDrive (file harus disimpan di cloud terlebih dahulu):</p>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Simpan dokumen ke <strong>OneDrive</strong>: klik <strong>File → Save a Copy → OneDrive</strong>.</li>
+            <li><span class="sn sn-w">2</span>Klik tombol <strong>Share</strong> di pojok kanan atas Ribbon (ikon orang + tanda +).</li>
+            <li><span class="sn sn-w">3</span>Masukkan <strong>alamat email</strong> orang yang ingin diundang, pilih level akses (<em>Can edit</em> / <em>Can view</em>), tambahkan pesan jika perlu → klik <strong>Send</strong>.</li>
+            <li><span class="sn sn-w">4</span>Atau klik <strong>Copy Link</strong> untuk membuat tautan yang bisa dibagikan di chat/email.</li>
+          </ol>
+          <div class="menu-path">File <span class="mp-sep">→</span> Share <span class="mp-sep">→</span> Share with People</div>
+          <div class="note n-diff">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Dokumen Word yang <strong>belum disimpan di OneDrive</strong> tidak bisa dibagikan secara langsung. File harus online terlebih dahulu.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">Google Docs selalu tersimpan di cloud secara otomatis:</p>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik tombol <strong>Share</strong> (biru, pojok kanan atas).</li>
+            <li><span class="sn sn-g">2</span>Ketik <strong>nama atau alamat email</strong> penerima di kotak pencarian.</li>
+            <li><span class="sn sn-g">3</span>Pilih peran: <em>Viewer</em>, <em>Commenter</em>, atau <em>Editor</em>.</li>
+            <li><span class="sn sn-g">4</span>Opsional: tambahkan pesan, lalu klik <strong>Send</strong>.</li>
+            <li><span class="sn sn-g">5</span>Untuk berbagi via link: klik <strong>"Change to anyone with the link"</strong> → salin tautan.</li>
+          </ol>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Di Google Docs, penerima bisa langsung membuka dokumen tanpa perlu memiliki akun Google — jika link disetel ke <em>"Anyone with the link can view"</em>.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mengatur link -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--green-lt)">🔒</div>
+      <h3>Mengubah Pengaturan Link &amp; Batas Waktu Akses</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik <strong>Share → Copy Link</strong> → klik ikon pensil di sebelah link.</li>
+            <li><span class="sn sn-w">2</span>Ubah akses link: <em>Anyone</em>, <em>People in your organization</em>, atau <em>Specific people</em>.</li>
+            <li><span class="sn sn-w">3</span>Bisa mengatur <strong>tanggal kedaluwarsa</strong> link (fitur Microsoft 365).</li>
+          </ol>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik <strong>Share → General access</strong>.</li>
+            <li><span class="sn sn-g">2</span>Pilih: <em>Restricted</em> (hanya orang yang diundang) atau <em>Anyone with the link</em>.</li>
+            <li><span class="sn sn-g">3</span>Pilih level akses link: Viewer, Commenter, atau Editor.</li>
+            <li><span class="sn sn-g">4</span>Klik <strong>Copy link</strong> lalu <strong>Done</strong>.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 2 — KOMENTAR
+══════════════════════════════════ -->
+<div class="tab-section" id="tab-komentar">
+  <div class="sec-hd">
+    <h2>💬 Menambahkan &amp; Mengelola Komentar</h2>
+    <p>Memberikan catatan, pertanyaan, atau saran pada bagian tertentu tanpa mengubah isi teks langsung.</p>
+  </div>
+
+  <!-- Demo visual -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--amber-lt)">👁</div>
+      <h3>Tampilan Komentar di Dokumen</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="tc-demo" style="padding-right:40px;">
+          <div class="tc-demo-label" style="background:var(--amber); color:#fff;">CONTOH KOMENTAR</div>
+          <p style="margin-top:8px;">Kegiatan PKL dilaksanakan selama satu bulan di PT. Solusi Digital Nusantara, <mark style="background:#FFF3B0; padding:0 2px;">di Surabaya.</mark></p>
+          <div class="tcd-comment">
+            <span class="tcd-comment-ico">💬</span>
+            <div><span class="tcd-author">Dosen Pembimbing:</span> Tambahkan alamat lengkap perusahaan, bukan hanya nama kotanya saja.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menambah komentar -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--blue-lt)">➕</div>
+      <h3>Menambahkan Komentar</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Seleksi teks yang ingin diberi komentar (atau cukup klik di posisi yang diinginkan).</li>
+            <li><span class="sn sn-w">2</span><strong>Cara 1:</strong> Tab <strong>Review</strong> → klik <strong>New Comment</strong>.</li>
+            <li><span class="sn sn-w">3</span><strong>Cara 2 (Shortcut):</strong> <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd>.</li>
+            <li><span class="sn sn-w">4</span>Ketik isi komentar di panel yang muncul di kanan dokumen → tekan <kbd>Ctrl</kbd>+<kbd>Enter</kbd> atau klik ikon kirim.</li>
+          </ol>
+          <div class="menu-path">Review <span class="mp-sep">→</span> New Comment</div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Seleksi teks yang ingin diberi komentar.</li>
+            <li><span class="sn sn-g">2</span><strong>Cara 1:</strong> Klik ikon <strong>💬 (gelembung komentar)</strong> yang muncul di sisi kanan halaman.</li>
+            <li><span class="sn sn-g">3</span><strong>Cara 2:</strong> Menu <strong>Insert → Comment</strong>.</li>
+            <li><span class="sn sn-g">4</span><strong>Cara 3 (Shortcut):</strong> <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd> — sama persis dengan Word!</li>
+            <li><span class="sn sn-g">5</span>Ketik komentar → klik <strong>Comment</strong> untuk menyimpan.</li>
+          </ol>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Gunakan <strong>@mention</strong> dalam komentar (ketik @ diikuti nama) untuk mengirim notifikasi langsung ke orang tertentu — berlaku di Word (OneDrive) maupun Google Docs.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Balas & Resolve -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--green-lt)">✅</div>
+      <h3>Membalas &amp; Menyelesaikan Komentar</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik komentar yang ingin dibalas → klik <strong>Reply</strong> → ketik balasan.</li>
+            <li><span class="sn sn-w">2</span>Untuk menandai selesai: klik ikon <strong>✓ (Resolve)</strong> di pojok kanan atas komentar.</li>
+            <li><span class="sn sn-w">3</span>Komentar yang resolved disembunyikan tapi tidak dihapus. Bisa dilihat kembali via <strong>Review → Show Comments → Show Resolved</strong>.</li>
+            <li><span class="sn sn-w">4</span>Untuk menghapus permanen: klik komentar → <strong>Delete</strong>.</li>
+          </ol>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik komentar → klik <strong>Reply</strong> → ketik balasan → tekan <kbd>Enter</kbd>.</li>
+            <li><span class="sn sn-g">2</span>Untuk menyelesaikan: klik tombol <strong>Resolve</strong> (muncul saat hover komentar).</li>
+            <li><span class="sn sn-g">3</span>Komentar resolved disembunyikan. Lihat kembali: klik ikon <strong>💬 (Open comment history)</strong> di pojok kanan atas → filter <em>Resolved</em>.</li>
+            <li><span class="sn sn-g">4</span>Untuk menghapus: klik <strong>⋮ → Delete comment</strong>.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 3 — TRACK CHANGES
+══════════════════════════════════ -->
+<div class="tab-section" id="tab-track">
+  <div class="sec-hd">
+    <h2>📝 Track Changes</h2>
+    <p>Merekam setiap penambahan, penghapusan, dan pemformatan yang dilakukan sehingga bisa ditinjau dan diterima atau ditolak.</p>
+  </div>
+
+  <!-- Visual demo -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--red-lt)">👁</div>
+      <h3>Tampilan Track Changes di Dokumen</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <div class="tc-demo">
+          <div class="tc-demo-label" style="background:var(--blue); color:#fff;">DENGAN TRACK CHANGES AKTIF</div>
+          <p style="margin-top:8px;">
+            Perusahaan ini <span class="tcd-del">bergerak di bidang IT</span>
+            <span class="tcd-ins">mengembangkan solusi perangkat lunak berbasis cloud</span>
+            untuk klien korporat di seluruh Indonesia.
+          </p>
+          <p style="margin-top:6px;">
+            Kantor pusat berlokasi di
+            <span class="tcd-del">Surabaya</span>
+            <span class="tcd-ins">Jl. Raya Darmo No. 45, Surabaya</span>.
+          </p>
+        </div>
+        <div style="display:flex; gap:16px; margin-top:12px; font-size:13px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:6px;"><span class="tag-reject">Teks Coret Merah</span> = teks yang dihapus</div>
+          <div style="display:flex; align-items:center; gap:6px;"><span class="tag-accept">Teks Hijau</span> = teks yang ditambahkan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mengaktifkan TC -->
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--blue-lt)">🔴</div>
+      <h3>Mengaktifkan Track Changes</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik tab <strong>Review</strong> di Ribbon.</li>
+            <li><span class="sn sn-w">2</span>Klik <strong>Track Changes</strong> → tombol akan tampak aktif/tertekan (warna berubah).</li>
+            <li><span class="sn sn-w">3</span>Shortcut cepat: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd>.</li>
+            <li><span class="sn sn-w">4</span>Setiap perubahan yang dilakukan sekarang akan direkam dan ditandai.</li>
+            <li><span class="sn sn-w">5</span>Untuk mematikan: klik lagi <strong>Track Changes</strong> (toggle off).</li>
+          </ol>
+          <div class="menu-path">Review <span class="mp-sep">→</span> Track Changes</div>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Untuk mencegah orang lain mematikan Track Changes, lindungi dokumen via <strong>Review → Restrict Editing → Allow only this type of editing: Tracked changes</strong>. Bisa dikunci dengan password.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <p style="font-size:13.5px; color:var(--muted); margin-bottom:12px;">Di Google Docs, fitur ini disebut <strong>Suggesting Mode</strong> (mode saran), bukan Track Changes:</p>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik ikon pensil (<strong>✏️</strong>) di pojok kanan atas dokumen — ini menampilkan mode aktif.</li>
+            <li><span class="sn sn-g">2</span>Pilih <strong>Suggesting</strong> (ikon pensil + tanda centang).</li>
+            <li><span class="sn sn-g">3</span>Semua perubahan kini menjadi <em>saran</em> berwarna yang bisa diterima atau ditolak.</li>
+          </ol>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Shortcut ke Suggesting Mode di Google Docs: <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>. Pengguna dengan akses <em>Commenter</em> otomatis masuk ke mode Suggesting.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode tampilan -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--amber-lt)">🖥</div>
+      <h3>Mode Tampilan Track Changes</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:10px;">Tab Review → dropdown <strong>Display for Review</strong>:</p>
+          <ul class="steps">
+            <li><span class="sn sn-w">•</span><strong>All Markup</strong> — tampilkan semua perubahan (default, paling lengkap).</li>
+            <li><span class="sn sn-w">•</span><strong>Simple Markup</strong> — tanda vertikal di margin kiri, klik untuk buka detail.</li>
+            <li><span class="sn sn-w">•</span><strong>No Markup</strong> — tampilkan dokumen <em>seolah semua perubahan diterima</em> (pratinjau hasil akhir).</li>
+            <li><span class="sn sn-w">•</span><strong>Original</strong> — tampilkan dokumen asli sebelum ada perubahan.</li>
+          </ul>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:10px;">Google Docs menampilkan semua saran secara default. Untuk melihat tampilan akhir:</p>
+          <ul class="steps">
+            <li><span class="sn sn-g">•</span>Klik ikon pensil → pilih <strong>Viewing</strong> — tampilan bersih tanpa markup saran.</li>
+            <li><span class="sn sn-g">•</span>Kembali ke <strong>Suggesting</strong> untuk melanjutkan memberikan saran.</li>
+            <li><span class="sn sn-g">•</span>Mode <strong>Editing</strong> untuk mengedit langsung tanpa merekam sebagai saran.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Melacak perubahan per pengguna -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--green-lt)">🎨</div>
+      <h3>Warna Perubahan Per Pengguna</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="padding:20px;">
+        <p style="font-size:13.5px; color:var(--muted); margin-bottom:14px;">Ketika beberapa orang mengedit dokumen dengan Track Changes aktif, Word dan Google Docs secara otomatis memberikan <strong>warna berbeda untuk tiap pengguna</strong> agar mudah dibedakan:</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:10px;">
+          <div style="background:#FFF; border:1.5px solid var(--border); border-radius:var(--r-sm); padding:12px; text-align:center;">
+            <div style="width:32px; height:32px; border-radius:50%; background:#E63946; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:700;">A</div>
+            <div style="font-size:12px; font-weight:700;">Andi</div>
+            <div style="font-size:11px; color:var(--muted);">Merah</div>
+          </div>
+          <div style="background:#FFF; border:1.5px solid var(--border); border-radius:var(--r-sm); padding:12px; text-align:center;">
+            <div style="width:32px; height:32px; border-radius:50%; background:#4361EE; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:700;">B</div>
+            <div style="font-size:12px; font-weight:700;">Budi</div>
+            <div style="font-size:11px; color:var(--muted);">Biru</div>
+          </div>
+          <div style="background:#FFF; border:1.5px solid var(--border); border-radius:var(--r-sm); padding:12px; text-align:center;">
+            <div style="width:32px; height:32px; border-radius:50%; background:#2DC653; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:700;">C</div>
+            <div style="font-size:12px; font-weight:700;">Citra</div>
+            <div style="font-size:11px; color:var(--muted);">Hijau</div>
+          </div>
+          <div style="background:#FFF; border:1.5px solid var(--border); border-radius:var(--r-sm); padding:12px; text-align:center;">
+            <div style="width:32px; height:32px; border-radius:50%; background:#FF9F1C; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:700;">D</div>
+            <div style="font-size:12px; font-weight:700;">Dewi</div>
+            <div style="font-size:11px; color:var(--muted);">Kuning</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 4 — TERIMA & TOLAK REVISI
+══════════════════════════════════ -->
+<div class="tab-section" id="tab-revisi">
+  <div class="sec-hd">
+    <h2>✅ Menerima &amp; Menolak Revisi</h2>
+    <p>Meninjau setiap perubahan yang direkam dan memutuskan mana yang diterima atau ditolak.</p>
+  </div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--green-lt)">✅</div>
+      <h3>Terima / Tolak Perubahan Satu per Satu</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik di dalam teks yang berubah (dicoret/berwarna) untuk memilihnya.</li>
+            <li><span class="sn sn-w">2</span>Tab <strong>Review</strong> → klik <span class="tag-accept">✓ Accept</span> untuk menerima perubahan tersebut.</li>
+            <li><span class="sn sn-w">3</span>Atau klik <span class="tag-reject">✗ Reject</span> untuk menolak dan mengembalikan ke teks asal.</li>
+            <li><span class="sn sn-w">4</span>Gunakan tombol <strong>Previous</strong> / <strong>Next</strong> untuk berpindah antar perubahan.</li>
+          </ol>
+          <div class="menu-path">Review <span class="mp-sep">→</span> Accept / Reject</div>
+          <div class="note n-tip">
+            <span class="n-icon">💡</span>
+            <span class="n-body">Klik kanan langsung pada teks berubah → pilih <strong>Accept</strong> atau <strong>Reject</strong> — cara tercepat tanpa perlu ke tab Review.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik pada saran (perubahan berwarna) yang ingin ditinjau.</li>
+            <li><span class="sn sn-g">2</span>Sebuah popup kecil muncul di tepi kanan dengan tombol <span class="tag-accept">✓</span> dan <span class="tag-reject">✗</span>.</li>
+            <li><span class="sn sn-g">3</span>Klik <span class="tag-accept">✓</span> untuk menerima saran atau <span class="tag-reject">✗</span> untuk menolak.</li>
+            <li><span class="sn sn-g">4</span>Atau klik panel komentar saran di kanan → <strong>Accept</strong> / <strong>Reject</strong>.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--blue-lt)">⚡</div>
+      <h3>Terima / Tolak Semua Perubahan Sekaligus</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Tab <strong>Review</strong> → klik panah kecil ▼ di bawah tombol <strong>Accept</strong>.</li>
+            <li><span class="sn sn-w">2</span>Pilih <strong>"Accept All Changes"</strong> untuk menerima semua — dokumen menjadi bersih tanpa markup.</li>
+            <li><span class="sn sn-w">3</span>Atau klik ▼ di bawah <strong>Reject</strong> → <strong>"Reject All Changes"</strong> untuk mengembalikan ke versi asli sebelum ada revisi.</li>
+          </ol>
+          <div class="note n-warn">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body"><strong>Accept All</strong> tidak bisa di-Undo jika dilakukan sembarangan. Simpan salinan dokumen sebelum menerima semua perubahan sekaligus.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik menu <strong>Tools → Review suggested edits</strong>.</li>
+            <li><span class="sn sn-g">2</span>Panel di atas dokumen muncul dengan tombol <strong>Accept all</strong> atau <strong>Reject all</strong>.</li>
+            <li><span class="sn sn-g">3</span>Bisa juga menelusuri satu per satu dengan tombol Previous / Next di panel yang sama.</li>
+          </ol>
+          <div class="menu-path">Tools <span class="mp-sep">→</span> Review suggested edits</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Riwayat versi -->
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--amber-lt)">🕐</div>
+      <h3>Riwayat Versi — Kembali ke Versi Sebelumnya</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Klik <strong>File → Info → Version History</strong>.</li>
+            <li><span class="sn sn-w">2</span>Panel riwayat muncul di kanan — klik versi yang ingin dilihat.</li>
+            <li><span class="sn sn-w">3</span>Untuk memulihkan: klik <strong>Restore</strong> pada versi yang dipilih.</li>
+          </ol>
+          <div class="note n-diff">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Riwayat versi Word hanya tersedia jika dokumen disimpan di <strong>OneDrive</strong>. File lokal (.docx di komputer) tidak memiliki fitur ini.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Klik <strong>File → Version history → See version history</strong>.</li>
+            <li><span class="sn sn-g">2</span>Panel kanan menampilkan semua versi dengan timestamp dan pengguna yang membuat perubahan.</li>
+            <li><span class="sn sn-g">3</span>Klik versi untuk melihat tampilannya. Klik <strong>Restore this version</strong> untuk memulihkan.</li>
+            <li><span class="sn sn-g">4</span>Bisa memberi nama versi penting: klik <strong>⋮ → Name this version</strong>.</li>
+          </ol>
+          <div class="note n-ok">
+            <span class="n-icon">✅</span>
+            <span class="n-body">Riwayat versi Google Docs <strong>selalu tersedia</strong> secara otomatis, tanpa perlu pengaturan khusus. Ini keunggulan besar Docs dibanding Word.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 5 — REAL-TIME
+══════════════════════════════════ -->
+<div class="tab-section" id="tab-realtime">
+  <div class="sec-hd">
+    <h2>⚡ Kolaborasi Real-time</h2>
+    <p>Mengedit dokumen bersama secara bersamaan — melihat kursor dan perubahan orang lain langsung.</p>
+  </div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--blue-lt)">🖥</div>
+      <h3>Kolaborasi Bersamaan (Co-authoring)</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Dokumen harus disimpan di OneDrive dan sudah dibagikan kepada editor lain.</li>
+            <li><span class="sn sn-w">2</span>Saat pengguna lain membuka dokumen yang sama, kursor mereka muncul dengan nama dan warna berbeda.</li>
+            <li><span class="sn sn-w">3</span>Perubahan antar pengguna tersinkronisasi secara otomatis setiap beberapa detik.</li>
+            <li><span class="sn sn-w">4</span>Jika ada konflik edit (dua orang mengedit paragraf yang sama), Word akan memunculkan dialog untuk menyelesaikan konflik.</li>
+          </ol>
+          <div class="note n-warn">
+            <span class="n-icon">⚠️</span>
+            <span class="n-body">Co-authoring Word <strong>lebih stabil di browser</strong> (Word Online) dibanding Word Desktop untuk sinkronisasi real-time. Gunakan Word Online jika sering ada konflik.</span>
+          </div>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Setelah dokumen dibagikan, semua editor yang membukanya langsung bisa mengedit bersamaan.</li>
+            <li><span class="sn sn-g">2</span>Kursor pengguna lain terlihat secara real-time dengan nama dan warna masing-masing.</li>
+            <li><span class="sn sn-g">3</span>Perubahan langsung terlihat tanpa perlu refresh atau simpan manual.</li>
+            <li><span class="sn sn-g">4</span>Chat langsung tersedia: klik ikon <strong>💬 chat</strong> di pojok kanan atas untuk diskusi tanpa meninggalkan dokumen.</li>
+          </ol>
+          <div class="note n-ok">
+            <span class="n-icon">✅</span>
+            <span class="n-body">Real-time collaboration Google Docs secara konsisten <strong>lebih mulus dan cepat</strong> dibanding Word — ini kekuatan utama Google Docs untuk kerja tim.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--green-lt)">📥</div>
+      <h3>Mode Offline &amp; Sinkronisasi</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div class="cmp">
+        <div class="cmp-col">
+          <div class="app-lbl lbl-w">⬛ Microsoft Word</div>
+          <ol class="steps">
+            <li><span class="sn sn-w">1</span>Word Desktop bisa bekerja offline — perubahan disimpan lokal dan disinkronkan ke OneDrive saat kembali online.</li>
+            <li><span class="sn sn-w">2</span>Indikator sinkronisasi muncul di status bar bawah Word.</li>
+            <li><span class="sn sn-w">3</span>Konflik pengeditan offline akan dimunculkan saat kembali online.</li>
+          </ol>
+        </div>
+        <div class="cmp-col">
+          <div class="app-lbl lbl-g">🔵 Google Docs</div>
+          <ol class="steps">
+            <li><span class="sn sn-g">1</span>Aktifkan mode offline: <strong>File → Make available offline</strong> (membutuhkan ekstensi Chrome Offline).</li>
+            <li><span class="sn sn-g">2</span>Perubahan offline tersimpan lokal dan disinkronkan otomatis saat online kembali.</li>
+            <li><span class="sn sn-g">3</span>Indikator "Offline" muncul di atas dokumen saat tidak terhubung internet.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--amber-lt)">⚖️</div>
+      <h3>Perbandingan Kolaborasi Word vs Google Docs</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="overflow-x:auto;">
+        <table class="ref-table">
+          <thead><tr><th>Aspek</th><th>⬛ Word</th><th>🔵 Google Docs</th></tr></thead>
+          <tbody>
+            <tr><td>Real-time edit bersama</td><td>✅ Via OneDrive (agak lambat)</td><td>✅ Native, sangat responsif</td></tr>
+            <tr><td>Lihat kursor pengguna lain</td><td>✅ Didukung</td><td>✅ Lebih akurat real-time</td></tr>
+            <tr><td>Chat dalam dokumen</td><td>⚠️ Terbatas (komentar saja)</td><td>✅ Chat panel bawaan</td></tr>
+            <tr><td>Riwayat versi otomatis</td><td>✅ Hanya jika di OneDrive</td><td>✅ Selalu tersedia, gratis</td></tr>
+            <tr><td>Beri nama versi</td><td>✅ Didukung</td><td>✅ Didukung</td></tr>
+            <tr><td>Kerja offline</td><td>✅ Desktop app native</td><td>⚠️ Butuh ekstensi Chrome</td></tr>
+            <tr><td>Track Changes / Suggesting</td><td>✅ Lebih banyak opsi tampilan</td><td>✅ Lebih sederhana, cukup intuitif</td></tr>
+            <tr><td>Lock bagian tertentu dari editing</td><td>✅ Restrict Editing</td><td>⚠️ Tidak tersedia native</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TAB 6 — QUICK REF
+══════════════════════════════════ -->
+<div class="tab-section" id="tab-quickref">
+  <div class="sec-hd">
+    <h2>📋 Referensi Cepat</h2>
+    <p>Semua shortcut dan jalur menu dalam satu tempat.</p>
+  </div>
+
+  <div class="card open" style="margin-bottom:16px;">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--word-lt)">⬛</div>
+      <h3>Microsoft Word — Semua Shortcut Kolaborasi</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="overflow-x:auto;">
+        <table class="ref-table">
+          <thead><tr><th>Fungsi</th><th>Shortcut</th><th>Jalur Menu</th></tr></thead>
+          <tbody>
+            <tr><td>Aktifkan / matikan Track Changes</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd></td><td>Review → Track Changes</td></tr>
+            <tr><td>Tambah komentar baru</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd></td><td>Review → New Comment</td></tr>
+            <tr><td>Ke perubahan berikutnya</td><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>→</kbd></td><td>Review → Next</td></tr>
+            <tr><td>Ke perubahan sebelumnya</td><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>←</kbd></td><td>Review → Previous</td></tr>
+            <tr><td>Terima perubahan ini</td><td>—</td><td>Review → Accept</td></tr>
+            <tr><td>Tolak perubahan ini</td><td>—</td><td>Review → Reject</td></tr>
+            <tr><td>Terima semua perubahan</td><td>—</td><td>Review → Accept → Accept All Changes</td></tr>
+            <tr><td>Tolak semua perubahan</td><td>—</td><td>Review → Reject → Reject All Changes</td></tr>
+            <tr><td>Berbagi dokumen</td><td>—</td><td>File → Share → Share with People</td></tr>
+            <tr><td>Riwayat versi</td><td>—</td><td>File → Info → Version History</td></tr>
+            <tr><td>Lindungi dokumen</td><td>—</td><td>Review → Restrict Editing</td></tr>
+            <tr><td>Tampilkan semua markup</td><td>—</td><td>Review → Display for Review → All Markup</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card open" style="margin-bottom:16px;">
+    <div class="card-hd" onclick="toggleCard(this)">
+      <div class="card-ico" style="background:var(--gdocs-lt)">🔵</div>
+      <h3>Google Docs — Semua Shortcut Kolaborasi</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-bd">
+      <div style="overflow-x:auto;">
+        <table class="ref-table">
+          <thead><tr><th>Fungsi</th><th>Shortcut</th><th>Jalur Menu / Lokasi</th></tr></thead>
+          <tbody>
+            <tr><td>Aktifkan Suggesting Mode</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></td><td>Ikon pensil → Suggesting</td></tr>
+            <tr><td>Kembali ke Editing Mode</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td><td>Ikon pensil → Editing</td></tr>
+            <tr><td>Viewing Mode (tanpa markup)</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></td><td>Ikon pensil → Viewing</td></tr>
+            <tr><td>Tambah komentar baru</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd></td><td>Insert → Comment</td></tr>
+            <tr><td>Tinjau semua saran</td><td>—</td><td>Tools → Review suggested edits</td></tr>
+            <tr><td>Terima semua saran</td><td>—</td><td>Tools → Review suggested edits → Accept all</td></tr>
+            <tr><td>Berbagi dokumen</td><td>—</td><td>Tombol Share (pojok kanan atas)</td></tr>
+            <tr><td>Riwayat versi</td><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd></td><td>File → Version history → See version history</td></tr>
+            <tr><td>Beri nama versi</td><td>—</td><td>File → Version history → Name current version</td></tr>
+            <tr><td>Mode offline</td><td>—</td><td>File → Make available offline</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <h3 style="font-size:16px; font-weight:800; margin-bottom:16px; margin-top:28px;">💡 Tips Kolaborasi Efektif</h3>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🔒</div>
+      <h4>Aktifkan TC Sebelum Berbagi</h4>
+      <p>Jika ingin semua revisi tercatat, aktifkan Track Changes sebelum membagikan dokumen ke orang lain — bukan sesudah mereka mengedit.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💬</div>
+      <h4>@Mention agar Tidak Terlewat</h4>
+      <p>Gunakan @nama saat membuat komentar agar orang yang relevan mendapat notifikasi. Komentar tanpa mention sering tidak terbaca.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🕐</div>
+      <h4>Beri Nama Versi Penting</h4>
+      <p>Di Google Docs maupun Word Online, beri nama pada versi yang sudah disetujui (misal "Versi Draf 2 — Disetujui Dosen") agar mudah ditemukan jika perlu rollback.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">👁</div>
+      <h4>Preview Sebelum Accept All</h4>
+      <p>Gunakan tampilan "No Markup" (Word) atau "Viewing" (Docs) untuk melihat bagaimana dokumen akhir akan terlihat sebelum menerima semua perubahan.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">✅</div>
+      <h4>Resolve Komentar yang Sudah Ditanggapi</h4>
+      <p>Biasakan klik Resolve setiap komentar yang sudah ditindaklanjuti agar panel komentar tidak penuh dengan diskusi lama yang membingungkan.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📧</div>
+      <h4>Commenter vs Editor</h4>
+      <p>Berikan akses Commenter (bukan Editor) ke dosen atau reviewer — mereka bisa memberikan masukan tanpa bisa menghapus atau mengubah teks langsung.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div style="background:var(--navy); color:rgba(255,255,255,.35); text-align:center; padding:20px 16px; font-size:12px; margin-top:32px; line-height:1.9;">
+  <div style="margin-bottom:8px;">
+    <a href="panduan-mailmerge.html" style="color:rgba(255,255,255,.5); text-decoration:none; font-weight:600;">← Modul 4: Mail Merge</a>
+    &nbsp;·&nbsp;
+    <a href="index.html" style="color:rgba(255,255,255,.5); text-decoration:none; font-weight:600;">🏠 Beranda</a>
+  </div>
+  <strong style="color:rgba(255,255,255,.5);">Modul 5 — Kolaborasi &amp; Track Changes</strong><br>
+  Universitas Katolik Widya Mandala Surabaya · Fakultas Teknologi Informasi
+</div>
+
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function toggleCard(hd) { hd.closest('.card').classList.toggle('open'); }
+</script>
+</body>
+</html>
