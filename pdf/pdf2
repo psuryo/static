@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi 2 — Mengelola PDF</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:      #C0392B;
+    --red-light:#E74C3C;
+    --red-pale: #FDECEA;
+    --ink:      #1A1A1A;
+    --ink-2:    #444444;
+    --ink-3:    #777777;
+    --paper:    #FAFAF8;
+    --white:    #FFFFFF;
+    --border:   #E5E2DD;
+    --accent:   #2C3E50;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--accent);
+    color: var(--white);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "PDF";
+    position: absolute;
+    right: -20px;
+    top: -30px;
+    font-family: 'Sora', sans-serif;
+    font-size: 180px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .hero-nav a {
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .hero-nav a:hover { color: rgba(255,255,255,0.85); }
+  .hero-nav span { color: rgba(255,255,255,0.3); font-size: 12px; }
+  .hero-label {
+    display: inline-block;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(26px, 5vw, 44px);
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 580px;
+    margin-bottom: 14px;
+  }
+  .hero h1 span { color: var(--red-light); }
+  .hero > p {
+    color: rgba(255,255,255,0.7);
+    max-width: 520px;
+    font-size: 15px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+  }
+  .hero-meta-item strong { color: var(--white); font-weight: 600; }
+  .icon-sm {
+    width: 16px; height: 16px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+  h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  p { color: var(--ink-2); margin-bottom: 10px; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* ── TUJUAN GRID ── */
+  .tujuan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .tujuan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .tujuan-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--red);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .tujuan-card p { color: var(--ink-2); font-size: 14px; margin: 0; }
+
+  /* ── OPERASI CARDS ── */
+  .operasi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .operasi-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .operasi-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .operasi-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .operasi-header h3 { margin: 0; font-size: 15px; }
+  .operasi-body { padding: 14px 18px 18px; }
+  .operasi-body p { font-size: 13px; color: var(--ink-2); margin-bottom: 10px; }
+  .operasi-usecase {
+    font-size: 12px;
+    color: var(--ink-3);
+    font-style: italic;
+    border-left: 3px solid var(--border);
+    padding-left: 10px;
+    margin: 0;
+  }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 18px 0;
+  }
+  .info-box.blue  { border-left-color: #2980B9; }
+  .info-box.green { border-left-color: #27AE60; }
+  .info-box.orange{ border-left-color: #E67E22; }
+  .info-box-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+  .info-box.blue  .info-box-label { color: #2980B9; }
+  .info-box.green .info-box-label { color: #27AE60; }
+  .info-box.orange .info-box-label { color: #E67E22; }
+  .info-box p { margin: 0; font-size: 14px; }
+
+  /* ── STEP LIST ── */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .step-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .step-num {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-list li > div { flex: 1; }
+  .step-list li h3 { font-size: 14px; margin-bottom: 3px; }
+  .step-list li p  { margin: 0; font-size: 13px; color: var(--ink-3); }
+  .step-list li code {
+    background: #F0EFED;
+    color: var(--red);
+    font-size: 12px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ── TOOLS TABLE ── */
+  .tools-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-top: 8px;
+  }
+  .tools-table th {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: left;
+    padding: 10px 16px;
+  }
+  .tools-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-2);
+    vertical-align: top;
+  }
+  .tools-table tr:last-child td { border-bottom: none; }
+  .tools-table tr:nth-child(even) td { background: #F7F5F2; }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .badge-green  { background: #EAFAF1; color: #1E8449; }
+  .badge-red    { background: var(--red-pale); color: var(--red); }
+  .badge-blue   { background: #EBF5FB; color: #2980B9; }
+  .badge-orange { background: #FEF9E7; color: #B7770D; }
+
+  /* ── PERBANDINGAN KOMPRESI ── */
+  .compress-visual {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-top: 16px;
+  }
+  .compress-visual h3 { font-size: 14px; margin-bottom: 14px; color: var(--ink-3); font-weight: 600; }
+  .compress-bar-wrap { margin-bottom: 12px; }
+  .compress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+  .compress-label strong { color: var(--ink); }
+  .compress-track {
+    background: #EDEBE8;
+    border-radius: 4px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .compress-fill {
+    height: 10px;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  /* ── LATIHAN BOX ── */
+  .latihan-box {
+    background: var(--accent);
+    color: var(--white);
+    border-radius: 8px;
+    padding: 26px 28px;
+    margin-top: 8px;
+  }
+  .latihan-box h3 {
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .latihan-box > p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 14px; }
+  .latihan-steps { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .latihan-steps li {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.88);
+    align-items: flex-start;
+  }
+  .latihan-steps li::before {
+    content: "→";
+    color: var(--red-light);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .tugas-box {
+    background: var(--red-pale);
+    border: 1.5px solid #F5C6C2;
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-top: 14px;
+  }
+  .tugas-box h3 { color: var(--red); font-size: 15px; margin-bottom: 10px; }
+  .tugas-box ul { padding-left: 18px; }
+  .tugas-box ul li { font-size: 14px; color: var(--ink-2); margin-bottom: 6px; }
+
+  /* ── RINGKASAN ── */
+  .ringkasan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .ringkasan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+  .ringkasan-icon { font-size: 26px; margin-bottom: 8px; }
+  .ringkasan-card p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* ── NAV SESI ── */
+  .nav-sesi {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--accent); background: #F0F0EE; }
+  .nav-btn svg {
+    width: 14px; height: 14px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .nav-center {
+    font-size: 12px;
+    color: var(--ink-3);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--accent);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 18px 20px;
+    font-size: 12px;
+  }
+  footer strong { color: rgba(255,255,255,0.8); }
+
+  @media (max-width: 600px) {
+    .hero { padding: 40px 20px 36px; }
+    .hero::before { font-size: 110px; }
+    .page { padding: 32px 16px 60px; }
+    .operasi-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-nav">
+    <a href="index-pdf.html">← Kembali ke Index PDF</a>
+    <span>/</span>
+    <span style="color:rgba(255,255,255,0.7)">Sesi 2</span>
+  </div>
+  <div class="hero-label">Sesi 2 dari 14</div>
+  <h1>Mengelola <span>PDF</span>:<br>Merge, Split, Compress &amp; Rotate</h1>
+  <p>Belajar mengolah berkas PDF yang sudah ada — menggabungkan, memisahkan, mengompres, memutar halaman, hingga mengekstrak halaman tertentu menggunakan tools online gratis.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Durasi: <strong>100 menit</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span>Blok PDF: <strong>Sesi 2 dari 3</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span>Tools: <strong>iLovePDF · Smallpdf · Adobe</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- NAVIGASI SESI -->
+  <div class="nav-sesi">
+    <a href="sesi1-panduan-pdf.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 1 — Pengenalan PDF
+    </a>
+    <span class="nav-center">BLOK PDF · SESI 2</span>
+    <a href="sesi3-panduan-pdf.html" class="nav-btn">
+      Sesi 3 — Form & Konversi
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+  <!-- TUJUAN -->
+  <p class="section-title">Tujuan Pembelajaran</p>
+  <h2>Setelah sesi ini, mahasiswa mampu…</h2>
+  <div class="tujuan-grid">
+    <div class="tujuan-card">
+      <span class="tujuan-num">01</span>
+      <p>Menggabungkan dua atau lebih berkas PDF menjadi satu dokumen tunggal</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">02</span>
+      <p>Memisahkan halaman-halaman tertentu dari sebuah PDF menjadi berkas baru</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">03</span>
+      <p>Mengompres ukuran berkas PDF agar lebih kecil tanpa kehilangan kualitas berarti</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">04</span>
+      <p>Memutar halaman dan mengekstrak halaman tertentu sesuai kebutuhan</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- EMPAT OPERASI UTAMA -->
+  <p class="section-title">Materi 1</p>
+  <h2>Empat Operasi Utama Pengelolaan PDF</h2>
+
+  <div class="operasi-grid">
+
+    <div class="operasi-card">
+      <div class="operasi-header">
+        <div class="operasi-icon" style="background:#EAFAF1;">🔗</div>
+        <h3>Merge (Gabung)</h3>
+      </div>
+      <div class="operasi-body">
+        <p>Menggabungkan dua atau lebih berkas PDF menjadi satu dokumen. Urutan halaman bisa diatur sesuai kebutuhan sebelum digabung.</p>
+        <p class="operasi-usecase">Contoh: menggabungkan CV + sertifikat + transkrip nilai menjadi satu berkas lamaran kerja.</p>
+      </div>
+    </div>
+
+    <div class="operasi-card">
+      <div class="operasi-header">
+        <div class="operasi-icon" style="background:#EBF5FB;">✂️</div>
+        <h3>Split (Pisah)</h3>
+      </div>
+      <div class="operasi-body">
+        <p>Memisahkan sebuah PDF menjadi beberapa berkas berdasarkan rentang halaman atau memotong setiap halaman menjadi berkas tersendiri.</p>
+        <p class="operasi-usecase">Contoh: memisahkan laporan 50 halaman menjadi bab-bab terpisah untuk dibagikan ke tim berbeda.</p>
+      </div>
+    </div>
+
+    <div class="operasi-card">
+      <div class="operasi-header">
+        <div class="operasi-icon" style="background:#FEF9E7;">🗜️</div>
+        <h3>Compress (Kompres)</h3>
+      </div>
+      <div class="operasi-body">
+        <p>Mengecilkan ukuran berkas PDF dengan mengurangi resolusi gambar dan mengoptimalkan struktur internal dokumen.</p>
+        <p class="operasi-usecase">Contoh: mengecilkan poster Canva 15 MB menjadi 2 MB agar bisa diunggah ke portal akademik.</p>
+      </div>
+    </div>
+
+    <div class="operasi-card">
+      <div class="operasi-header">
+        <div class="operasi-icon" style="background:#F5EEF8;">🔄</div>
+        <h3>Rotate &amp; Ekstrak</h3>
+      </div>
+      <div class="operasi-body">
+        <p>Memutar halaman yang terbalik atau miring, serta mengekstrak hanya halaman tertentu tanpa mengubah berkas asli.</p>
+        <p class="operasi-usecase">Contoh: memutar halaman scan yang terbalik, lalu mengambil halaman 3–5 saja dari sebuah laporan.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- TOOLS -->
+  <p class="section-title">Materi 2</p>
+  <h2>Perbandingan Tools yang Digunakan</h2>
+
+  <table class="tools-table">
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>Merge</th>
+        <th>Split</th>
+        <th>Compress</th>
+        <th>Rotate/Ekstrak</th>
+        <th>Batas Gratis</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>iLovePDF</strong><br><span style="font-size:12px;color:#888">ilovepdf.com</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td style="font-size:13px">Tidak terbatas, file maks 100 MB</td>
+      </tr>
+      <tr>
+        <td><strong>Smallpdf</strong><br><span style="font-size:12px;color:#888">smallpdf.com</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td style="font-size:13px">2 tugas/jam (gratis), file maks 5 GB</td>
+      </tr>
+      <tr>
+        <td><strong>Adobe Acrobat Online</strong><br><span style="font-size:12px;color:#888">acrobat.adobe.com</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-orange">Terbatas</span></td>
+        <td style="font-size:13px">2 konversi/bulan (perlu akun)</td>
+      </tr>
+      <tr>
+        <td><strong>PDF24</strong><br><span style="font-size:12px;color:#888">pdf24.org</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td><span class="badge badge-green">✓</span></td>
+        <td style="font-size:13px">Gratis penuh, tanpa batas</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box green" style="margin-top:18px;">
+    <div class="info-box-label">✅ Rekomendasi</div>
+    <p>Untuk latihan kelas, gunakan <strong>iLovePDF</strong> — antarmukanya paling sederhana, tanpa perlu daftar akun, dan mendukung semua operasi yang diperlukan. Sebagai alternatif cadangan, siapkan <strong>PDF24</strong> yang sepenuhnya gratis.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PANDUAN LANGKAH -->
+  <p class="section-title">Materi 3</p>
+  <h2>Panduan Langkah Demi Langkah</h2>
+
+  <!-- MERGE -->
+  <h3 style="color:var(--red);font-size:16px;margin-bottom:12px;">🔗 Merge PDF di iLovePDF</h3>
+  <ul class="step-list">
+    <li>
+      <span class="step-num">1</span>
+      <div>
+        <h3>Buka iLovePDF Merge</h3>
+        <p>Kunjungi <code>ilovepdf.com/merge_pdf</code> — klik tombol <strong>Select PDF files</strong> untuk memilih berkas dari komputer.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      <div>
+        <h3>Unggah semua berkas yang ingin digabung</h3>
+        <p>Pilih 2 atau lebih berkas PDF. Setelah diunggah, kamu bisa menggeser urutan berkas dengan <strong>drag & drop</strong> untuk menentukan urutan halaman.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      <div>
+        <h3>Klik "Merge PDF"</h3>
+        <p>Tunggu proses selesai, lalu klik <strong>Download Merged PDF</strong>. Berkas hasil gabungan akan tersimpan di folder Downloads.</p>
+      </div>
+    </li>
+  </ul>
+
+  <div style="margin-top: 28px;">
+    <!-- SPLIT -->
+    <h3 style="color:var(--red);font-size:16px;margin-bottom:12px;">✂️ Split PDF di iLovePDF</h3>
+    <ul class="step-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>
+          <h3>Buka fitur Split</h3>
+          <p>Pergi ke <code>ilovepdf.com/split_pdf</code> dan unggah berkas PDF yang ingin dipecah.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>
+          <h3>Pilih mode pemisahan</h3>
+          <p>Tersedia dua pilihan: <strong>Split by range</strong> (tentukan halaman berapa sampai berapa) atau <strong>Extract pages</strong> (pilih halaman tertentu saja yang ingin diambil).</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>
+          <h3>Download hasilnya</h3>
+          <p>Klik <strong>Split PDF</strong>, tunggu proses, lalu unduh hasilnya. Jika lebih dari satu berkas, hasilnya akan diunduh dalam format <code>.zip</code>.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div style="margin-top: 28px;">
+    <!-- COMPRESS -->
+    <h3 style="color:var(--red);font-size:16px;margin-bottom:12px;">🗜️ Compress PDF di Smallpdf</h3>
+    <ul class="step-list">
+      <li>
+        <span class="step-num">1</span>
+        <div>
+          <h3>Buka Smallpdf Compress</h3>
+          <p>Kunjungi <code>smallpdf.com/compress-pdf</code>, lalu drag & drop berkas PDF atau klik <strong>Choose File</strong>.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>
+          <h3>Pilih tingkat kompresi</h3>
+          <p>Tersedia dua pilihan: <strong>Basic Compression</strong> (gratis, penurunan ukuran sedang) dan <strong>Strong Compression</strong> (berbayar, penurunan ukuran lebih signifikan).</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>
+          <h3>Download berkas terkompresi</h3>
+          <p>Klik <strong>Compress</strong>, tunggu selesai, lalu unduh. Smallpdf akan menampilkan persentase pengurangan ukuran sebelum kamu mengunduh.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- VISUALISASI KOMPRESI -->
+  <div class="compress-visual" style="margin-top:24px;">
+    <h3>📊 Ilustrasi: Sebelum vs Sesudah Kompres</h3>
+
+    <div class="compress-bar-wrap">
+      <div class="compress-label">
+        <strong>PDF dengan banyak gambar resolusi tinggi</strong>
+        <span>Sebelum: ~15 MB</span>
+      </div>
+      <div class="compress-track">
+        <div class="compress-fill" style="width:100%; background:#E74C3C;"></div>
+      </div>
+    </div>
+
+    <div class="compress-bar-wrap">
+      <div class="compress-label">
+        <span style="color:#2980B9;">Setelah Basic Compression</span>
+        <span>~7 MB (−53%)</span>
+      </div>
+      <div class="compress-track">
+        <div class="compress-fill" style="width:47%; background:#2980B9;"></div>
+      </div>
+    </div>
+
+    <div class="compress-bar-wrap">
+      <div class="compress-label">
+        <span style="color:#27AE60;">Setelah Strong Compression</span>
+        <span>~2.5 MB (−83%)</span>
+      </div>
+      <div class="compress-track">
+        <div class="compress-fill" style="width:17%; background:#27AE60;"></div>
+      </div>
+    </div>
+
+    <p style="margin-top:12px;font-size:12px;color:var(--ink-3);">* Hasil aktual bervariasi tergantung isi dokumen. PDF berisi teks saja biasanya sudah kecil; PDF berisi banyak gambar paling signifikan dikompres.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- TIPS & PERINGATAN -->
+  <p class="section-title">Materi 4</p>
+  <h2>Tips Penting &amp; Hal yang Perlu Diperhatikan</h2>
+
+  <div class="info-box orange">
+    <div class="info-box-label">⚠️ Perhatian — Keamanan Data</div>
+    <p>Tools online seperti iLovePDF dan Smallpdf mengunggah berkas ke server mereka untuk diproses. <strong>Jangan gunakan tools ini untuk dokumen yang bersifat rahasia</strong> (data pribadi sensitif, dokumen hukum konfidensial, data keuangan). Untuk dokumen sensitif, gunakan aplikasi desktop seperti Adobe Acrobat atau PDF24 (yang bisa dijalankan offline).</p>
+  </div>
+
+  <div class="info-box blue" style="margin-top:14px;">
+    <div class="info-box-label">💡 Tips Merge</div>
+    <p>Sebelum menggabungkan, pastikan semua berkas PDF sudah berorientasi benar (tidak ada yang terbalik). Lebih mudah memperbaiki orientasi satu per satu sebelum digabung daripada sesudahnya.</p>
+  </div>
+
+  <div class="info-box green" style="margin-top:14px;">
+    <div class="info-box-label">💡 Tips Compress</div>
+    <p>Kompresi paling efektif untuk PDF yang banyak mengandung foto atau gambar beresolusi tinggi. PDF yang hanya berisi teks biasanya sudah sangat kecil dan tidak perlu dikompres lebih lanjut. Selalu simpan salinan asli sebelum mengompres.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- LATIHAN & TUGAS -->
+  <p class="section-title">Latihan &amp; Tugas</p>
+  <h2>Praktikum Sesi 2</h2>
+
+  <div class="latihan-box">
+    <h3>🛠 Latihan Kelas (35 menit terakhir)</h3>
+    <p>Gunakan berkas PDF dari tugas Sesi 1 (CV + Poster) sebagai bahan latihan:</p>
+    <ul class="latihan-steps">
+      <li><strong>Merge:</strong> Gabungkan PDF CV dan PDF Poster dari Sesi 1 menjadi satu berkas menggunakan iLovePDF. Atur agar CV menjadi halaman pertama.</li>
+      <li><strong>Split:</strong> Pisahkan kembali berkas hasil gabungan tadi menjadi dua berkas terpisah. Verifikasi hasilnya sama dengan berkas asli.</li>
+      <li><strong>Compress:</strong> Ambil PDF Poster (biasanya lebih besar karena berisi gambar), kompres menggunakan Smallpdf, dan catat persentase pengurangannya.</li>
+      <li><strong>Rotate:</strong> Di iLovePDF, buka fitur Rotate PDF, putar salah satu halaman 90° searah jarum jam, lalu kembalikan ke posisi semula.</li>
+    </ul>
+  </div>
+
+  <div class="tugas-box">
+    <h3>📌 Tugas Mandiri (dikumpulkan sebelum Sesi 3)</h3>
+    <ul>
+      <li>Kumpulkan <strong>3 berkas PDF berbeda</strong> (boleh dari internet, dokumen sekolah, atau buat sendiri) — gabungkan menjadi satu menggunakan iLovePDF.</li>
+      <li>Dari hasil gabungan tersebut, <strong>ekstrak hanya halaman 2 dan 4</strong> (atau sesuaikan jika kurang dari itu) menjadi berkas PDF baru.</li>
+      <li>Kompres berkas gabungan tadi dan catat: ukuran sebelum dan sesudah kompres dalam sebuah <strong>catatan singkat (teks atau screenshot)</strong>.</li>
+      <li>Kumpulkan: berkas PDF gabungan + berkas PDF hasil ekstrak + catatan ukuran dalam folder <code>NIM_Nama_Sesi2</code> → upload ke LMS/Google Classroom.</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RINGKASAN -->
+  <p class="section-title">Ringkasan</p>
+  <h2>Yang Sudah Dipelajari Hari Ini</h2>
+
+  <div class="ringkasan-grid">
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔗</div>
+      <p>Merge: menggabungkan beberapa PDF menjadi satu dengan urutan yang bisa diatur</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">✂️</div>
+      <p>Split: memisahkan halaman tertentu dari PDF menjadi berkas baru</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🗜️</div>
+      <p>Compress: mengecilkan ukuran berkas PDF, terutama yang banyak gambar</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔜</div>
+      <p>Sesi berikutnya: mengisi form PDF, menambah anotasi, dan konversi PDF ↔ Word</p>
+    </div>
+  </div>
+
+  <!-- NAV BAWAH -->
+  <div class="nav-sesi" style="margin-top:40px;margin-bottom:0;">
+    <a href="sesi1-panduan-pdf.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 1 — Pengenalan PDF
+    </a>
+    <a href="index-pdf.html" class="nav-btn" style="color:var(--red);border-color:var(--red);">
+      Index Blok PDF
+    </a>
+    <a href="sesi3-panduan-pdf.html" class="nav-btn">
+      Sesi 3 — Form &amp; Konversi
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Teknologi Informasi Perkantoran</strong> &nbsp;·&nbsp; Sesi 2 — Mengelola PDF &nbsp;·&nbsp;
+  Universitas Katolik Widya Mandala Surabaya
+</footer>
+
+</body>
+</html>
