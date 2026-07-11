@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lemari Arsip · Panduan Airtable — D3 Administrasi Perkantoran</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #e7dcc0;
+    --paper-light: #faf5e6;
+    --paper-dark: #ddcda3;
+    --ink: #23283a;
+    --ink-soft: #545b73;
+    --stamp: #a8382c;
+    --ledger: #3d5f4c;
+    --tab: #8a5a34;
+    --line: rgba(35,40,58,.18);
+    --shadow: rgba(35,25,10,.25);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 800px at 15% -10%, #f1e6c8 0%, transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:40px 20px 90px;}
+
+  /* ---------- HEADER: DRAWER LABEL ---------- */
+  header.drawer{
+    position:relative;
+    background:var(--paper-light);
+    border:1px solid var(--line);
+    box-shadow: 8px 8px 0 var(--shadow);
+    padding:30px 34px 26px;
+    margin-bottom:44px;
+  }
+  header.drawer::before{
+    content:"";
+    position:absolute; left:0; right:0; top:-14px; height:14px;
+    background:var(--tab);
+    border-radius:6px 6px 0 0;
+    box-shadow:0 -1px 0 var(--ink) inset;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  h1{
+    font-family:'Special Elite', monospace; font-weight:400;
+    font-size:clamp(1.7rem, 4.2vw, 2.6rem);
+    margin:.2em 0 .35em;
+  }
+  header.drawer p{max-width:64ch; color:var(--ink-soft); margin:0;}
+
+  .progress-row{
+    display:flex; align-items:center; gap:14px; margin-top:20px;
+    font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--ink-soft);
+  }
+  .progress-bar{
+    flex:1; height:10px; background:var(--paper-dark);
+    border:1px solid var(--ink); border-radius:5px; overflow:hidden;
+  }
+  .progress-fill{height:100%; background:var(--ledger); width:7.14%;}
+
+  /* ---------- PHASE DIVIDERS ---------- */
+  .phase{
+    margin:46px 0 20px;
+    display:flex; align-items:center; gap:16px;
+  }
+  .phase .num{
+    font-family:'Special Elite', monospace; font-size:1.9rem;
+    color:transparent; -webkit-text-stroke:1.3px var(--ink);
+    line-height:1;
+  }
+  .phase h2{
+    font-family:'Special Elite', monospace; font-weight:400;
+    font-size:1.2rem; margin:0;
+  }
+  .phase .range{
+    font-family:'IBM Plex Mono',monospace; font-size:.7rem;
+    color:var(--paper-light); background:var(--tab);
+    padding:3px 10px; border-radius:4px; letter-spacing:.05em;
+  }
+  .phase .rule{flex:1; border-top:1px dashed var(--line);}
+
+  /* ---------- SESSION CARD GRID (index card drawer) ---------- */
+  .rack{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:18px;
+  }
+  .card{
+    position:relative;
+    display:block;
+    background:var(--paper-light);
+    border:1px solid var(--ink);
+    padding:16px 16px 14px;
+    box-shadow:5px 5px 0 var(--shadow);
+    text-decoration:none;
+    color:var(--ink);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--shadow);}
+  .card.locked{
+    color:var(--ink-soft);
+    cursor:default;
+    background:repeating-linear-gradient(135deg, var(--paper-light) 0 10px, var(--paper-dark) 10px 12px);
+  }
+  .card.locked:hover{transform:none; box-shadow:5px 5px 0 var(--shadow);}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
+  .sess-no{
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.72rem;
+    background:var(--ledger); color:var(--paper-light);
+    padding:2px 8px; border-radius:3px; letter-spacing:.05em;
+  }
+  .card.locked .sess-no{background:var(--ink-soft);}
+  .status{
+    font-family:'IBM Plex Mono',monospace; font-size:.62rem;
+    letter-spacing:.06em; text-transform:uppercase;
+  }
+  .status.ready{color:var(--ledger);}
+  .status.wait{color:var(--stamp); opacity:.75;}
+  .card h3{
+    font-family:'Special Elite',monospace; font-weight:400;
+    font-size:1rem; margin:0 0 6px; line-height:1.35;
+  }
+  .card p{margin:0; font-size:.8rem; color:var(--ink-soft);}
+  .card .arrow{
+    position:absolute; right:14px; bottom:12px;
+    font-family:'IBM Plex Mono',monospace; font-size:.85rem;
+    opacity:0; transform:translateX(-4px); transition:.15s;
+  }
+  .card:not(.locked):hover .arrow{opacity:1; transform:translateX(0);}
+
+  footer{
+    margin-top:70px; padding-top:24px; border-top:3px double var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--ink-soft);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+  @media(max-width:600px){
+    header.drawer{padding:24px 22px 22px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="drawer">
+    <p class="eyebrow">Lemari Arsip Perkuliahan — D3 Administrasi Perkantoran</p>
+    <h1>Panduan Airtable, Sesi 1–14</h1>
+    <p>Kumpulan kartu panduan untuk 14 pertemuan pasca-UTS, melanjutkan materi Akses Basis Data, Neon, dan SQL. Klik kartu sesi yang tersedia untuk membuka panduannya.</p>
+    <div class="progress-row">
+      <span>1 / 14 tersedia</span>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+      <span>13 menyusul</span>
+    </div>
+  </header>
+
+  <div class="phase">
+    <span class="num">I</span>
+    <h2>Fondasi Airtable</h2>
+    <span class="range">Sesi 01–04</span>
+    <span class="rule"></span>
+  </div>
+  <div class="rack">
+    <a class="card" href="airtable1.html">
+      <div class="card-top"><span class="sess-no">SESI 01</span><span class="status ready">● Tersedia</span></div>
+      <h3>Pengantar Airtable</h3>
+      <p>Konsep dasar, perbandingan dengan Access/SQL/Neon, akun &amp; base pertama.</p>
+      <span class="arrow">→</span>
+    </a>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 02</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Struktur Base &amp; Tipe Field</h3>
+      <p>Jenis-jenis field dan praktik desain struktur data.</p>
+    </div>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 03</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Views: Grid, Kanban, Calendar, Gallery</h3>
+      <p>Memilih tampilan data sesuai kebutuhan administrasi.</p>
+    </div>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 04</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Form Airtable</h3>
+      <p>Membangun form input sebagai pengganti form Access.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <span class="num">II</span>
+    <h2>Relasi &amp; Logika Data</h2>
+    <span class="range">Sesi 05–07</span>
+    <span class="rule"></span>
+  </div>
+  <div class="rack">
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 05</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Linked Records</h3>
+      <p>Relasi antar tabel, setara konsep foreign key.</p>
+    </div>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 06</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Lookup &amp; Rollup</h3>
+      <p>Menarik dan mengagregasi data dari tabel terkait.</p>
+    </div>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 07</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Formula Field</h3>
+      <p>Logika kondisional dan perhitungan otomatis.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <span class="num">III</span>
+    <h2>Otomatisasi &amp; Reporting</h2>
+    <span class="range">Sesi 08–10</span>
+    <span class="rule"></span>
+  </div>
+  <div class="rack">
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 08</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Filtering, Sorting, Grouping</h3>
+      <p>Mengolah data untuk kebutuhan laporan cepat.</p>
+    </div>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 09</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Automations Dasar</h3>
+      <p>Trigger dan aksi otomatis dalam alur kerja administrasi.</p>
+    </div>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 10</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Interface Designer / Dashboard</h3>
+      <p>Membangun tampilan laporan visual, pengganti Report Access.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <span class="num">IV</span>
+    <h2>Kolaborasi &amp; Proyek Akhir</h2>
+    <span class="range">Sesi 11–14</span>
+    <span class="rule"></span>
+  </div>
+  <div class="rack">
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 11</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Kolaborasi &amp; Permission</h3>
+      <p>Sharing base dan hak akses per peran pengguna.</p>
+    </div>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 12</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Proyek — Perancangan</h3>
+      <p>Memilih topik dan merancang struktur base proyek.</p>
+    </div>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 13</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Proyek — Implementasi</h3>
+      <p>Membangun otomatisasi dan dashboard proyek.</p>
+    </div>
+    <div class="card locked">
+      <div class="card-top"><span class="sess-no">SESI 14</span><span class="status wait">○ Menyusul</span></div>
+      <h3>Proyek — Penyempurnaan &amp; Simulasi</h3>
+      <p>Uji coba base dan persiapan presentasi evaluasi akhir.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span>Lemari Arsip · Panduan Airtable D3 Administrasi Perkantoran</span>
+    <span>Evaluasi akhir proyek dilaksanakan setelah Sesi 14</span>
+  </footer>
+
+</div>
+</body>
+</html>
