@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi 1 — Pengenalan PDF</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:     #C0392B;
+    --red-light: #E74C3C;
+    --red-pale: #FDECEA;
+    --ink:     #1A1A1A;
+    --ink-2:   #444444;
+    --ink-3:   #777777;
+    --paper:   #FAFAF8;
+    --white:   #FFFFFF;
+    --border:  #E5E2DD;
+    --accent:  #2C3E50;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--accent);
+    color: var(--white);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "PDF";
+    position: absolute;
+    right: -20px;
+    top: -30px;
+    font-family: 'Sora', sans-serif;
+    font-size: 180px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-label {
+    display: inline-block;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 600px;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--red-light); }
+  .hero p {
+    color: rgba(255,255,255,0.75);
+    max-width: 540px;
+    font-size: 15px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 28px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.65);
+    font-size: 13px;
+  }
+  .hero-meta-item strong { color: var(--white); font-weight: 600; }
+  .icon-sm {
+    width: 18px; height: 18px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+  h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  p { color: var(--ink-2); margin-bottom: 12px; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* ── TUJUAN CARD ── */
+  .tujuan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .tujuan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .tujuan-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--red);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .tujuan-card p { color: var(--ink-2); font-size: 14px; margin: 0; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .info-box.blue { border-left-color: #2980B9; }
+  .info-box.green { border-left-color: #27AE60; }
+  .info-box-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+  .info-box.blue .info-box-label { color: #2980B9; }
+  .info-box.green .info-box-label { color: #27AE60; }
+  .info-box p { margin: 0; font-size: 14px; }
+
+  /* ── MATERI TABLE ── */
+  .materi-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .materi-table th {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-align: left;
+    padding: 11px 16px;
+  }
+  .materi-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-2);
+    vertical-align: top;
+  }
+  .materi-table tr:last-child td { border-bottom: none; }
+  .materi-table tr:nth-child(even) td { background: #F7F5F2; }
+  .badge {
+    display: inline-block;
+    background: var(--red-pale);
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .badge.biru { background: #EBF5FB; color: #2980B9; }
+  .badge.hijau { background: #EAFAF1; color: #27AE60; }
+
+  /* ── STEP LIST ── */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+  .step-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+  }
+  .step-num {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-list li > div { flex: 1; }
+  .step-list li h3 { margin-bottom: 4px; font-size: 14px; }
+  .step-list li p { margin: 0; font-size: 13px; color: var(--ink-3); }
+
+  /* ── TOOLS GRID ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .tool-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px;
+  }
+  .tool-logo {
+    font-family: 'Sora', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .tool-card h3 { font-size: 14px; margin-bottom: 4px; }
+  .tool-card p { font-size: 13px; color: var(--ink-3); margin: 0; }
+  .tool-card .tool-tag {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #F0F0F0;
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+
+  /* ── LATIHAN BOX ── */
+  .latihan-box {
+    background: var(--accent);
+    color: var(--white);
+    border-radius: 8px;
+    padding: 28px 30px;
+    margin-top: 8px;
+  }
+  .latihan-box h3 {
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .latihan-box p { color: rgba(255,255,255,0.75); font-size: 14px; margin-bottom: 14px; }
+  .latihan-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .latihan-steps li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+  }
+  .latihan-steps li::before {
+    content: "→";
+    color: var(--red-light);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .tugas-box {
+    background: var(--red-pale);
+    border: 1.5px solid #F5C6C2;
+    border-radius: 8px;
+    padding: 24px 26px;
+    margin-top: 16px;
+  }
+  .tugas-box h3 { color: var(--red); font-size: 15px; margin-bottom: 10px; }
+  .tugas-box ul { padding-left: 18px; }
+  .tugas-box ul li { font-size: 14px; color: var(--ink-2); margin-bottom: 6px; }
+
+  /* ── RINGKASAN ── */
+  .ringkasan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .ringkasan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+  .ringkasan-icon { font-size: 26px; margin-bottom: 8px; }
+  .ringkasan-card p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--accent);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+  }
+  .footer strong { color: rgba(255,255,255,0.85); }
+
+  @media (max-width: 600px) {
+    .hero { padding: 40px 20px 36px; }
+    .hero::before { font-size: 120px; }
+    .page { padding: 32px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">Sesi 1 dari 14</div>
+  <h1>Pengenalan <span>PDF</span><br>& Cara Membuatnya</h1>
+  <p>Memahami format PDF, kelebihannya dibanding format lain, dan mempraktikkan berbagai cara membuat PDF dari dokumen yang sudah ada.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Durasi: <strong>100 menit</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Mata Kuliah: <strong>Teknologi Informasi Perkantoran</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span>Topik: <strong>PDF — Blok 1/3</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- TUJUAN -->
+  <p class="section-title">Tujuan Pembelajaran</p>
+  <h2>Setelah sesi ini, mahasiswa mampu…</h2>
+  <div class="tujuan-grid">
+    <div class="tujuan-card">
+      <span class="tujuan-num">01</span>
+      <p>Menjelaskan apa itu PDF dan mengapa format ini digunakan secara luas di dunia kerja</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">02</span>
+      <p>Membandingkan kelebihan dan kekurangan PDF dibanding format dokumen lainnya</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">03</span>
+      <p>Membuat PDF menggunakan minimal tiga cara berbeda: dari Word, Canva, dan Print to PDF</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">04</span>
+      <p>Memilih cara membuat PDF yang paling tepat sesuai kebutuhan dan konteks dokumen</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- APA ITU PDF -->
+  <p class="section-title">Materi 1</p>
+  <h2>Apa Itu PDF?</h2>
+
+  <div class="info-box">
+    <div class="info-box-label">Definisi</div>
+    <p><strong>PDF (Portable Document Format)</strong> adalah format berkas yang dikembangkan oleh Adobe pada tahun 1993. Tujuannya satu: agar dokumen terlihat <em>sama persis</em> di semua perangkat, sistem operasi, dan printer — tanpa bergantung pada aplikasi atau font yang digunakan untuk membuatnya.</p>
+  </div>
+
+  <p>Bayangkan kamu mengirim laporan ke dosen menggunakan Microsoft Word. Jika dosen membukanya di komputer berbeda, tata letak, font, bahkan isi bisa berubah. PDF menghilangkan masalah ini.</p>
+
+  <table class="materi-table" style="margin-top:20px;">
+    <thead>
+      <tr>
+        <th>Aspek</th>
+        <th>PDF</th>
+        <th>Word (.docx)</th>
+        <th>Google Docs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tampilan konsisten</td>
+        <td><span class="badge hijau">✓ Selalu sama</span></td>
+        <td><span class="badge">Bisa berubah</span></td>
+        <td><span class="badge">Tergantung browser</span></td>
+      </tr>
+      <tr>
+        <td>Mudah diedit</td>
+        <td><span class="badge">Perlu software khusus</span></td>
+        <td><span class="badge hijau">✓ Mudah</span></td>
+        <td><span class="badge hijau">✓ Mudah</span></td>
+      </tr>
+      <tr>
+        <td>Cocok untuk berbagi/cetak</td>
+        <td><span class="badge hijau">✓ Sangat cocok</span></td>
+        <td><span class="badge">Kurang ideal</span></td>
+        <td><span class="badge">Kurang ideal</span></td>
+      </tr>
+      <tr>
+        <td>Ukuran berkas</td>
+        <td><span class="badge hijau">Biasanya kecil</span></td>
+        <td><span class="badge">Sedang</span></td>
+        <td><span class="badge biru">Disimpan online</span></td>
+      </tr>
+      <tr>
+        <td>Dukungan tanda tangan digital</td>
+        <td><span class="badge hijau">✓ Standar industri</span></td>
+        <td><span class="badge">Terbatas</span></td>
+        <td><span class="badge">Terbatas</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <!-- KAPAN PAKAI PDF -->
+  <p class="section-title">Materi 2</p>
+  <h2>Kapan Harus Menggunakan PDF?</h2>
+
+  <div class="tools-grid" style="margin-top:8px;">
+    <div class="tool-card">
+      <div class="tool-logo" style="color:#C0392B;">📄</div>
+      <h3>Dokumen Resmi</h3>
+      <p>Surat lamaran, ijazah, kontrak, proposal — dokumen yang tidak boleh berubah tampilannya</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-logo" style="color:#2980B9;">📊</div>
+      <h3>Laporan & Presentasi</h3>
+      <p>Laporan keuangan, proposal proyek, portofolio yang dikirim ke klien atau atasan</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-logo" style="color:#27AE60;">🖨️</div>
+      <h3>Siap Cetak</h3>
+      <p>Brosur, flyer, formulir isian — dokumen yang harus tercetak persis seperti dirancang</p>
+    </div>
+    <div class="tool-card">
+      <div class="tool-logo" style="color:#8E44AD;">✍️</div>
+      <h3>Dokumen Bertanda Tangan</h3>
+      <p>Surat keputusan, MoU, dokumen hukum — PDF adalah standar untuk tanda tangan digital</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CARA MEMBUAT PDF -->
+  <p class="section-title">Materi 3</p>
+  <h2>Tiga Cara Membuat PDF</h2>
+
+  <ul class="step-list">
+    <li>
+      <span class="step-num">1</span>
+      <div>
+        <h3>Export / Save As dari Microsoft Word</h3>
+        <p>Buka dokumen Word → klik <em>File</em> → <em>Save As</em> → pilih format <strong>PDF (*.pdf)</strong> → klik Save. Cara ini mempertahankan semua tata letak, heading, dan daftar isi yang sudah dibuat di Word.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      <div>
+        <h3>Download / Export dari Canva</h3>
+        <p>Di Canva, klik tombol <em>Share</em> (pojok kanan atas) → <em>Download</em> → pilih format <strong>PDF Standard</strong> (untuk berbagi) atau <strong>PDF Print</strong> (untuk cetak berkualitas tinggi) → klik Download.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      <div>
+        <h3>Print to PDF (dari aplikasi apa saja)</h3>
+        <p>Buka dokumen/halaman web apapun → tekan <strong>Ctrl+P</strong> (Windows) atau <strong>Cmd+P</strong> (Mac) → pada kolom Printer, pilih <strong>Microsoft Print to PDF</strong> atau <strong>Save as PDF</strong> → klik Print/Save. Cara ini bekerja di hampir semua aplikasi.</p>
+      </div>
+    </li>
+  </ul>
+
+  <div class="info-box blue" style="margin-top:20px;">
+    <div class="info-box-label">💡 Tips</div>
+    <p>Untuk dokumen resmi yang akan dikirim ke instansi, gunakan cara <strong>Export dari Word</strong> agar hyperlink dan bookmark tetap berfungsi. Untuk desain visual (poster, brosur), gunakan <strong>Canva PDF Print</strong> agar warna dan resolusi terjaga.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- TOOLS -->
+  <p class="section-title">Tools yang Akan Digunakan</p>
+  <h2>Aplikasi & Layanan Pendukung</h2>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-logo" style="color:#C0392B;">W</div>
+      <h3>Microsoft Word</h3>
+      <p>Dokumen teks dengan Save As PDF</p>
+      <span class="tool-tag">Desktop</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-logo" style="color:#00C4CC;">✦</div>
+      <h3>Canva</h3>
+      <p>Desain grafis dengan export PDF</p>
+      <span class="tool-tag">Web / App</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-logo" style="color:#E74C3C;">i</div>
+      <h3>iLovePDF</h3>
+      <p>Kelola PDF online: merge, split, compress</p>
+      <span class="tool-tag">ilovepdf.com</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-logo" style="color:#F39C12;">S</div>
+      <h3>Smallpdf</h3>
+      <p>Konversi dan kompres PDF gratis</p>
+      <span class="tool-tag">smallpdf.com</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- LATIHAN & TUGAS -->
+  <p class="section-title">Latihan & Tugas</p>
+  <h2>Praktikum Sesi 1</h2>
+
+  <div class="latihan-box">
+    <h3>🛠 Latihan Kelas (30 menit terakhir)</h3>
+    <p>Setiap mahasiswa menyelesaikan tiga langkah berikut secara mandiri di komputer masing-masing:</p>
+    <ul class="latihan-steps">
+      <li>Buat dokumen singkat di <strong>Microsoft Word</strong> berisi biodata diri (nama, NIM, prodi, hobi) — lalu simpan sebagai PDF.</li>
+      <li>Buka <strong>Canva</strong>, pilih template "Kartu Nama" atau "Flyer", isi dengan data diri singkat — lalu download sebagai PDF Standard.</li>
+      <li>Buka halaman web apapun di browser, lalu gunakan <strong>Ctrl+P → Save as PDF</strong> untuk menyimpan halaman tersebut menjadi PDF.</li>
+    </ul>
+  </div>
+
+  <div class="tugas-box">
+    <h3>📌 Tugas Mandiri (dikumpulkan sebelum Sesi 2)</h3>
+    <ul>
+      <li>Buat sebuah <strong>CV sederhana</strong> di Microsoft Word (1 halaman), lalu simpan dalam format PDF.</li>
+      <li>Buat <strong>poster digital</strong> di Canva bertema bebas (minimal 1 gambar, 1 teks utama, 1 teks pendukung) — export sebagai PDF Print.</li>
+      <li>Kumpulkan <strong>kedua file PDF</strong> tersebut dalam satu folder dengan nama: <code>NIM_Nama_Sesi1</code> — upload ke LMS/Google Classroom.</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RINGKASAN -->
+  <p class="section-title">Ringkasan</p>
+  <h2>Yang Sudah Dipelajari Hari Ini</h2>
+
+  <div class="ringkasan-grid">
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">📋</div>
+      <p>PDF menjaga tampilan dokumen tetap konsisten di semua perangkat</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">⚖️</div>
+      <p>PDF unggul untuk dokumen resmi, cetak, dan tanda tangan digital</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">💾</div>
+      <p>Tiga cara membuat PDF: Word, Canva, dan Print to PDF</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔜</div>
+      <p>Sesi berikutnya: mengelola PDF — merge, split, compress, ekstrak</p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <strong>Teknologi Informasi Perkantoran</strong> &nbsp;·&nbsp; Sesi 1 — Pengenalan PDF &nbsp;·&nbsp;
+  Universitas Katolik Widya Mandala Surabaya
+</footer>
+
+</body>
+</html>
