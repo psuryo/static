@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blok PDF — Panduan Sesi 1–3</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:      #C0392B;
+    --red-light:#E74C3C;
+    --red-pale: #FDECEA;
+    --ink:      #1A1A1A;
+    --ink-2:    #444444;
+    --ink-3:    #888888;
+    --paper:    #FAFAF8;
+    --white:    #FFFFFF;
+    --border:   #E5E2DD;
+    --accent:   #2C3E50;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--accent);
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: "PDF";
+    position: absolute;
+    right: -10px;
+    top: -20px;
+    font-family: 'Sora', sans-serif;
+    font-size: 160px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .breadcrumb {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+  }
+  .breadcrumb span { color: rgba(255,255,255,0.7); }
+  header h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(24px, 4vw, 38px);
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  header h1 em {
+    font-style: normal;
+    color: var(--red-light);
+  }
+  header p {
+    color: rgba(255,255,255,0.65);
+    font-size: 14px;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+  }
+  .meta-pill strong { color: var(--white); font-weight: 600; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 40px;
+  }
+  .progress-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .progress-track {
+    background: var(--border);
+    border-radius: 4px;
+    height: 6px;
+    max-width: 400px;
+  }
+  .progress-fill {
+    background: var(--red);
+    height: 6px;
+    border-radius: 4px;
+    width: 33.3%; /* sesi 1 sudah tersedia */
+    transition: width 0.4s ease;
+  }
+  .progress-steps {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    max-width: 400px;
+  }
+  .progress-step {
+    font-size: 11px;
+    color: var(--ink-3);
+    flex: 1;
+  }
+  .progress-step.done { color: var(--red); font-weight: 600; }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    max-width: 860px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 44px 24px 60px;
+  }
+
+  .section-eyebrow {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  main > h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+
+  /* ── SESSION CARDS ── */
+  .session-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .session-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .session-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    border-color: #D0CCC8;
+  }
+  .session-card.available { border-left: 4px solid var(--red); }
+  .session-card.coming    { border-left: 4px solid var(--border); opacity: 0.6; }
+
+  .card-num {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    min-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: -1px;
+  }
+  .session-card.coming .card-num {
+    background: #D8D4CE;
+    color: #AAA39A;
+  }
+
+  .card-body {
+    padding: 20px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .card-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-available {
+    background: #EAFAF1;
+    color: #1E8449;
+  }
+  .badge-coming {
+    background: #F2F2F2;
+    color: #999;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.55;
+  }
+
+  .card-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .topic-tag {
+    background: var(--red-pale);
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 10px;
+  }
+  .session-card.coming .topic-tag {
+    background: #F0EFEE;
+    color: #AAA;
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--red);
+    text-decoration: none;
+    width: fit-content;
+    padding: 7px 14px;
+    border: 1.5px solid var(--red);
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .card-link:hover {
+    background: var(--red);
+    color: var(--white);
+  }
+  .card-link svg {
+    width: 14px; height: 14px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* ── DIVIDER ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+
+  /* ── OVERVIEW TABLE ── */
+  .overview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-top: 8px;
+  }
+  .overview-table th {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: left;
+    padding: 10px 16px;
+  }
+  .overview-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-2);
+    vertical-align: top;
+  }
+  .overview-table tr:last-child td { border-bottom: none; }
+  .overview-table tr:nth-child(even) td { background: #F7F5F2; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--accent);
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    padding: 18px 20px;
+    font-size: 12px;
+  }
+  footer strong { color: rgba(255,255,255,0.8); }
+
+  @media (max-width: 580px) {
+    header { padding: 36px 20px 32px; }
+    header::before { font-size: 110px; }
+    .progress-wrap { padding: 16px 20px; }
+    main { padding: 32px 16px 50px; }
+    .card-num { min-width: 60px; font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="breadcrumb">
+    Teknologi Informasi Perkantoran &nbsp;/&nbsp; <span>Blok 1 — PDF</span>
+  </div>
+  <h1>Panduan Blok <em>PDF</em></h1>
+  <p>Tiga sesi untuk memahami format PDF secara menyeluruh — dari konsep dasar, pengelolaan berkas, hingga pengisian formulir dan konversi dokumen.</p>
+  <div class="header-meta">
+    <div class="meta-pill">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Blok <strong>1 dari 4</strong>
+    </div>
+    <div class="meta-pill">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <strong>3 sesi</strong> &nbsp;× 100 menit
+    </div>
+    <div class="meta-pill">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Sesi <strong>1 – 3</strong> dari 14
+    </div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-label">Progress Blok PDF</div>
+  <div class="progress-track">
+    <div class="progress-fill"></div>
+  </div>
+  <div class="progress-steps">
+    <span class="progress-step done">Sesi 1 ✓</span>
+    <span class="progress-step">Sesi 2</span>
+    <span class="progress-step">Sesi 3</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <p class="section-eyebrow">Daftar Panduan</p>
+  <h2>Pilih sesi yang ingin dibuka</h2>
+
+  <div class="session-list">
+
+    <!-- SESI 1 — TERSEDIA -->
+    <div class="session-card available">
+      <div class="card-num">01</div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-title">Pengenalan PDF &amp; Cara Membuatnya</div>
+          <span class="card-badge badge-available">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Tersedia
+          </span>
+        </div>
+        <p class="card-desc">Memahami konsep PDF, keunggulannya dibanding format lain, dan mempraktikkan tiga cara membuat PDF dari Word, Canva, dan Print to PDF.</p>
+        <div class="card-topics">
+          <span class="topic-tag">Konsep PDF</span>
+          <span class="topic-tag">PDF vs Word vs Google Docs</span>
+          <span class="topic-tag">Save As PDF</span>
+          <span class="topic-tag">Canva Export</span>
+          <span class="topic-tag">Print to PDF</span>
+        </div>
+        <a href="sesi1-panduan-pdf.html" class="card-link">
+          Buka Panduan
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- SESI 2 — SEGERA HADIR -->
+    <div class="session-card coming">
+      <div class="card-num">02</div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-title">Mengelola PDF: Merge, Split, Compress &amp; Rotate</div>
+          <span class="card-badge badge-coming">Segera hadir</span>
+        </div>
+        <p class="card-desc">Menggabungkan beberapa PDF menjadi satu, memisahkan halaman, mengecilkan ukuran berkas, memutar halaman, dan mengekstrak halaman tertentu menggunakan iLovePDF dan Smallpdf.</p>
+        <div class="card-topics">
+          <span class="topic-tag">Merge PDF</span>
+          <span class="topic-tag">Split PDF</span>
+          <span class="topic-tag">Compress PDF</span>
+          <span class="topic-tag">Rotate &amp; Ekstrak</span>
+          <span class="topic-tag">iLovePDF</span>
+          <span class="topic-tag">Smallpdf</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESI 3 — SEGERA HADIR -->
+    <div class="session-card coming">
+      <div class="card-num">03</div>
+      <div class="card-body">
+        <div class="card-top">
+          <div class="card-title">Mengisi &amp; Mengedit PDF: Form, Anotasi &amp; Konversi</div>
+          <span class="card-badge badge-coming">Segera hadir</span>
+        </div>
+        <p class="card-desc">Mengisi form fields pada PDF interaktif, menambahkan anotasi dan komentar, serta mengonversi PDF ke format Word atau Excel dan sebaliknya.</p>
+        <div class="card-topics">
+          <span class="topic-tag">Form Fields</span>
+          <span class="topic-tag">Anotasi &amp; Komentar</span>
+          <span class="topic-tag">PDF → Word</span>
+          <span class="topic-tag">PDF → Excel</span>
+          <span class="topic-tag">Adobe Acrobat Reader</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr>
+
+  <!-- OVERVIEW TABLE -->
+  <p class="section-eyebrow">Ringkasan Blok</p>
+  <h2>Gambaran ketiga sesi PDF</h2>
+
+  <table class="overview-table">
+    <thead>
+      <tr>
+        <th>Sesi</th>
+        <th>Topik Utama</th>
+        <th>Tools</th>
+        <th>Output Latihan</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Sesi 1</strong></td>
+        <td>Pengenalan & cara membuat PDF</td>
+        <td>Word, Canva, Browser</td>
+        <td>CV + Poster dalam PDF</td>
+      </tr>
+      <tr>
+        <td><strong>Sesi 2</strong></td>
+        <td>Mengelola PDF (merge, split, compress)</td>
+        <td>iLovePDF, Smallpdf, Adobe</td>
+        <td>Paket PDF hasil olahan</td>
+      </tr>
+      <tr>
+        <td><strong>Sesi 3</strong></td>
+        <td>Mengisi form, anotasi & konversi</td>
+        <td>Adobe Acrobat Reader, iLovePDF</td>
+        <td>PDF terisi + dokumen hasil konversi</td>
+      </tr>
+    </tbody>
+  </table>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Teknologi Informasi Perkantoran</strong> &nbsp;·&nbsp;
+  Blok 1 — PDF &nbsp;·&nbsp;
+  Universitas Katolik Widya Mandala Surabaya
+</footer>
+
+</body>
+</html>
