@@ -185,10 +185,14 @@
   .field-row.head{background:var(--ledger); color:var(--paper-light); font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.05em; text-transform:uppercase;}
   .field-row > div{padding:10px 14px; font-size:.86rem;}
   .field-row .fname{font-weight:600; font-family:'IBM Plex Mono',monospace; font-size:.82rem; color:var(--stamp);}
-  .field-row:not(.head):nth-child(even){background:rgba(61,95,76,.06);}
-  .field-row:not(.head):nth-child(odd) {
-  background: var(--ink); /* Menggunakan warna hitam dari variabel Anda */
-  color: #ffffff;         /* Mengubah teks biasa menjadi putih */
+  /* Mengubah baris selang-seling (genap) menjadi background hitam dan tulisan putih */
+.field-row:not(.head):nth-child(even) {
+  background: var(--ink); /* Menggunakan variabel warna hitam bawaan Anda */
+  color: #ffffff;         /* Mengubah warna teks biasa menjadi putih */
+}
+/* Memastikan warna khusus seperti .fname (Nama Field) juga ikut putih saat background hitam */
+.field-row:not(.head):nth-child(even) .fname {
+  color: #ffffff;
 }
   @media(max-width:640px){
     .field-row{grid-template-columns:1fr; }
