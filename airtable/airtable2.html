@@ -186,6 +186,10 @@
   .field-row > div{padding:10px 14px; font-size:.86rem;}
   .field-row .fname{font-weight:600; font-family:'IBM Plex Mono',monospace; font-size:.82rem; color:var(--stamp);}
   .field-row:not(.head):nth-child(even){background:rgba(61,95,76,.06);}
+  .field-row:not(.head):nth-child(odd) {
+  background: var(--ink); /* Menggunakan warna hitam dari variabel Anda */
+  color: #ffffff;         /* Mengubah teks biasa menjadi putih */
+}
   @media(max-width:640px){
     .field-row{grid-template-columns:1fr; }
     .field-row > div{padding:6px 14px;}
