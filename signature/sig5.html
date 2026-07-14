@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi 5 — Praktik TTE: Menandatangani & Mengirim Dokumen</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue:       #1A5276;
+    --blue-light: #2980B9;
+    --blue-pale:  #EBF5FB;
+    --blue-mid:   #1A3A52;
+    --ink:        #1A1A1A;
+    --ink-2:      #444444;
+    --ink-3:      #777777;
+    --paper:      #F8FAFB;
+    --white:      #FFFFFF;
+    --border:     #DDE4EA;
+    --accent:     #1A3A52;
+    --green:      #1E8449;
+    --green-light:#27AE60;
+    --green-pale: #EAFAF1;
+    --orange:     #B7770D;
+    --orange-pale:#FEF9E7;
+    --red:        #C0392B;
+    --red-pale:   #FDECEA;
+    --purple:     #6C3483;
+    --purple-pale:#F5EEF8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--accent);
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+  .topbar a {
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .topbar a:hover { color: rgba(255,255,255,0.9); }
+  .topbar span { color: rgba(255,255,255,0.25); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--accent);
+    color: var(--white);
+    padding: 52px 40px 46px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "TTE";
+    position: absolute;
+    right: -10px;
+    top: -20px;
+    font-family: 'Sora', sans-serif;
+    font-size: 180px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--blue-light);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(24px, 5vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 620px;
+    margin-bottom: 14px;
+  }
+  .hero h1 span { color: #5DADE2; }
+  .hero > p {
+    color: rgba(255,255,255,0.68);
+    max-width: 520px;
+    font-size: 15px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.58);
+    font-size: 13px;
+  }
+  .hero-meta-item strong { color: var(--white); font-weight: 600; }
+  .icon-sm {
+    width: 16px; height: 16px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+  h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  p { color: var(--ink-2); margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* ── TUJUAN GRID ── */
+  .tujuan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .tujuan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .tujuan-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--blue-light);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .tujuan-card p { color: var(--ink-2); font-size: 14px; margin: 0; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue-light);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+  .info-box.green  { border-left-color: #27AE60; }
+  .info-box.orange { border-left-color: #E67E22; }
+  .info-box.red    { border-left-color: #C0392B; }
+  .info-box.purple { border-left-color: #8E44AD; }
+  .info-box-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 6px;
+  }
+  .info-box.green  .info-box-label { color: #27AE60; }
+  .info-box.orange .info-box-label { color: #E67E22; }
+  .info-box.red    .info-box-label { color: #C0392B; }
+  .info-box.purple .info-box-label { color: #8E44AD; }
+  .info-box p { margin: 0; font-size: 14px; }
+
+  /* ── TOOL CARDS ── */
+  .tool-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .tool-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .tool-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #FAFCFD;
+  }
+  .tool-logo {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--white);
+    flex-shrink: 0;
+  }
+  .tool-card-header > div { flex: 1; }
+  .tool-card-header h3 { font-size: 15px; margin-bottom: 2px; }
+  .tool-card-header span { font-size: 12px; color: var(--ink-3); }
+  .tool-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+  .pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .pill-green  { background: var(--green-pale); color: var(--green); }
+  .pill-orange { background: var(--orange-pale); color: var(--orange); }
+  .pill-blue   { background: var(--blue-pale); color: var(--blue-light); }
+  .pill-red    { background: var(--red-pale); color: var(--red); }
+  .pill-purple { background: var(--purple-pale); color: var(--purple); }
+  .tool-card-body { padding: 16px 18px; }
+  .tool-card-body p { font-size: 13.5px; color: var(--ink-2); margin-bottom: 0; }
+
+  /* ── STEP LIST ── */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .step-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .step-num {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-list li > div { flex: 1; }
+  .step-list li h3 { font-size: 14px; margin-bottom: 3px; }
+  .step-list li p  { margin: 0; font-size: 13px; color: var(--ink-3); line-height: 1.55; }
+  code {
+    background: #EEF2F5;
+    color: var(--blue);
+    font-size: 12px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ── JENIS TTE REMINDER ── */
+  .tte-reminder {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .tte-reminder-item {
+    flex: 1;
+    min-width: 180px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .tte-reminder-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .tte-reminder-item p { font-size: 12.5px; color: var(--ink-2); margin: 0; line-height: 1.45; }
+
+  /* ── TABEL PERBANDINGAN ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-top: 8px;
+  }
+  .compare-table th {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: left;
+    padding: 10px 16px;
+  }
+  .compare-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-2);
+    vertical-align: top;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td { background: #F2F6F9; }
+
+  /* ── ALUR PENANDATANGANAN ── */
+  .alur-sign {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 12px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    flex-wrap: wrap;
+  }
+  .alur-step {
+    flex: 1;
+    min-width: 120px;
+    padding: 20px 14px;
+    text-align: center;
+    position: relative;
+    border-right: 1px solid var(--border);
+  }
+  .alur-step:last-child { border-right: none; }
+  .alur-step:nth-child(even) { background: #F5F8FB; }
+  .alur-step-icon { font-size: 26px; margin-bottom: 8px; }
+  .alur-step-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .alur-step-sub { font-size: 11px; color: var(--ink-3); line-height: 1.4; }
+  .alur-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    color: var(--blue-light);
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+    background: var(--white);
+  }
+
+  /* ── VERIFIKASI GRID ── */
+  .verif-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .verif-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .verif-card .verif-icon { font-size: 26px; margin-bottom: 10px; display: block; }
+  .verif-card h3 { font-size: 14px; margin-bottom: 4px; }
+  .verif-card p { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.5; }
+  .verif-url {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--blue-light);
+    background: var(--blue-pale);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ── LATIHAN BOX ── */
+  .latihan-box {
+    background: var(--accent);
+    color: var(--white);
+    border-radius: 8px;
+    padding: 26px 28px;
+    margin-top: 8px;
+  }
+  .latihan-box h3 {
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .latihan-box > p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 14px; }
+  .latihan-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .latihan-steps li {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.88);
+    align-items: flex-start;
+    line-height: 1.55;
+  }
+  .latihan-steps li::before {
+    content: "→";
+    color: #5DADE2;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tugas-box {
+    background: var(--blue-pale);
+    border: 1.5px solid #AED6F1;
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-top: 14px;
+  }
+  .tugas-box h3 { color: var(--blue); font-size: 15px; margin-bottom: 10px; }
+  .tugas-box ul { padding-left: 18px; }
+  .tugas-box ul li { font-size: 14px; color: var(--ink-2); margin-bottom: 8px; line-height: 1.55; }
+
+  /* ── RINGKASAN ── */
+  .ringkasan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .ringkasan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+  .ringkasan-icon { font-size: 26px; margin-bottom: 8px; }
+  .ringkasan-card p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* ── NAV SESI ── */
+  .nav-sesi {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--blue-light); background: var(--blue-pale); }
+  .nav-btn.disabled { opacity: 0.35; pointer-events: none; }
+  .nav-btn svg {
+    width: 14px; height: 14px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .nav-center { font-size: 12px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.5px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--accent);
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    padding: 18px 20px;
+    font-size: 12px;
+  }
+  footer strong { color: rgba(255,255,255,0.8); }
+
+  /* ── PANDUAN SECTION HEADER ── */
+  .panduan-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--accent);
+    border-radius: 6px 6px 0 0;
+    margin-top: 24px;
+  }
+  .panduan-header h3 {
+    color: var(--white);
+    font-size: 14px;
+    margin: 0;
+  }
+  .panduan-header span {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    margin-left: auto;
+  }
+  .panduan-body {
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 10px 16px; }
+    .hero { padding: 40px 20px 36px; }
+    .hero::before { font-size: 110px; }
+    .page { padding: 32px 16px 60px; }
+    .alur-sign { flex-direction: column; }
+    .alur-step { border-right: none; border-bottom: 1px solid var(--border); }
+    .alur-step:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index-pdf.html">Blok PDF</a>
+  <span>/</span>
+  <a href="index-tte.html">Blok TTE</a>
+  <span>/</span>
+  <span style="color:rgba(255,255,255,0.7);">Sesi 5</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">
+    <svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Sesi 5 dari 14 · Blok TTE
+  </div>
+  <h1>Praktik <span>TTE</span>:<br>Menandatangani &amp; Mengirim Dokumen</h1>
+  <p>Mempraktikkan tanda tangan elektronik secara langsung — memilih tools yang tepat, menandatangani dokumen PDF, mengirimkan ke pihak lain, dan memverifikasi keaslian tanda tangan.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Durasi: <strong>100 menit</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Blok TTE: <strong>Sesi 2 dari 3</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Tools: <strong>Acrobat Sign · Smallpdf · ILovePDF</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- NAVIGASI SESI -->
+  <div class="nav-sesi">
+    <a href="sesi4-panduan-tte.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 4 — Konsep & Regulasi TTE
+    </a>
+    <span class="nav-center">BLOK TTE · SESI 5</span>
+    <a href="sesi6-panduan-tte.html" class="nav-btn disabled">
+      Sesi 6 — TTE Institusi
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+  <!-- TUJUAN -->
+  <p class="section-title">Tujuan Pembelajaran</p>
+  <h2>Setelah sesi ini, mahasiswa mampu…</h2>
+  <div class="tujuan-grid">
+    <div class="tujuan-card">
+      <span class="tujuan-num">01</span>
+      <p>Memilih tools TTE yang sesuai berdasarkan kebutuhan dan jenis dokumen</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">02</span>
+      <p>Menandatangani dokumen PDF secara elektronik menggunakan minimal dua tools berbeda</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">03</span>
+      <p>Mengirimkan dokumen untuk ditandatangani oleh pihak lain melalui platform eSign</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">04</span>
+      <p>Memverifikasi keaslian tanda tangan elektronik pada dokumen yang diterima</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RECAP SESI 4 -->
+  <div class="info-box">
+    <div class="info-box-label">🔁 Recap Sesi 4</div>
+    <p>Di sesi sebelumnya kita belajar bahwa TTE terbagi menjadi tiga jenis. Sesi ini berfokus pada <strong>praktik</strong> — terutama TTE tidak tersertifikasi dan TTE tersertifikasi luar negeri yang bisa diakses gratis oleh mahasiswa.</p>
+  </div>
+
+  <div class="tte-reminder">
+    <div class="tte-reminder-item">
+      <div class="tte-reminder-dot" style="background:#E67E22;"></div>
+      <p><strong>TTE Tidak Tersertifikasi</strong> — gambar TTD, draw signature. Mudah, gratis, kekuatan hukum terbatas.</p>
+    </div>
+    <div class="tte-reminder-item">
+      <div class="tte-reminder-dot" style="background:var(--blue-light);"></div>
+      <p><strong>TTE Tersertifikasi Luar Negeri</strong> — Acrobat Sign, DocuSign. Gratis tier terbatas, kekuatan hukum lebih kuat.</p>
+    </div>
+    <div class="tte-reminder-item">
+      <div class="tte-reminder-dot" style="background:var(--green);"></div>
+      <p><strong>TTE Tersertifikasi Dalam Negeri</strong> — BSrE, Peruri. Dibahas di Sesi 6. Kekuatan hukum penuh di Indonesia.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 1 — ALUR PENANDATANGANAN -->
+  <p class="section-title">Materi 1</p>
+  <h2>Alur Umum Penandatanganan Dokumen Digital</h2>
+  <p>Sebelum masuk ke tools spesifik, penting memahami alur standar yang berlaku di hampir semua platform eSign:</p>
+
+  <div class="alur-sign">
+    <div class="alur-step">
+      <div class="alur-step-icon">📄</div>
+      <div class="alur-step-label">Siapkan Dokumen</div>
+      <div class="alur-step-sub">Pastikan PDF sudah final sebelum ditandatangani</div>
+    </div>
+    <div class="alur-step">
+      <div class="alur-step-icon">📤</div>
+      <div class="alur-step-label">Upload ke Platform</div>
+      <div class="alur-step-sub">Unggah PDF ke layanan eSign yang dipilih</div>
+    </div>
+    <div class="alur-step">
+      <div class="alur-step-icon">✍️</div>
+      <div class="alur-step-label">Buat & Tempel TTD</div>
+      <div class="alur-step-sub">Ketik, gambar, atau upload gambar tanda tangan</div>
+    </div>
+    <div class="alur-step">
+      <div class="alur-step-icon">📍</div>
+      <div class="alur-step-label">Posisikan</div>
+      <div class="alur-step-sub">Tempatkan tanda tangan di posisi yang tepat pada halaman</div>
+    </div>
+    <div class="alur-step">
+      <div class="alur-step-icon">✅</div>
+      <div class="alur-step-label">Finalisasi & Kirim</div>
+      <div class="alur-step-sub">Simpan PDF bertanda tangan atau kirim ke pihak lain</div>
+    </div>
+  </div>
+
+  <div class="info-box orange" style="margin-top:16px;">
+    <div class="info-box-label">⚠️ Penting Sebelum Menandatangani</div>
+    <p>Pastikan isi dokumen sudah <strong>benar-benar final</strong> sebelum ditandatangani. Mengedit dokumen setelah ditandatangani akan membatalkan validitas tanda tangan digital — sistem akan mendeteksi perubahan dan menandai dokumen sebagai "dimodifikasi setelah penandatanganan".</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 2 — TOOLS -->
+  <p class="section-title">Materi 2</p>
+  <h2>Pilihan Tools eSign yang Bisa Digunakan</h2>
+
+  <div class="tool-list">
+
+    <!-- ADOBE ACROBAT READER -->
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-logo" style="background:#E74C3C;">Ac</div>
+        <div>
+          <h3>Adobe Acrobat Reader (Fill & Sign)</h3>
+          <span>acrobat.adobe.com · desktop &amp; web</span>
+        </div>
+        <div class="tool-pills">
+          <span class="pill pill-green">Gratis</span>
+          <span class="pill pill-orange">Tidak Tersertifikasi</span>
+        </div>
+      </div>
+      <div class="tool-card-body">
+        <p>Fitur <strong>Fill & Sign</strong> di Adobe Acrobat Reader (versi gratis) memungkinkan penambahan tanda tangan berupa gambar atau tulisan tangan digital langsung ke PDF. Tanda tangan ini bersifat tidak tersertifikasi — cocok untuk kebutuhan internal atau dokumen tidak resmi. Untuk tanda tangan tersertifikasi, diperlukan Adobe Acrobat Pro atau Adobe Sign (berbayar).</p>
+      </div>
+    </div>
+
+    <!-- SMALLPDF ESIGN -->
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-logo" style="background:#E44D26;">S</div>
+        <div>
+          <h3>Smallpdf eSign</h3>
+          <span>smallpdf.com/sign-pdf · web</span>
+        </div>
+        <div class="tool-pills">
+          <span class="pill pill-green">Gratis (terbatas)</span>
+          <span class="pill pill-orange">Tidak Tersertifikasi</span>
+        </div>
+      </div>
+      <div class="tool-card-body">
+        <p>Smallpdf menyediakan fitur eSign yang mudah digunakan langsung di browser — tanpa install. Pengguna bisa menggambar, mengetik, atau mengupload gambar tanda tangan, lalu menempatkannya di halaman PDF yang diinginkan. Versi gratis membatasi 2 tugas per jam. Cocok untuk latihan dan kebutuhan dokumen tidak resmi.</p>
+      </div>
+    </div>
+
+    <!-- ILOVEPDF SIGN -->
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-logo" style="background:#E74C3C;">i</div>
+        <div>
+          <h3>iLovePDF Sign</h3>
+          <span>ilovepdf.com/sign-pdf · web</span>
+        </div>
+        <div class="tool-pills">
+          <span class="pill pill-green">Gratis</span>
+          <span class="pill pill-orange">Tidak Tersertifikasi</span>
+        </div>
+      </div>
+      <div class="tool-card-body">
+        <p>iLovePDF juga menyediakan fitur tanda tangan elektronik yang sederhana dan gratis. Mendukung tiga mode pembuatan tanda tangan: ketik nama, gambar langsung, atau upload gambar. Bisa juga mengirimkan dokumen ke email orang lain untuk ditandatangani. Tanda tangan yang dihasilkan bersifat tidak tersertifikasi.</p>
+      </div>
+    </div>
+
+    <!-- DOCUSIGN -->
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-logo" style="background:#FFB81C; color:#1A1A1A;">D</div>
+        <div>
+          <h3>DocuSign</h3>
+          <span>docusign.com · web &amp; mobile</span>
+        </div>
+        <div class="tool-pills">
+          <span class="pill pill-blue">Gratis 30 hari trial</span>
+          <span class="pill pill-purple">Tersertifikasi LN</span>
+        </div>
+      </div>
+      <div class="tool-card-body">
+        <p>DocuSign adalah platform eSign profesional paling populer di dunia, digunakan oleh perusahaan multinasional dan lembaga keuangan. Menawarkan tanda tangan tersertifikasi sesuai standar internasional (eIDAS, ESIGN Act). Gratis 30 hari trial — cukup untuk keperluan praktik kelas. Cocok untuk memahami alur pengiriman dokumen ke banyak penanda tangan sekaligus.</p>
+      </div>
+    </div>
+
+    <!-- ADOBE ACROBAT SIGN -->
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-logo" style="background:#FF0000;">AS</div>
+        <div>
+          <h3>Adobe Acrobat Sign</h3>
+          <span>acrobat.adobe.com/sign · web</span>
+        </div>
+        <div class="tool-pills">
+          <span class="pill pill-blue">Free tier terbatas</span>
+          <span class="pill pill-purple">Tersertifikasi LN</span>
+        </div>
+      </div>
+      <div class="tool-card-body">
+        <p>Adobe Acrobat Sign adalah layanan eSign berbasis cloud dari Adobe dengan sertifikasi internasional. Tersedia free tier dengan batasan jumlah dokumen per bulan. Mendukung pengiriman dokumen ke beberapa penanda tangan sekaligus dengan urutan yang bisa diatur, audit trail lengkap, dan integrasi dengan Microsoft 365.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABEL RINGKAS -->
+  <table class="compare-table" style="margin-top:20px;">
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>Jenis TTE</th>
+        <th>Biaya</th>
+        <th>Kirim ke Orang Lain</th>
+        <th>Cocok untuk</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Acrobat Reader</strong></td>
+        <td><span class="pill pill-orange" style="display:inline-block;">Tidak tersertifikasi</span></td>
+        <td>Gratis</td>
+        <td>Tidak langsung</td>
+        <td>TTD sendiri di dokumen</td>
+      </tr>
+      <tr>
+        <td><strong>Smallpdf eSign</strong></td>
+        <td><span class="pill pill-orange" style="display:inline-block;">Tidak tersertifikasi</span></td>
+        <td>Gratis (2/jam)</td>
+        <td>Download lalu kirim manual</td>
+        <td>TTD cepat tanpa registrasi</td>
+      </tr>
+      <tr>
+        <td><strong>iLovePDF Sign</strong></td>
+        <td><span class="pill pill-orange" style="display:inline-block;">Tidak tersertifikasi</span></td>
+        <td>Gratis</td>
+        <td>✓ Via email</td>
+        <td>TTD + kirim ke 1 pihak</td>
+      </tr>
+      <tr>
+        <td><strong>DocuSign</strong></td>
+        <td><span class="pill pill-purple" style="display:inline-block;">Tersertifikasi LN</span></td>
+        <td>Trial 30 hari</td>
+        <td>✓ Multi-signer</td>
+        <td>Simulasi alur profesional</td>
+      </tr>
+      <tr>
+        <td><strong>Acrobat Sign</strong></td>
+        <td><span class="pill pill-purple" style="display:inline-block;">Tersertifikasi LN</span></td>
+        <td>Free tier terbatas</td>
+        <td>✓ Multi-signer</td>
+        <td>Integrasi Microsoft 365</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <!-- MATERI 3 — PANDUAN LANGKAH: SMALLPDF -->
+  <p class="section-title">Materi 3</p>
+  <h2>Panduan Langkah Demi Langkah</h2>
+
+  <!-- SMALLPDF -->
+  <div class="panduan-header">
+    <div style="background:#E44D26;color:white;width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:14px;flex-shrink:0;">S</div>
+    <h3>Menandatangani PDF dengan Smallpdf eSign</h3>
+    <span>Paling mudah untuk pemula</span>
+  </div>
+  <div class="panduan-body">
+    <ul class="step-list" style="border:none;padding:16px 16px 4px;">
+      <li>
+        <span class="step-num">1</span>
+        <div>
+          <h3>Buka Smallpdf Sign</h3>
+          <p>Kunjungi <code>smallpdf.com/sign-pdf</code> — tidak perlu daftar akun untuk penggunaan dasar. Klik <strong>Choose File</strong> atau drag & drop berkas PDF yang ingin ditandatangani.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>
+          <h3>Buat tanda tangan</h3>
+          <p>Klik <strong>Your Signature</strong> di panel kanan. Pilih salah satu mode: <strong>Type</strong> (ketik nama, sistem pilihkan font), <strong>Draw</strong> (gambar langsung dengan mouse/touchpad), atau <strong>Upload</strong> (foto tanda tangan di atas kertas putih). Klik <strong>Save</strong>.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>
+          <h3>Tempatkan tanda tangan</h3>
+          <p>Klik di area dokumen tempat tanda tangan ingin diletakkan. Tanda tangan akan muncul sebagai elemen yang bisa dipindah dan diubah ukurannya. Sesuaikan posisi dan skala hingga tepat.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>
+          <h3>Tambah inisial atau tanggal (opsional)</h3>
+          <p>Gunakan tombol <strong>Initials</strong> untuk menambah inisial di halaman lain, atau <strong>Date</strong> untuk menambahkan tanggal penandatanganan secara otomatis.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">5</span>
+        <div>
+          <h3>Finalisasi dan download</h3>
+          <p>Klik tombol <strong>Finish & Sign</strong> di pojok kanan atas, lalu klik <strong>Download</strong>. PDF bertanda tangan tersimpan ke komputer — siap dikirim via email atau diunggah ke platform yang diperlukan.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ILOVEPDF KIRIM KE ORANG LAIN -->
+  <div class="panduan-header" style="margin-top:24px;">
+    <div style="background:#E74C3C;color:white;width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:14px;flex-shrink:0;">i</div>
+    <h3>Mengirim Dokumen untuk Ditandatangani via iLovePDF</h3>
+    <span>Cocok untuk simulasi kirim-terima</span>
+  </div>
+  <div class="panduan-body">
+    <ul class="step-list" style="border:none;padding:16px 16px 4px;">
+      <li>
+        <span class="step-num">1</span>
+        <div>
+          <h3>Buka iLovePDF Sign dan upload dokumen</h3>
+          <p>Kunjungi <code>ilovepdf.com/sign-pdf</code> dan upload PDF yang ingin dikirim untuk ditandatangani. Buat akun gratis terlebih dahulu agar bisa menggunakan fitur pengiriman.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>
+          <h3>Pilih mode "Request Signatures"</h3>
+          <p>Klik tombol <strong>Request Signatures</strong> (bukan Sign Yourself). Masukkan nama dan alamat email pihak yang perlu menandatangani dokumen.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>
+          <h3>Tandai posisi tanda tangan</h3>
+          <p>Tambahkan <strong>signature field</strong> di posisi yang tepat pada halaman dokumen — ini menunjukkan di mana penerima harus menandatangani. Bisa juga tambahkan field tanggal atau inisial.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>
+          <h3>Kirim dan pantau</h3>
+          <p>Klik <strong>Send</strong>. Penerima akan mendapat email berisi tautan untuk menandatangani dokumen secara online. Setelah ditandatangani, kamu mendapat notifikasi dan salinan dokumen final.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- DOCUSIGN -->
+  <div class="panduan-header" style="margin-top:24px;">
+    <div style="background:#FFB81C;color:#1A1A1A;width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:14px;flex-shrink:0;">D</div>
+    <h3>Menandatangani dengan DocuSign (Simulasi Profesional)</h3>
+    <span>Untuk memahami alur enterprise</span>
+  </div>
+  <div class="panduan-body">
+    <ul class="step-list" style="border:none;padding:16px 16px 4px;">
+      <li>
+        <span class="step-num">1</span>
+        <div>
+          <h3>Daftar akun gratis / aktifkan trial</h3>
+          <p>Kunjungi <code>docusign.com</code> → klik <strong>Try DocuSign Free</strong> → isi data dan verifikasi email. Trial 30 hari memberikan akses penuh fitur tanpa kartu kredit.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>
+          <h3>Upload dokumen dan buat envelope</h3>
+          <p>Di dashboard, klik <strong>New → Send an Envelope</strong>. Upload PDF dokumen, lalu tambahkan penerima (nama + email). Satu envelope bisa berisi beberapa dokumen dan beberapa penanda tangan.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>
+          <h3>Tambahkan field tanda tangan</h3>
+          <p>Di editor DocuSign, seret field <strong>Signature</strong>, <strong>Date Signed</strong>, dan <strong>Name</strong> dari panel kiri ke posisi yang tepat di dokumen. Assign setiap field ke penanda tangan yang sesuai.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>
+          <h3>Kirim dan tinjau audit trail</h3>
+          <p>Klik <strong>Send</strong>. Setelah semua pihak menandatangani, buka dokumen yang sudah selesai dan lihat <strong>Certificate of Completion</strong> — berisi log lengkap: siapa menandatangani kapan, dari IP address mana, dan hash kriptografis dokumen.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 4 — VERIFIKASI -->
+  <p class="section-title">Materi 4</p>
+  <h2>Memverifikasi Keaslian Tanda Tangan Elektronik</h2>
+
+  <p>Menerima dokumen bertanda tangan digital bukan berarti langsung percaya. Selalu verifikasi keaslian tanda tangan sebelum dokumen dijadikan acuan resmi.</p>
+
+  <div class="verif-grid">
+
+    <div class="verif-card">
+      <span class="verif-icon">🔍</span>
+      <h3>Verifikasi di Adobe Acrobat</h3>
+      <p>Buka PDF di Adobe Acrobat Reader → panel kiri → klik ikon <strong>Signatures</strong>. Adobe akan menampilkan status setiap tanda tangan: valid, tidak valid, atau tidak diketahui.</p>
+      <span class="verif-url">Tools → Signatures Panel</span>
+    </div>
+
+    <div class="verif-card">
+      <span class="verif-icon">📋</span>
+      <h3>Certificate of Completion</h3>
+      <p>DocuSign dan platform enterprise menyertakan sertifikat penyelesaian terpisah yang berisi log audit lengkap — waktu penandatanganan, IP address, dan hash dokumen.</p>
+      <span class="verif-url">Lampiran terakhir dokumen</span>
+    </div>
+
+    <div class="verif-card">
+      <span class="verif-icon">📱</span>
+      <h3>QR Code (BSrE / Peruri)</h3>
+      <p>Dokumen resmi pemerintah yang menggunakan BSrE menyertakan QR code. Scan QR tersebut untuk diarahkan ke portal verifikasi resmi pemerintah yang menampilkan status keaslian dokumen.</p>
+      <span class="verif-url">esign.bsre.bssn.go.id</span>
+    </div>
+
+    <div class="verif-card">
+      <span class="verif-icon">🌐</span>
+      <h3>Portal Verifikasi Online</h3>
+      <p>Beberapa PSrE menyediakan portal verifikasi mandiri. Upload atau masukkan nomor sertifikat dokumen untuk mengecek status keabsahan tanda tangan secara online.</p>
+      <span class="verif-url">Portal masing-masing PSrE</span>
+    </div>
+
+  </div>
+
+  <div class="info-box green" style="margin-top:16px;">
+    <div class="info-box-label">💡 Yang Dimaksud "Valid" dalam Konteks TTE</div>
+    <p>Tanda tangan dinyatakan <strong>valid</strong> jika: (1) identitas penanda tangan berhasil diverifikasi oleh otoritas yang diakui, dan (2) isi dokumen tidak berubah sejak ditandatangani. Jika salah satu tidak terpenuhi, tanda tangan akan dinyatakan <strong>tidak valid</strong> atau <strong>tidak diketahui</strong>.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 5 — PRAKTIK BAIK -->
+  <p class="section-title">Materi 5</p>
+  <h2>Praktik Baik dalam Penandatanganan Digital</h2>
+
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+
+    <div class="info-box green">
+      <div class="info-box-label">✅ Lakukan</div>
+      <p>Pastikan dokumen sudah final sebelum ditandatangani. Simpan salinan PDF bertanda tangan di tempat yang aman. Gunakan TTE tersertifikasi untuk dokumen yang memiliki implikasi hukum. Selalu verifikasi tanda tangan pada dokumen yang diterima dari pihak lain.</p>
+    </div>
+
+    <div class="info-box red">
+      <div class="info-box-label">❌ Hindari</div>
+      <p>Jangan mengedit dokumen setelah ditandatangani — ini akan membatalkan validitas tanda tangan. Jangan gunakan tanda tangan scan/gambar untuk dokumen negara atau kontrak bernilai tinggi. Jangan bagikan kunci privat atau akun platform eSign kepada siapapun.</p>
+    </div>
+
+    <div class="info-box orange">
+      <div class="info-box-label">⚠️ Perlu Diperhatikan</div>
+      <p>Tanda tangan bergambar (foto TTD) yang ditempel di PDF <strong>tidak memiliki kemampuan verifikasi kriptografis</strong> — siapapun bisa menyalin gambar tersebut ke dokumen lain. Ini berbeda dengan TTE yang menggunakan sertifikat digital, di mana setiap tanda tangan terikat secara matematis pada isi dokumen spesifik tersebut.</p>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- LATIHAN & TUGAS -->
+  <p class="section-title">Latihan &amp; Tugas</p>
+  <h2>Praktikum Sesi 5</h2>
+
+  <div class="latihan-box">
+    <h3>🛠 Latihan Kelas (40 menit terakhir)</h3>
+    <p>Latihan dilakukan dalam tiga bagian — mahasiswa mempraktikkan penandatanganan dengan tools berbeda:</p>
+    <ul class="latihan-steps">
+      <li><strong>Bagian 1 — Smallpdf (10 menit):</strong> Ambil PDF CV dari tugas Sesi 1. Buka Smallpdf eSign, buat tanda tangan dengan mode Draw (gambar tangan), tempatkan di bagian bawah CV, dan download hasilnya.</li>
+      <li><strong>Bagian 2 — iLovePDF Request Signature (15 menit):</strong> Buat dokumen PDF sederhana berisi pernyataan singkat (1 kalimat). Gunakan iLovePDF untuk mengirim dokumen tersebut ke alamat email teman sekelas untuk ditandatangani. Saling bertukar peran sebagai pengirim dan penerima.</li>
+      <li><strong>Bagian 3 — Verifikasi (15 menit):</strong> Buka PDF yang sudah ditandatangani di Adobe Acrobat Reader. Periksa panel Signatures dan amati status tanda tangan yang ditampilkan. Diskusikan: mengapa statusnya "unknown" atau "not certified"?</li>
+    </ul>
+  </div>
+
+  <div class="tugas-box">
+    <h3>📌 Tugas Mandiri (dikumpulkan sebelum Sesi 6)</h3>
+    <ul>
+      <li>Buat sebuah <strong>surat permohonan sederhana</strong> di Word (1 halaman) — contoh: surat permohonan izin, surat pengantar, atau surat pernyataan. Export ke PDF.</li>
+      <li>Tandatangani PDF tersebut menggunakan <strong>dua tools berbeda</strong>: (a) Smallpdf eSign dengan mode Type, dan (b) iLovePDF Sign dengan mode Draw. Simpan keduanya sebagai berkas terpisah.</li>
+      <li>Tulis <strong>catatan perbandingan singkat</strong> (bisa di badan email atau dokumen terpisah): perbedaan tampilan hasil, kemudahan penggunaan, dan fitur yang tersedia di masing-masing tool.</li>
+      <li>Kumpulkan: 2 berkas PDF bertanda tangan + catatan perbandingan dalam folder <code>NIM_Nama_Sesi5</code> → upload ke LMS/Google Classroom.</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RINGKASAN -->
+  <p class="section-title">Ringkasan</p>
+  <h2>Yang Sudah Dipelajari Hari Ini</h2>
+
+  <div class="ringkasan-grid">
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🛠️</div>
+      <p>Lima tools eSign: Acrobat Reader, Smallpdf, iLovePDF, DocuSign, dan Acrobat Sign</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">✍️</div>
+      <p>Tiga mode tanda tangan: ketik nama, gambar tangan, dan upload foto TTD</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">📤</div>
+      <p>Mengirim dokumen ke pihak lain untuk ditandatangani via iLovePDF dan DocuSign</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔍</div>
+      <p>Memverifikasi keaslian TTE melalui panel Signatures, QR code, dan portal PSrE</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔜</div>
+      <p>Sesi berikutnya: TTE di institusi — BSrE, Peruri Sign, dan validasi dokumen resmi</p>
+    </div>
+  </div>
+
+  <!-- NAV BAWAH -->
+  <div class="nav-sesi" style="margin-top:40px;margin-bottom:0;">
+    <a href="sesi4-panduan-tte.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 4 — Konsep & Regulasi TTE
+    </a>
+    <a href="index-tte.html" class="nav-btn" style="color:var(--blue-light);border-color:var(--blue-light);">
+      Index Blok TTE
+    </a>
+    <a href="sesi6-panduan-tte.html" class="nav-btn disabled">
+      Sesi 6 — TTE Institusi
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Teknologi Informasi Perkantoran</strong> &nbsp;·&nbsp; Sesi 5 — Praktik TTE: Menandatangani &amp; Mengirim Dokumen &nbsp;·&nbsp;
+  Universitas Katolik Widya Mandala Surabaya
+</footer>
+
+</body>
+</html>
