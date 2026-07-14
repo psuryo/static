@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi 4 — Konsep TTE, Jenis & Regulasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue:       #1A5276;
+    --blue-light: #2980B9;
+    --blue-pale:  #EBF5FB;
+    --blue-mid:   #1A3A52;
+    --ink:        #1A1A1A;
+    --ink-2:      #444444;
+    --ink-3:      #777777;
+    --paper:      #F8FAFB;
+    --white:      #FFFFFF;
+    --border:     #DDE4EA;
+    --accent:     #1A3A52;
+    --green:      #1E8449;
+    --green-pale: #EAFAF1;
+    --orange:     #B7770D;
+    --orange-pale:#FEF9E7;
+    --red:        #C0392B;
+    --red-pale:   #FDECEA;
+    --purple:     #6C3483;
+    --purple-pale:#F5EEF8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--accent);
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+  .topbar a {
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .topbar a:hover { color: rgba(255,255,255,0.9); }
+  .topbar span { color: rgba(255,255,255,0.25); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--accent);
+    color: var(--white);
+    padding: 52px 40px 46px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "TTE";
+    position: absolute;
+    right: -10px;
+    top: -20px;
+    font-family: 'Sora', sans-serif;
+    font-size: 180px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--blue-light);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(24px, 5vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 600px;
+    margin-bottom: 14px;
+  }
+  .hero h1 span { color: #5DADE2; }
+  .hero > p {
+    color: rgba(255,255,255,0.68);
+    max-width: 520px;
+    font-size: 15px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.58);
+    font-size: 13px;
+  }
+  .hero-meta-item strong { color: var(--white); font-weight: 600; }
+  .icon-sm {
+    width: 16px; height: 16px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+  h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  p { color: var(--ink-2); margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* ── TUJUAN GRID ── */
+  .tujuan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .tujuan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .tujuan-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--blue-light);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .tujuan-card p { color: var(--ink-2); font-size: 14px; margin: 0; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue-light);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+  .info-box.green  { border-left-color: #27AE60; }
+  .info-box.orange { border-left-color: #E67E22; }
+  .info-box.red    { border-left-color: #C0392B; }
+  .info-box.purple { border-left-color: #8E44AD; }
+  .info-box-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 6px;
+  }
+  .info-box.green  .info-box-label { color: #27AE60; }
+  .info-box.orange .info-box-label { color: #E67E22; }
+  .info-box.red    .info-box-label { color: #C0392B; }
+  .info-box.purple .info-box-label { color: #8E44AD; }
+  .info-box p { margin: 0; font-size: 14px; }
+
+  /* ── DEFINISI BOX ── */
+  .definisi-box {
+    background: var(--blue-pale);
+    border: 1px solid #AED6F1;
+    border-radius: 8px;
+    padding: 24px 26px;
+    margin: 16px 0;
+  }
+  .definisi-box p {
+    font-size: 14.5px;
+    color: var(--ink-2);
+    line-height: 1.7;
+  }
+  .definisi-box cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--blue-light);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* ── PERBANDINGAN TTE ── */
+  .tte-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .tte-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .tte-card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tte-card-header h3 { margin: 0; font-size: 14px; }
+  .tte-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 10px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .tte-card-body { padding: 16px 18px; }
+  .tte-card-body ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tte-card-body ul li {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink-2);
+    align-items: flex-start;
+  }
+  .tte-card-body ul li::before {
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .tte-card.tersertifikasi .tte-card-header { background: #F0FAF4; border-bottom-color: #A9DFBF; }
+  .tte-card.tersertifikasi .tte-card-header h3 { color: var(--green); }
+  .tte-card.tersertifikasi .tte-badge { background: var(--green-pale); color: var(--green); }
+  .tte-card.tersertifikasi ul li::before { content: "✓"; color: var(--green); }
+  .tte-card.tidak .tte-card-header { background: #FEF9F0; border-bottom-color: #FAD7A0; }
+  .tte-card.tidak .tte-card-header h3 { color: var(--orange); }
+  .tte-card.tidak .tte-badge { background: var(--orange-pale); color: var(--orange); }
+  .tte-card.tidak ul li::before { content: "–"; color: var(--orange); }
+
+  /* ── TIGA JENIS TTE ── */
+  .jenis-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .jenis-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .jenis-num {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .jenis-item > div { flex: 1; }
+  .jenis-item h3 { font-size: 14px; margin-bottom: 4px; }
+  .jenis-item p  { font-size: 13px; color: var(--ink-3); margin-bottom: 6px; }
+  .jenis-contoh {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .jenis-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 10px;
+    background: var(--blue-pale);
+    color: var(--blue-light);
+  }
+
+  /* ── REGULASI TIMELINE ── */
+  .regulasi-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 8px;
+    position: relative;
+  }
+  .regulasi-list::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: var(--border);
+  }
+  .regulasi-item {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 14px 0;
+  }
+  .regulasi-dot {
+    width: 40px; height: 40px;
+    background: var(--accent);
+    color: var(--white);
+    border-radius: 50%;
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .regulasi-item > div { flex: 1; padding-top: 4px; }
+  .regulasi-item h3 { font-size: 14px; margin-bottom: 3px; }
+  .regulasi-item p  { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.55; }
+
+  /* ── STUDI KASUS ── */
+  .kasus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .kasus-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .kasus-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+  .kasus-card h3 { font-size: 14px; margin-bottom: 4px; }
+  .kasus-card p  { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.55; }
+  .kasus-status {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 10px;
+  }
+
+  /* ── TABEL PERBANDINGAN ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-top: 8px;
+  }
+  .compare-table th {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: left;
+    padding: 10px 16px;
+  }
+  .compare-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-2);
+    vertical-align: top;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td { background: #F2F6F9; }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .badge-green  { background: var(--green-pale); color: var(--green); }
+  .badge-orange { background: var(--orange-pale); color: var(--orange); }
+  .badge-red    { background: var(--red-pale); color: var(--red); }
+  .badge-blue   { background: var(--blue-pale); color: var(--blue-light); }
+
+  /* ── LATIHAN BOX ── */
+  .latihan-box {
+    background: var(--accent);
+    color: var(--white);
+    border-radius: 8px;
+    padding: 26px 28px;
+    margin-top: 8px;
+  }
+  .latihan-box h3 {
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .latihan-box > p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 14px; }
+  .latihan-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .latihan-steps li {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.88);
+    align-items: flex-start;
+  }
+  .latihan-steps li::before {
+    content: "→";
+    color: #5DADE2;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .tugas-box {
+    background: var(--blue-pale);
+    border: 1.5px solid #AED6F1;
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-top: 14px;
+  }
+  .tugas-box h3 { color: var(--blue); font-size: 15px; margin-bottom: 10px; }
+  .tugas-box ul { padding-left: 18px; }
+  .tugas-box ul li { font-size: 14px; color: var(--ink-2); margin-bottom: 8px; line-height: 1.55; }
+
+  /* ── DOKUMEN ANALISIS ── */
+  .analisis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .analisis-card {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    background: var(--white);
+  }
+  .analisis-card .doc-icon { font-size: 36px; margin-bottom: 8px; display: block; }
+  .analisis-card h3 { font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  .analisis-card p  { font-size: 12px; color: var(--ink-3); margin: 0; line-height: 1.5; }
+  .analisis-card .pertanyaan {
+    margin-top: 10px;
+    background: var(--blue-pale);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 12px;
+    color: var(--blue);
+    font-weight: 600;
+    text-align: left;
+  }
+
+  /* ── RINGKASAN ── */
+  .ringkasan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .ringkasan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+  .ringkasan-icon { font-size: 26px; margin-bottom: 8px; }
+  .ringkasan-card p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* ── NAV SESI ── */
+  .nav-sesi {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--blue-light); background: var(--blue-pale); }
+  .nav-btn.disabled { opacity: 0.35; pointer-events: none; }
+  .nav-btn svg {
+    width: 14px; height: 14px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .nav-center { font-size: 12px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.5px; }
+
+  code {
+    background: #EEF2F5;
+    color: var(--blue);
+    font-size: 12px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--accent);
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    padding: 18px 20px;
+    font-size: 12px;
+  }
+  footer strong { color: rgba(255,255,255,0.8); }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 10px 16px; }
+    .hero { padding: 40px 20px 36px; }
+    .hero::before { font-size: 110px; }
+    .page { padding: 32px 16px 60px; }
+    .tte-compare { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index-pdf.html">Blok PDF</a>
+  <span>/</span>
+  <a href="index-tte.html">Blok TTE</a>
+  <span>/</span>
+  <span style="color:rgba(255,255,255,0.7);">Sesi 4</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">
+    <svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Sesi 4 dari 14 · Blok TTE
+  </div>
+  <h1>Konsep <span>Tanda Tangan Elektronik</span>:<br>Jenis, Perbedaan &amp; Regulasi</h1>
+  <p>Memahami apa itu tanda tangan elektronik (TTE), perbedaan TTE tersertifikasi dan tidak tersertifikasi, serta landasan hukum yang mengatur penggunaannya di Indonesia.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Durasi: <strong>100 menit</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Blok TTE: <strong>Sesi 1 dari 3</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span>Regulasi: <strong>PP 71/2019 · UU ITE · POJK</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- NAVIGASI SESI -->
+  <div class="nav-sesi">
+    <a href="sesi3-panduan-pdf.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 3 — Form & Konversi PDF
+    </a>
+    <span class="nav-center">BLOK TTE · SESI 4</span>
+    <a href="sesi5-panduan-tte.html" class="nav-btn disabled">
+      Sesi 5 — Praktik TTE
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+  <!-- TUJUAN -->
+  <p class="section-title">Tujuan Pembelajaran</p>
+  <h2>Setelah sesi ini, mahasiswa mampu…</h2>
+  <div class="tujuan-grid">
+    <div class="tujuan-card">
+      <span class="tujuan-num">01</span>
+      <p>Menjelaskan definisi dan cara kerja tanda tangan elektronik secara konseptual</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">02</span>
+      <p>Membedakan TTE tersertifikasi dan tidak tersertifikasi beserta implikasi hukumnya</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">03</span>
+      <p>Menyebutkan regulasi utama yang mengatur TTE di Indonesia dan isi pokoknya</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">04</span>
+      <p>Menganalisis contoh dokumen dan menentukan jenis TTE yang digunakan</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 1 — DEFINISI -->
+  <p class="section-title">Materi 1</p>
+  <h2>Apa Itu Tanda Tangan Elektronik?</h2>
+
+  <div class="definisi-box">
+    <p><strong>Tanda Tangan Elektronik (TTE)</strong> adalah tanda tangan yang terdiri atas informasi elektronik yang dilekatkan, terasosiasi, atau terkait dengan informasi elektronik lainnya yang digunakan sebagai alat verifikasi dan autentikasi.</p>
+    <cite>— Pasal 1 angka 12, UU No. 11 Tahun 2008 tentang Informasi dan Transaksi Elektronik (UU ITE)</cite>
+  </div>
+
+  <p>Secara sederhana, TTE adalah cara membuktikan bahwa <strong>seseorang yang teridentifikasi</strong> menyetujui isi sebuah dokumen elektronik — sama seperti tanda tangan basah pada kertas, namun dalam bentuk digital.</p>
+
+  <div class="info-box">
+    <div class="info-box-label">🔑 Dua Fungsi Utama TTE</div>
+    <p><strong>Autentikasi</strong> — membuktikan identitas penanda tangan (siapa yang menandatangani). <strong>Integritas</strong> — membuktikan dokumen tidak berubah sejak ditandatangani (isi dokumen tidak dimodifikasi).</p>
+  </div>
+
+  <!-- CARA KERJA -->
+  <h3 style="margin-top:24px;margin-bottom:12px;">Bagaimana TTE Bekerja?</h3>
+  <p>TTE menggunakan prinsip <strong>kriptografi asimetris</strong> — dua kunci berpasangan: kunci privat (rahasia, dimiliki penanda tangan) dan kunci publik (bisa dibagikan ke siapa saja untuk verifikasi).</p>
+
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:12px;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-size:13px;">
+      <div style="padding:20px 16px;border-right:1px solid var(--border);">
+        <div style="font-size:28px;margin-bottom:8px;">📄</div>
+        <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Dokumen Asli</div>
+        <div style="color:var(--ink-3);font-size:12px;">Isi dokumen yang akan ditandatangani</div>
+      </div>
+      <div style="padding:20px 16px;border-right:1px solid var(--border);background:var(--blue-pale);">
+        <div style="font-size:28px;margin-bottom:8px;">🔑</div>
+        <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:13px;color:var(--blue);margin-bottom:4px;">Proses Enkripsi</div>
+        <div style="color:var(--ink-3);font-size:12px;">Kunci privat menghasilkan "sidik jari" unik dokumen</div>
+      </div>
+      <div style="padding:20px 16px;">
+        <div style="font-size:28px;margin-bottom:8px;">✅</div>
+        <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:13px;color:var(--green);margin-bottom:4px;">Dokumen Bertanda Tangan</div>
+        <div style="color:var(--ink-3);font-size:12px;">Siapapun bisa verifikasi dengan kunci publik</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 2 — JENIS TTE -->
+  <p class="section-title">Materi 2</p>
+  <h2>Tiga Jenis Tanda Tangan Elektronik</h2>
+  <p>Berdasarkan PP No. 71 Tahun 2019 tentang Penyelenggaraan Sistem dan Transaksi Elektronik, TTE dibagi menjadi tiga jenis berdasarkan tingkat keamanan dan kekuatan hukumnya.</p>
+
+  <div class="jenis-list">
+    <div class="jenis-item">
+      <div class="jenis-num">T1</div>
+      <div>
+        <h3>TTE Tidak Tersertifikasi</h3>
+        <p>Tanda tangan elektronik yang dibuat tanpa melibatkan Penyelenggara Sertifikasi Elektronik (PSrE) yang diakui pemerintah. Tingkat kepercayaan paling rendah, namun tetap sah secara hukum untuk transaksi tertentu.</p>
+        <div class="jenis-contoh">
+          <span class="jenis-tag">Tanda tangan gambar di PDF</span>
+          <span class="jenis-tag">Tanda tangan scan</span>
+          <span class="jenis-tag">Tanda tangan di Google Docs</span>
+          <span class="jenis-tag">Draw signature di Smallpdf</span>
+        </div>
+      </div>
+    </div>
+    <div class="jenis-item">
+      <div class="jenis-num" style="background:var(--blue-light);">T2</div>
+      <div>
+        <h3>TTE Tersertifikasi — Dalam Negeri</h3>
+        <p>Tanda tangan elektronik yang dibuat menggunakan Sertifikat Elektronik dari PSrE Indonesia yang telah diakui oleh Kementerian Komunikasi dan Informatika (Kominfo). Memiliki kekuatan hukum penuh di Indonesia.</p>
+        <div class="jenis-contoh">
+          <span class="jenis-tag">BSrE (BSSN)</span>
+          <span class="jenis-tag">Peruri Sign</span>
+          <span class="jenis-tag">VIDA</span>
+          <span class="jenis-tag">Privy</span>
+          <span class="jenis-tag">PrivyID</span>
+        </div>
+      </div>
+    </div>
+    <div class="jenis-item">
+      <div class="jenis-num" style="background:var(--purple);">T3</div>
+      <div>
+        <h3>TTE Tersertifikasi — Luar Negeri</h3>
+        <p>Tanda tangan elektronik menggunakan sertifikat dari PSrE asing yang diakui melalui perjanjian internasional. Berlaku untuk transaksi lintas negara dan kontrak internasional.</p>
+        <div class="jenis-contoh">
+          <span class="jenis-tag">Adobe Sign (internasional)</span>
+          <span class="jenis-tag">DocuSign</span>
+          <span class="jenis-tag">HelloSign</span>
+          <span class="jenis-tag">eIDAS (Uni Eropa)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 3 — PERBANDINGAN TERSERTIFIKASI vs TIDAK -->
+  <p class="section-title">Materi 3</p>
+  <h2>Tersertifikasi vs Tidak Tersertifikasi — Apa Bedanya?</h2>
+
+  <div class="tte-compare">
+    <div class="tte-card tersertifikasi">
+      <div class="tte-card-header">
+        <span style="font-size:20px;">🛡️</span>
+        <h3>TTE Tersertifikasi</h3>
+        <span class="tte-badge">Kekuatan penuh</span>
+      </div>
+      <div class="tte-card-body">
+        <ul>
+          <li>Identitas penanda tangan diverifikasi oleh PSrE yang diakui pemerintah</li>
+          <li>Memiliki sertifikat elektronik yang bisa diverifikasi secara kriptografis</li>
+          <li>Dokumen terbukti tidak berubah sejak ditandatangani</li>
+          <li>Kekuatan hukum setara tanda tangan basah di hadapan pejabat berwenang</li>
+          <li>Wajib digunakan untuk dokumen negara, kontrak tertentu, dan layanan publik digital</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tte-card tidak">
+      <div class="tte-card-header">
+        <span style="font-size:20px;">✏️</span>
+        <h3>TTE Tidak Tersertifikasi</h3>
+        <span class="tte-badge">Kekuatan terbatas</span>
+      </div>
+      <div class="tte-card-body">
+        <ul>
+          <li>Identitas tidak diverifikasi oleh pihak ketiga yang diakui</li>
+          <li>Tidak ada sertifikat elektronik yang bisa diaudit</li>
+          <li>Sulit dibuktikan jika terjadi sengketa hukum</li>
+          <li>Tetap sah untuk transaksi perdata biasa yang para pihaknya sepakat</li>
+          <li>Tidak boleh digunakan untuk dokumen negara atau yang diwajibkan tersertifikasi</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <table class="compare-table" style="margin-top:20px;">
+    <thead>
+      <tr>
+        <th>Aspek</th>
+        <th>TTE Tidak Tersertifikasi</th>
+        <th>TTE Tersertifikasi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Verifikasi identitas</td>
+        <td><span class="badge badge-orange">Tidak ada</span></td>
+        <td><span class="badge badge-green">Oleh PSrE resmi</span></td>
+      </tr>
+      <tr>
+        <td>Integritas dokumen</td>
+        <td><span class="badge badge-orange">Tidak terjamin</span></td>
+        <td><span class="badge badge-green">Terjamin kriptografis</span></td>
+      </tr>
+      <tr>
+        <td>Kekuatan hukum</td>
+        <td><span class="badge badge-orange">Terbatas</span></td>
+        <td><span class="badge badge-green">Setara tanda tangan basah</span></td>
+      </tr>
+      <tr>
+        <td>Dokumen negara</td>
+        <td><span class="badge badge-red">Tidak boleh</span></td>
+        <td><span class="badge badge-green">Wajib digunakan</span></td>
+      </tr>
+      <tr>
+        <td>Biaya</td>
+        <td><span class="badge badge-green">Umumnya gratis</span></td>
+        <td><span class="badge badge-orange">Berbayar / subsidi pemerintah</span></td>
+      </tr>
+      <tr>
+        <td>Kemudahan</td>
+        <td><span class="badge badge-green">Sangat mudah</span></td>
+        <td><span class="badge badge-blue">Perlu registrasi PSrE</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <!-- MATERI 4 — REGULASI -->
+  <p class="section-title">Materi 4</p>
+  <h2>Regulasi TTE di Indonesia</h2>
+
+  <p>Indonesia memiliki kerangka hukum yang cukup lengkap untuk mengatur penggunaan tanda tangan elektronik. Berikut regulasi utama yang perlu dipahami:</p>
+
+  <ul class="regulasi-list">
+
+    <li class="regulasi-item">
+      <div class="regulasi-dot">2008</div>
+      <div>
+        <h3>UU No. 11 Tahun 2008 — Informasi dan Transaksi Elektronik (UU ITE)</h3>
+        <p>Undang-undang pertama yang mengakui keabsahan tanda tangan elektronik di Indonesia. Pasal 11 menyatakan TTE memiliki kekuatan hukum dan akibat hukum yang sah. Diubah dan diperkuat oleh UU No. 19 Tahun 2016.</p>
+      </div>
+    </li>
+
+    <li class="regulasi-item">
+      <div class="regulasi-dot">2012</div>
+      <div>
+        <h3>PP No. 82 Tahun 2012 — Penyelenggaraan Sistem Elektronik dan Transaksi Elektronik</h3>
+        <p>Peraturan pelaksana UU ITE yang mengatur lebih rinci tentang penyelenggara sistem elektronik, termasuk kewajiban PSrE dan persyaratan teknis TTE. Kemudian diperbarui oleh PP 71/2019.</p>
+      </div>
+    </li>
+
+    <li class="regulasi-item">
+      <div class="regulasi-dot" style="background:var(--blue-light);">2019</div>
+      <div>
+        <h3>PP No. 71 Tahun 2019 — Penyelenggaraan Sistem dan Transaksi Elektronik ⭐</h3>
+        <p>Regulasi paling relevan saat ini. Memperkenalkan klasifikasi tiga jenis TTE (tidak tersertifikasi, tersertifikasi dalam negeri, tersertifikasi luar negeri). Mengatur syarat PSrE yang diakui, kewajiban penggunaan TTE tersertifikasi untuk instansi pemerintah, serta mekanisme pengakuan PSrE asing.</p>
+      </div>
+    </li>
+
+    <li class="regulasi-item">
+      <div class="regulasi-dot">2021</div>
+      <div>
+        <h3>Permenkominfo No. 11 Tahun 2018 & Pembaruan Teknis</h3>
+        <p>Mengatur persyaratan teknis dan tata cara pengakuan PSrE, standar keamanan yang harus dipenuhi, serta prosedur audit dan sertifikasi bagi lembaga yang ingin menjadi PSrE resmi di Indonesia.</p>
+      </div>
+    </li>
+
+    <li class="regulasi-item">
+      <div class="regulasi-dot">Sektoral</div>
+      <div>
+        <h3>Regulasi Sektoral (POJK, Kesehatan, Pendidikan)</h3>
+        <p>Beberapa sektor memiliki regulasi tambahan: OJK mewajibkan TTE tersertifikasi untuk layanan keuangan digital; Kemenkes mengatur TTE untuk rekam medis elektronik; Kemendikbud untuk ijazah digital dan dokumen akademik.</p>
+      </div>
+    </li>
+
+  </ul>
+
+  <div class="info-box orange" style="margin-top:16px;">
+    <div class="info-box-label">⚠️ Yang Wajib Diingat</div>
+    <p>Berdasarkan PP 71/2019, seluruh instansi pemerintah <strong>wajib menggunakan TTE tersertifikasi</strong> untuk dokumen resmi. Penggunaan TTE tidak tersertifikasi (misal: tanda tangan scan atau gambar) pada dokumen negara tidak memiliki kekuatan hukum yang sah dan tidak boleh digunakan.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 5 — STUDI KASUS -->
+  <p class="section-title">Materi 5</p>
+  <h2>Studi Kasus: TTE di Dunia Nyata</h2>
+
+  <div class="kasus-grid">
+
+    <div class="kasus-card">
+      <span class="kasus-icon">🎓</span>
+      <h3>Ijazah Digital DIKTI</h3>
+      <p>Kementerian Pendidikan menerbitkan ijazah digital yang ditandatangani secara elektronik menggunakan TTE tersertifikasi BSrE. Dapat diverifikasi melalui QR code yang tertera pada ijazah.</p>
+      <span class="kasus-status" style="background:var(--green-pale);color:var(--green);">TTE Tersertifikasi</span>
+    </div>
+
+    <div class="kasus-card">
+      <span class="kasus-icon">🏛️</span>
+      <h3>Surat Keputusan Instansi</h3>
+      <p>SK rektor, SK kepala dinas, dan berbagai surat keputusan pemerintah kini diterbitkan dengan TTE tersertifikasi — menggantikan tanda tangan basah dan stempel fisik.</p>
+      <span class="kasus-status" style="background:var(--green-pale);color:var(--green);">TTE Tersertifikasi</span>
+    </div>
+
+    <div class="kasus-card">
+      <span class="kasus-icon">🏦</span>
+      <h3>Perjanjian Kredit Digital</h3>
+      <p>Bank dan lembaga keuangan menggunakan TTE tersertifikasi (melalui Privy, VIDA, atau DocuSign) untuk perjanjian kredit yang ditandatangani nasabah secara online tanpa perlu hadir ke kantor.</p>
+      <span class="kasus-status" style="background:var(--green-pale);color:var(--green);">TTE Tersertifikasi</span>
+    </div>
+
+    <div class="kasus-card">
+      <span class="kasus-icon">📧</span>
+      <h3>Surat Persetujuan Internal</h3>
+      <p>Memo atau surat persetujuan internal perusahaan yang ditandatangani dengan tanda tangan bergambar (scan) di PDF. Berlaku berdasarkan kesepakatan internal, namun tidak disarankan untuk dokumen formal.</p>
+      <span class="kasus-status" style="background:var(--orange-pale);color:var(--orange);">TTE Tidak Tersertifikasi</span>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- LATIHAN & TUGAS -->
+  <p class="section-title">Latihan &amp; Tugas</p>
+  <h2>Aktivitas Sesi 4</h2>
+
+  <!-- LATIHAN KELAS -->
+  <div class="latihan-box">
+    <h3>🛠 Latihan Kelas — Analisis Dokumen (30 menit terakhir)</h3>
+    <p>Dosen menyediakan tiga contoh dokumen berikut (screenshot atau file PDF). Mahasiswa menganalisis secara berkelompok dan menjawab pertanyaan yang diberikan.</p>
+    <ul class="latihan-steps">
+      <li><strong>Dokumen A</strong> — PDF laporan yang ditandatangani dengan gambar tanda tangan yang di-copy-paste. Identifikasi: jenis TTE apa? Apakah sah untuk dokumen resmi?</li>
+      <li><strong>Dokumen B</strong> — SK Rektor dengan tanda tangan digital dan QR code verifikasi dari BSrE. Identifikasi: jenis TTE apa? Bagaimana cara memverifikasinya?</li>
+      <li><strong>Dokumen C</strong> — Kontrak kerja sama yang ditandatangani melalui DocuSign dengan sertifikat digital. Identifikasi: jenis TTE apa? Apakah berlaku di Indonesia?</li>
+    </ul>
+  </div>
+
+  <!-- KARTU ANALISIS -->
+  <div class="analisis-grid" style="margin-top: 16px;">
+    <div class="analisis-card">
+      <span class="doc-icon">📋</span>
+      <h3>Dokumen A</h3>
+      <p>Laporan + gambar TTD</p>
+      <div class="pertanyaan">Jenis TTE? Apakah sah untuk keperluan resmi?</div>
+    </div>
+    <div class="analisis-card">
+      <span class="doc-icon">🏛️</span>
+      <h3>Dokumen B</h3>
+      <p>SK Rektor + QR BSrE</p>
+      <div class="pertanyaan">Jenis TTE? Bagaimana cara verifikasi?</div>
+    </div>
+    <div class="analisis-card">
+      <span class="doc-icon">🤝</span>
+      <h3>Dokumen C</h3>
+      <p>Kontrak via DocuSign</p>
+      <div class="pertanyaan">Jenis TTE? Berlaku di Indonesia?</div>
+    </div>
+  </div>
+
+  <!-- TUGAS MANDIRI -->
+  <div class="tugas-box">
+    <h3>📌 Tugas Mandiri — Investigasi Dokumen (dikumpulkan sebelum Sesi 5)</h3>
+    <ul>
+      <li>Cari <strong>satu contoh dokumen resmi</strong> yang menggunakan TTE dari internet (bisa dari situs instansi pemerintah, universitas, atau lembaga keuangan). Contoh: ijazah digital, SK rektor, surat keputusan dinas.</li>
+      <li>Tulis <strong>analisis singkat 1 halaman</strong> (format bebas: Word atau PDF) yang memuat: nama dokumen, diterbitkan oleh siapa, jenis TTE yang digunakan, cara verifikasi keasliannya, dan mengapa jenis TTE tersebut dipilih.</li>
+      <li>Sertakan <strong>screenshot atau tautan</strong> dokumen yang dianalisis sebagai lampiran.</li>
+      <li>Kumpulkan dalam folder <code>NIM_Nama_Sesi4</code> → upload ke LMS/Google Classroom.</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RINGKASAN -->
+  <p class="section-title">Ringkasan</p>
+  <h2>Yang Sudah Dipelajari Hari Ini</h2>
+
+  <div class="ringkasan-grid">
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔏</div>
+      <p>TTE adalah alat verifikasi identitas dan integritas dokumen dalam bentuk digital</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">⚖️</div>
+      <p>Tiga jenis TTE: tidak tersertifikasi, tersertifikasi dalam negeri, tersertifikasi luar negeri</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">📜</div>
+      <p>PP 71/2019 mewajibkan TTE tersertifikasi untuk seluruh dokumen resmi pemerintah</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔜</div>
+      <p>Sesi berikutnya: praktik menandatangani dokumen menggunakan Acrobat Sign & DocuSign</p>
+    </div>
+  </div>
+
+  <!-- NAV BAWAH -->
+  <div class="nav-sesi" style="margin-top:40px;margin-bottom:0;">
+    <a href="sesi3-panduan-pdf.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 3 — Form & Konversi PDF
+    </a>
+    <a href="index-tte.html" class="nav-btn" style="color:var(--blue-light);border-color:var(--blue-light);">
+      Index Blok TTE
+    </a>
+    <a href="sesi5-panduan-tte.html" class="nav-btn disabled">
+      Sesi 5 — Praktik TTE
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Teknologi Informasi Perkantoran</strong> &nbsp;·&nbsp; Sesi 4 — Konsep TTE, Jenis &amp; Regulasi &nbsp;·&nbsp;
+  Universitas Katolik Widya Mandala Surabaya
+</footer>
+
+</body>
+</html>
