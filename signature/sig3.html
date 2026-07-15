@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi 6 — TTE Institusi: BSrE, Peruri Sign & Validasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue:       #1A5276;
+    --blue-light: #2980B9;
+    --blue-pale:  #EBF5FB;
+    --accent:     #1A3A52;
+    --ink:        #1A1A1A;
+    --ink-2:      #444444;
+    --ink-3:      #777777;
+    --paper:      #F8FAFB;
+    --white:      #FFFFFF;
+    --border:     #DDE4EA;
+    --green:      #1E8449;
+    --green-light:#27AE60;
+    --green-pale: #EAFAF1;
+    --orange:     #B7770D;
+    --orange-pale:#FEF9E7;
+    --red:        #C0392B;
+    --red-pale:   #FDECEA;
+    --purple:     #6C3483;
+    --purple-pale:#F5EEF8;
+    --gold:       #B7860B;
+    --gold-pale:  #FEF9E7;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--accent);
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+  .topbar a {
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .topbar a:hover { color: rgba(255,255,255,0.9); }
+  .topbar span { color: rgba(255,255,255,0.25); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--accent);
+    color: var(--white);
+    padding: 52px 40px 46px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "TTE";
+    position: absolute;
+    right: -10px;
+    top: -20px;
+    font-family: 'Sora', sans-serif;
+    font-size: 180px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--blue-light);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(24px, 5vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 620px;
+    margin-bottom: 14px;
+  }
+  .hero h1 span { color: #5DADE2; }
+  .hero > p {
+    color: rgba(255,255,255,0.68);
+    max-width: 520px;
+    font-size: 15px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.58);
+    font-size: 13px;
+  }
+  .hero-meta-item strong { color: var(--white); font-weight: 600; }
+  .icon-sm {
+    width: 16px; height: 16px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+  h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  p { color: var(--ink-2); margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* ── TUJUAN GRID ── */
+  .tujuan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .tujuan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .tujuan-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--blue-light);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .tujuan-card p { color: var(--ink-2); font-size: 14px; margin: 0; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue-light);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+  .info-box.green  { border-left-color: #27AE60; }
+  .info-box.orange { border-left-color: #E67E22; }
+  .info-box.red    { border-left-color: #C0392B; }
+  .info-box.purple { border-left-color: #8E44AD; }
+  .info-box.gold   { border-left-color: #D4AC0D; }
+  .info-box-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 6px;
+  }
+  .info-box.green  .info-box-label { color: #27AE60; }
+  .info-box.orange .info-box-label { color: #E67E22; }
+  .info-box.red    .info-box-label { color: #C0392B; }
+  .info-box.purple .info-box-label { color: #8E44AD; }
+  .info-box.gold   .info-box-label { color: #B7860B; }
+  .info-box p { margin: 0; font-size: 14px; }
+
+  /* ── PSrE CARDS ── */
+  .psre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .psre-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .psre-header {
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .psre-logo {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--white);
+    flex-shrink: 0;
+  }
+  .psre-header > div { flex: 1; }
+  .psre-header h3 { font-size: 14px; margin-bottom: 2px; }
+  .psre-header span { font-size: 11px; color: var(--ink-3); }
+  .psre-body { padding: 14px 18px; }
+  .psre-body p { font-size: 13px; color: var(--ink-2); margin-bottom: 10px; }
+  .psre-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .psre-tag {
+    font-size: 11px; font-weight: 600;
+    padding: 2px 9px; border-radius: 10px;
+  }
+  .tag-green  { background: var(--green-pale); color: var(--green); }
+  .tag-blue   { background: var(--blue-pale); color: var(--blue-light); }
+  .tag-orange { background: var(--orange-pale); color: var(--orange); }
+  .tag-purple { background: var(--purple-pale); color: var(--purple); }
+  .tag-gold   { background: var(--gold-pale); color: var(--gold); }
+
+  /* ── STEP LIST ── */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .step-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .step-num {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-list li > div { flex: 1; }
+  .step-list li h3 { font-size: 14px; margin-bottom: 3px; }
+  .step-list li p  { margin: 0; font-size: 13px; color: var(--ink-3); line-height: 1.55; }
+  code {
+    background: #EEF2F5;
+    color: var(--blue);
+    font-size: 12px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ── VALIDASI GRID ── */
+  .validasi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .validasi-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .validasi-card .v-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+  .validasi-card h3 { font-size: 14px; margin-bottom: 4px; }
+  .validasi-card p  { font-size: 13px; color: var(--ink-3); margin-bottom: 8px; line-height: 1.5; }
+  .v-url {
+    display: inline-block;
+    font-size: 11px; font-weight: 600;
+    color: var(--blue-light);
+    background: var(--blue-pale);
+    padding: 2px 8px; border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    text-decoration: none;
+  }
+
+  /* ── STUDI KASUS ── */
+  .kasus-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .kasus-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+  }
+  .kasus-stripe {
+    width: 5px;
+    flex-shrink: 0;
+  }
+  .kasus-body { padding: 16px 18px; flex: 1; }
+  .kasus-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .kasus-body h3 { font-size: 14px; color: var(--ink); }
+  .kasus-badge {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 9px; border-radius: 10px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .kasus-body p { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.55; }
+  .kasus-detail {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .kasus-detail span {
+    font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px;
+    background: #F0F3F5; color: var(--ink-3);
+  }
+
+  /* ── COMPARE TABLE ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-top: 8px;
+  }
+  .compare-table th {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: left;
+    padding: 10px 16px;
+  }
+  .compare-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-2);
+    vertical-align: top;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td { background: #F2F6F9; }
+
+  /* ── PANDUAN SECTION HEADER ── */
+  .panduan-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--accent);
+    border-radius: 6px 6px 0 0;
+    margin-top: 24px;
+  }
+  .panduan-header h3 { color: var(--white); font-size: 14px; margin: 0; }
+  .panduan-header span { font-size: 11px; color: rgba(255,255,255,0.5); margin-left: auto; }
+  .panduan-body {
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    overflow: hidden;
+  }
+
+  /* ── RECAP BLOK ── */
+  .recap-blok {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .recap-header {
+    background: var(--blue-light);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 20px;
+    letter-spacing: 0.5px;
+  }
+  .recap-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .recap-row:last-child { border-bottom: none; }
+  .recap-sesi {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--blue-light);
+    min-width: 56px;
+    padding-top: 1px;
+  }
+  .recap-topic { font-size: 13.5px; color: var(--ink-2); }
+  .recap-topic strong { color: var(--ink); }
+
+  /* ── LATIHAN BOX ── */
+  .latihan-box {
+    background: var(--accent);
+    color: var(--white);
+    border-radius: 8px;
+    padding: 26px 28px;
+    margin-top: 8px;
+  }
+  .latihan-box h3 {
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .latihan-box > p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 14px; }
+  .latihan-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .latihan-steps li {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.88);
+    align-items: flex-start;
+    line-height: 1.55;
+  }
+  .latihan-steps li::before {
+    content: "→";
+    color: #5DADE2;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tugas-box {
+    background: var(--blue-pale);
+    border: 1.5px solid #AED6F1;
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-top: 14px;
+  }
+  .tugas-box h3 { color: var(--blue); font-size: 15px; margin-bottom: 10px; }
+  .tugas-box ul { padding-left: 18px; }
+  .tugas-box ul li { font-size: 14px; color: var(--ink-2); margin-bottom: 8px; line-height: 1.55; }
+
+  /* ── RINGKASAN ── */
+  .ringkasan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .ringkasan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+  .ringkasan-icon { font-size: 26px; margin-bottom: 8px; }
+  .ringkasan-card p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* ── NAV SESI ── */
+  .nav-sesi {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--blue-light); background: var(--blue-pale); }
+  .nav-btn.disabled { opacity: 0.35; pointer-events: none; }
+  .nav-btn svg {
+    width: 14px; height: 14px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .nav-center { font-size: 12px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.5px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--accent);
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    padding: 18px 20px;
+    font-size: 12px;
+  }
+  footer strong { color: rgba(255,255,255,0.8); }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 10px 16px; }
+    .hero { padding: 40px 20px 36px; }
+    .hero::before { font-size: 110px; }
+    .page { padding: 32px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index-pdf.html">Blok PDF</a>
+  <span>/</span>
+  <a href="index-tte.html">Blok TTE</a>
+  <span>/</span>
+  <span style="color:rgba(255,255,255,0.7);">Sesi 6</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">
+    <svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Sesi 6 dari 14 · Penutup Blok TTE
+  </div>
+  <h1>TTE di <span>Institusi</span>:<br>BSrE, Peruri Sign &amp; Validasi Dokumen</h1>
+  <p>Mengenal platform TTE resmi pemerintah Indonesia, memahami cara kerja dan penggunaannya di lingkungan institusi dan akademik, serta mempraktikkan validasi keaslian dokumen bertanda tangan elektronik.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Durasi: <strong>100 menit</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Blok TTE: <strong>Sesi 3 dari 3</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Platform: <strong>BSrE · Peruri Sign · VIDA · Privy</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- NAVIGASI SESI -->
+  <div class="nav-sesi">
+    <a href="sesi5-panduan-tte.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 5 — Praktik TTE
+    </a>
+    <span class="nav-center">BLOK TTE · SESI 6</span>
+    <a href="#" class="nav-btn disabled">
+      Sesi 7 — Canva Dasar
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+  <!-- TUJUAN -->
+  <p class="section-title">Tujuan Pembelajaran</p>
+  <h2>Setelah sesi ini, mahasiswa mampu…</h2>
+  <div class="tujuan-grid">
+    <div class="tujuan-card">
+      <span class="tujuan-num">01</span>
+      <p>Menjelaskan apa itu PSrE dan menyebutkan PSrE resmi yang diakui di Indonesia</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">02</span>
+      <p>Menjelaskan cara kerja BSrE dan Peruri Sign serta perbedaan keduanya</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">03</span>
+      <p>Memvalidasi keaslian dokumen bertanda tangan elektronik dari instansi resmi</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">04</span>
+      <p>Mengidentifikasi penerapan TTE di lingkungan akademik dan menganalisis studi kasus nyata</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 1 — PSrE -->
+  <p class="section-title">Materi 1</p>
+  <h2>Penyelenggara Sertifikasi Elektronik (PSrE)</h2>
+
+  <div class="info-box">
+    <div class="info-box-label">Definisi PSrE</div>
+    <p><strong>Penyelenggara Sertifikasi Elektronik (PSrE)</strong> adalah badan hukum yang berfungsi sebagai pihak ketiga yang dipercaya untuk menerbitkan, mengelola, dan mencabut sertifikat elektronik yang digunakan dalam TTE tersertifikasi. PSrE harus mendapatkan pengakuan resmi dari Kementerian Komunikasi dan Informatika (Kominfo) untuk beroperasi di Indonesia.</p>
+  </div>
+
+  <p>Ibarat seorang notaris yang memverifikasi identitas penanda tangan dalam transaksi konvensional, PSrE bertugas memverifikasi dan menjamin identitas pengguna dalam ekosistem tanda tangan digital.</p>
+
+  <div class="psre-grid">
+
+    <!-- BSrE -->
+    <div class="psre-card">
+      <div class="psre-header" style="background:#F0F5FA;">
+        <div class="psre-logo" style="background:#17375E;">BSrE</div>
+        <div>
+          <h3>BSrE — BSSN</h3>
+          <span>esign.bsre.bssn.go.id</span>
+        </div>
+      </div>
+      <div class="psre-body">
+        <p>Balai Sertifikasi Elektronik milik Badan Siber dan Sandi Negara (BSSN). PSrE pemerintah yang menyediakan layanan TTE tersertifikasi <strong>gratis</strong> untuk ASN, lembaga negara, dan perguruan tinggi negeri. Digunakan untuk dokumen resmi seperti SK, surat dinas, dan ijazah digital.</p>
+        <div class="psre-tags">
+          <span class="psre-tag tag-green">Gratis untuk instansi negara</span>
+          <span class="psre-tag tag-blue">ASN & PTN</span>
+          <span class="psre-tag tag-gold">Milik pemerintah</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERURI -->
+    <div class="psre-card">
+      <div class="psre-header" style="background:#FDF5E6;">
+        <div class="psre-logo" style="background:#C87941;">PR</div>
+        <div>
+          <h3>Peruri Sign</h3>
+          <span>sign.peruri.co.id</span>
+        </div>
+      </div>
+      <div class="psre-body">
+        <p>Layanan TTE dari Perum Percetakan Uang Republik Indonesia (Peruri). Merupakan PSrE komersial BUMN yang melayani instansi pemerintah, BUMN, dan swasta. Dikenal untuk keamanan tinggi dan kemudahan integrasi dengan sistem existing.</p>
+        <div class="psre-tags">
+          <span class="psre-tag tag-orange">Berbayar / berlangganan</span>
+          <span class="psre-tag tag-blue">Pemerintah & BUMN</span>
+          <span class="psre-tag tag-gold">BUMN</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDA -->
+    <div class="psre-card">
+      <div class="psre-header" style="background:#F0FAF5;">
+        <div class="psre-logo" style="background:#0B8043;">VI</div>
+        <div>
+          <h3>VIDA</h3>
+          <span>vida.id</span>
+        </div>
+      </div>
+      <div class="psre-body">
+        <p>PSrE swasta pertama yang mendapat pengakuan Kominfo. Melayani sektor keuangan, perbankan, dan perusahaan swasta dengan verifikasi identitas berbasis KTP digital dan biometrik wajah. Populer di fintech dan layanan keuangan digital.</p>
+        <div class="psre-tags">
+          <span class="psre-tag tag-orange">Berbayar</span>
+          <span class="psre-tag tag-blue">Fintech & Perbankan</span>
+          <span class="psre-tag tag-purple">Swasta</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVY -->
+    <div class="psre-card">
+      <div class="psre-header" style="background:#F5F0FA;">
+        <div class="psre-logo" style="background:#5B2D8E;">PV</div>
+        <div>
+          <h3>Privy</h3>
+          <span>privy.id</span>
+        </div>
+      </div>
+      <div class="psre-body">
+        <p>PSrE swasta dengan jumlah pengguna terbesar di Indonesia. Menyediakan TTE tersertifikasi untuk individu maupun perusahaan dengan proses registrasi berbasis NIK dan verifikasi wajah. Tersedia aplikasi mobile untuk kemudahan penggunaan.</p>
+        <div class="psre-tags">
+          <span class="psre-tag tag-green">Ada paket gratis</span>
+          <span class="psre-tag tag-blue">Individu & Perusahaan</span>
+          <span class="psre-tag tag-purple">Swasta</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <table class="compare-table" style="margin-top:20px;">
+    <thead>
+      <tr>
+        <th>PSrE</th>
+        <th>Jenis</th>
+        <th>Target Pengguna</th>
+        <th>Biaya</th>
+        <th>Keunggulan</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>BSrE (BSSN)</strong></td>
+        <td><span class="psre-tag tag-gold" style="display:inline-block;">Pemerintah</span></td>
+        <td>ASN, PTN, lembaga negara</td>
+        <td><span class="psre-tag tag-green" style="display:inline-block;">Gratis</span></td>
+        <td>Otoritas tertinggi, dokumen negara</td>
+      </tr>
+      <tr>
+        <td><strong>Peruri Sign</strong></td>
+        <td><span class="psre-tag tag-gold" style="display:inline-block;">BUMN</span></td>
+        <td>Instansi pemerintah, BUMN</td>
+        <td><span class="psre-tag tag-orange" style="display:inline-block;">Berbayar</span></td>
+        <td>Keamanan tinggi, integrasi enterprise</td>
+      </tr>
+      <tr>
+        <td><strong>VIDA</strong></td>
+        <td><span class="psre-tag tag-purple" style="display:inline-block;">Swasta</span></td>
+        <td>Fintech, perbankan</td>
+        <td><span class="psre-tag tag-orange" style="display:inline-block;">Berbayar</span></td>
+        <td>Biometrik KTP, eKYC</td>
+      </tr>
+      <tr>
+        <td><strong>Privy</strong></td>
+        <td><span class="psre-tag tag-purple" style="display:inline-block;">Swasta</span></td>
+        <td>Individu & perusahaan</td>
+        <td><span class="psre-tag tag-green" style="display:inline-block;">Freemium</span></td>
+        <td>Pengguna terbesar, mobile app</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <!-- MATERI 2 — BSrE DETAIL -->
+  <p class="section-title">Materi 2</p>
+  <h2>BSrE — Layanan TTE Resmi Pemerintah</h2>
+
+  <p>BSrE (Balai Sertifikasi Elektronik) adalah PSrE milik negara yang dikelola BSSN. Dalam konteks akademik, BSrE paling relevan karena digunakan oleh perguruan tinggi negeri untuk menerbitkan ijazah digital, SK, dan dokumen resmi lainnya.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;">
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:18px;">
+      <h3 style="font-size:14px;color:var(--blue);margin-bottom:10px;">🏛️ Layanan BSrE</h3>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;">
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;"><span style="color:var(--green-light);font-weight:700;">✓</span>Penerbitan sertifikat elektronik untuk ASN</li>
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;"><span style="color:var(--green-light);font-weight:700;">✓</span>TTE untuk dokumen negara dan surat dinas</li>
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;"><span style="color:var(--green-light);font-weight:700;">✓</span>Ijazah digital perguruan tinggi negeri</li>
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;"><span style="color:var(--green-light);font-weight:700;">✓</span>Penandatanganan massal dokumen (bulk signing)</li>
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;"><span style="color:var(--green-light);font-weight:700;">✓</span>Portal verifikasi dokumen publik</li>
+      </ul>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:18px;">
+      <h3 style="font-size:14px;color:var(--blue);margin-bottom:10px;">⚙️ Cara Kerja BSrE</h3>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;">
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--blue-light);font-weight:700;flex-shrink:0;">1.</span>ASN/PTN mendaftar dan verifikasi identitas ke BSSN</li>
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--blue-light);font-weight:700;flex-shrink:0;">2.</span>BSSN menerbitkan sertifikat elektronik personal</li>
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--blue-light);font-weight:700;flex-shrink:0;">3.</span>Penandatanganan dokumen dilakukan via portal atau API</li>
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--blue-light);font-weight:700;flex-shrink:0;">4.</span>Dokumen yang ditandatangani memiliki QR code verifikasi</li>
+        <li style="font-size:13px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start;"><span style="color:var(--blue-light);font-weight:700;flex-shrink:0;">5.</span>Siapapun bisa verifikasi via portal publik BSrE</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="info-box gold">
+    <div class="info-box-label">🎓 Relevansi untuk Perguruan Tinggi</div>
+    <p>Perguruan tinggi negeri (PTN) yang terintegrasi dengan BSrE dapat menerbitkan ijazah digital dengan tanda tangan elektronik rektor yang tersertifikasi. Mahasiswa lulusan PTN tertentu bisa mengunduh ijazah digital dari portal resmi dan memverifikasinya menggunakan QR code tanpa perlu ijazah fisik — sangat berguna untuk melamar kerja secara digital.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 3 — CARA VALIDASI -->
+  <p class="section-title">Materi 3</p>
+  <h2>Cara Memvalidasi Dokumen Bertanda Tangan Elektronik</h2>
+
+  <p>Validasi adalah proses memastikan bahwa tanda tangan elektronik pada sebuah dokumen adalah asli, dibuat oleh pihak yang diklaim, dan dokumen tidak berubah sejak ditandatangani.</p>
+
+  <div class="validasi-grid">
+
+    <div class="validasi-card">
+      <span class="v-icon">📱</span>
+      <h3>Scan QR Code BSrE</h3>
+      <p>Dokumen resmi yang ditandatangani via BSrE memiliki QR code. Scan menggunakan kamera HP untuk diarahkan ke portal verifikasi yang menampilkan detail dokumen dan penanda tangan.</p>
+      <a class="v-url" href="#">esign.bsre.bssn.go.id</a>
+    </div>
+
+    <div class="validasi-card">
+      <span class="v-icon">🌐</span>
+      <h3>Portal Verifikasi PDPT</h3>
+      <p>Ijazah digital perguruan tinggi negeri bisa diverifikasi melalui portal PDPT Kemdikbud. Masukkan nomor ijazah atau scan QR untuk mengecek keaslian dan status kelulusan mahasiswa.</p>
+      <a class="v-url" href="#">ijazah.kemdikbud.go.id</a>
+    </div>
+
+    <div class="validasi-card">
+      <span class="v-icon">🔍</span>
+      <h3>Adobe Acrobat — Panel Signatures</h3>
+      <p>Buka PDF di Adobe Acrobat Reader, klik ikon Signatures di panel kiri. Tampil detail sertifikat: nama penerbit, masa berlaku, dan status validitas tanda tangan secara kriptografis.</p>
+      <span class="v-url">View → Signatures Panel</span>
+    </div>
+
+    <div class="validasi-card">
+      <span class="v-icon">📋</span>
+      <h3>Portal PSrE Masing-masing</h3>
+      <p>Setiap PSrE memiliki portal verifikasi mandiri. Privy, VIDA, dan Peruri menyediakan halaman pengecekan di mana nomor dokumen atau file PDF bisa diunggah untuk diverifikasi.</p>
+      <span class="v-url">Portal tiap PSrE</span>
+    </div>
+
+  </div>
+
+  <!-- PANDUAN VALIDASI BSrE -->
+  <div class="panduan-header" style="margin-top:24px;">
+    <div style="background:#17375E;color:white;width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:11px;flex-shrink:0;">BSrE</div>
+    <h3>Cara Memverifikasi Dokumen BSrE via QR Code</h3>
+    <span>Langkah demi langkah</span>
+  </div>
+  <div class="panduan-body">
+    <ul class="step-list" style="border:none;padding:16px 16px 4px;">
+      <li>
+        <span class="step-num">1</span>
+        <div>
+          <h3>Temukan QR code pada dokumen</h3>
+          <p>Dokumen yang ditandatangani dengan BSrE umumnya memiliki QR code di pojok bawah atau halaman terakhir. Pastikan dokumen yang diterima dalam format PDF asli, bukan foto atau scan ulang (yang bisa kehilangan validitas QR).</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div>
+          <h3>Scan QR code dengan kamera HP</h3>
+          <p>Gunakan kamera bawaan HP atau aplikasi QR scanner. Arahkan ke QR code pada layar atau cetak dokumen. QR code akan mengarahkan ke URL portal verifikasi BSrE secara otomatis.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div>
+          <h3>Baca hasil verifikasi di portal BSrE</h3>
+          <p>Portal akan menampilkan: nama penanda tangan, jabatan, instansi, waktu penandatanganan, dan status dokumen (<strong>Valid</strong> / <strong>Tidak Valid</strong>). Jika muncul "Dokumen tidak ditemukan", berarti QR telah dimanipulasi atau dokumen tidak diterbitkan melalui BSrE.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div>
+          <h3>Bandingkan dengan isi dokumen</h3>
+          <p>Pastikan nama dan jabatan yang tampil di portal BSrE sesuai dengan yang tertera di dokumen fisik/digital. Ketidaksesuaian adalah tanda dokumen telah dimanipulasi setelah penandatanganan.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 4 — STUDI KASUS AKADEMIK -->
+  <p class="section-title">Materi 4</p>
+  <h2>Studi Kasus: TTE di Lingkungan Akademik</h2>
+
+  <div class="kasus-list">
+
+    <div class="kasus-item">
+      <div class="kasus-stripe" style="background:var(--green-light);"></div>
+      <div class="kasus-body">
+        <div class="kasus-meta">
+          <h3>Ijazah Digital Perguruan Tinggi Negeri</h3>
+          <span class="kasus-badge" style="background:var(--green-pale);color:var(--green);">TTE Tersertifikasi</span>
+        </div>
+        <p>Beberapa PTN di Indonesia (seperti UI, ITS, UGM) telah menerbitkan ijazah digital menggunakan TTE tersertifikasi BSrE. Mahasiswa lulusan dapat mengunduh ijazah digital dari portal masing-masing universitas. Ijazah digital ini memiliki kekuatan hukum yang sama dengan ijazah fisik dan dapat diverifikasi kapan saja, di mana saja, melalui QR code.</p>
+        <div class="kasus-detail">
+          <span>Platform: BSrE BSSN</span>
+          <span>Verifikasi: QR code</span>
+          <span>Status: Sudah berjalan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="kasus-item">
+      <div class="kasus-stripe" style="background:var(--blue-light);"></div>
+      <div class="kasus-body">
+        <div class="kasus-meta">
+          <h3>Surat Keputusan Rektor / Dekan</h3>
+          <span class="kasus-badge" style="background:var(--blue-pale);color:var(--blue-light);">TTE Tersertifikasi</span>
+        </div>
+        <p>SK penetapan mahasiswa baru, SK pembimbing skripsi, SK kelulusan, dan berbagai surat keputusan internal universitas kini diterbitkan secara digital menggunakan TTE tersertifikasi. Dokumen dikirimkan ke mahasiswa/dosen melalui email atau portal akademik dalam format PDF bertanda tangan — tidak perlu lagi menunggu dokumen fisik berhari-hari.</p>
+        <div class="kasus-detail">
+          <span>Platform: BSrE / Peruri</span>
+          <span>Distribusi: Email / Portal</span>
+          <span>Status: Sedang berkembang</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="kasus-item">
+      <div class="kasus-stripe" style="background:var(--orange);"></div>
+      <div class="kasus-body">
+        <div class="kasus-meta">
+          <h3>Surat Pengantar & Rekomendasi Dosen</h3>
+          <span class="kasus-badge" style="background:var(--orange-pale);color:var(--orange);">TTE Tidak Tersertifikasi</span>
+        </div>
+        <p>Surat pengantar PKL, surat rekomendasi beasiswa, dan dokumen internal sejenis sering kali masih menggunakan tanda tangan scan atau gambar yang ditempel di PDF. Ini merupakan TTE tidak tersertifikasi — sah untuk keperluan internal berdasarkan kesepakatan, namun tidak memiliki mekanisme verifikasi kriptografis dan tidak boleh digunakan jika pihak penerima mensyaratkan TTE tersertifikasi.</p>
+        <div class="kasus-detail">
+          <span>Platform: Manual / Smallpdf</span>
+          <span>Verifikasi: Tidak ada</span>
+          <span>Status: Umum digunakan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="kasus-item">
+      <div class="kasus-stripe" style="background:var(--purple);"></div>
+      <div class="kasus-body">
+        <div class="kasus-meta">
+          <h3>MoU dan Perjanjian Kerja Sama Institusi</h3>
+          <span class="kasus-badge" style="background:var(--purple-pale);color:var(--purple);">TTE Tersertifikasi</span>
+        </div>
+        <p>Penandatanganan MoU antara universitas dengan mitra industri atau instansi pemerintah kini semakin sering dilakukan secara digital menggunakan TTE tersertifikasi melalui DocuSign, Peruri Sign, atau Privy — menghilangkan kebutuhan kedua pihak hadir di lokasi yang sama untuk tanda tangan fisik. Audit trail yang tersimpan memberikan kejelasan hukum yang lebih baik.</p>
+        <div class="kasus-detail">
+          <span>Platform: DocuSign / Peruri</span>
+          <span>Multi-penanda tangan</span>
+          <span>Status: Berkembang pesat</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 5 — TIPS MENERIMA DOKUMEN TTE -->
+  <p class="section-title">Materi 5</p>
+  <h2>Panduan Menerima &amp; Mengelola Dokumen TTE</h2>
+
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+
+    <div class="info-box green">
+      <div class="info-box-label">✅ Saat Menerima Dokumen Bertanda Tangan Digital</div>
+      <p>Selalu verifikasi keaslian sebelum menerima dokumen sebagai sah. Periksa apakah ada QR code atau panel signatures. Simpan dokumen PDF asli — jangan dikonversi atau dicetak ulang karena bisa menghilangkan data tanda tangan digital. Simpan di folder terorganisir dengan nama file yang jelas.</p>
+    </div>
+
+    <div class="info-box orange">
+      <div class="info-box-label">⚠️ Waspadai Dokumen Palsu</div>
+      <p>Tanda tangan elektronik yang terlihat meyakinkan belum tentu tersertifikasi. Ciri dokumen TTE palsu: QR code tidak mengarah ke portal resmi atau mengarah ke halaman error, nama penanda tangan di portal berbeda dengan di dokumen, atau dokumen berupa foto/scan yang tidak bisa dibuka panelnya di Adobe Reader. Jika ragu, hubungi langsung penerbit dokumen.</p>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-label">💡 Tips Penyimpanan Dokumen TTE</div>
+      <p>Simpan dokumen PDF dengan TTE dalam format aslinya — jangan kompres menggunakan tools lossy yang bisa merusak metadata tanda tangan. Buat backup di cloud storage (Google Drive, OneDrive) dan lokal. Dokumen TTE yang tersimpan baik tidak perlu diperbarui karena tanda tangan digital memiliki timestamp yang tetap valid meskipun sertifikatnya sudah kedaluwarsa.</p>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- LATIHAN & TUGAS -->
+  <p class="section-title">Latihan &amp; Tugas</p>
+  <h2>Praktikum Sesi 6</h2>
+
+  <div class="latihan-box">
+    <h3>🛠 Latihan Kelas (35 menit terakhir)</h3>
+    <p>Latihan dilakukan dalam dua bagian — eksplorasi platform dan praktik validasi dokumen:</p>
+    <ul class="latihan-steps">
+      <li><strong>Bagian 1 — Eksplorasi BSrE (15 menit):</strong> Buka portal <code>esign.bsre.bssn.go.id</code> dan telusuri halaman publik yang tersedia. Identifikasi layanan apa saja yang ditawarkan, siapa target penggunanya, dan bagaimana cara mendaftar. Catat temuan di kertas atau dokumen singkat.</li>
+      <li><strong>Bagian 2 — Validasi Dokumen (20 menit):</strong> Dosen menyediakan minimal 2 dokumen PDF: (a) dokumen dengan TTE BSrE yang valid, (b) dokumen dengan TTE yang dimanipulasi atau tidak valid. Mahasiswa memverifikasi keduanya menggunakan QR code dan panel Signatures di Adobe Acrobat Reader, lalu menjelaskan perbedaan hasil verifikasi kepada kelas.</li>
+    </ul>
+  </div>
+
+  <div class="tugas-box">
+    <h3>📌 Tugas Mandiri (dikumpulkan sebelum Sesi 7)</h3>
+    <ul>
+      <li>Cari <strong>satu dokumen resmi bertanda tangan elektronik</strong> dari situs instansi pemerintah atau perguruan tinggi negeri (contoh: pengumuman resmi, SK, atau surat edaran yang tersedia publik dalam format PDF).</li>
+      <li>Lakukan <strong>verifikasi dokumen</strong> tersebut menggunakan QR code (jika ada) atau Adobe Acrobat Reader. Screenshot hasil verifikasi.</li>
+      <li>Buat <strong>laporan singkat 1–2 halaman</strong> (Word atau PDF) berisi: identitas dokumen, PSrE yang digunakan, hasil verifikasi, dan kesimpulan apakah dokumen tersebut dapat dipercaya keasliannya. Sertakan screenshot sebagai lampiran.</li>
+      <li>Kumpulkan: laporan + screenshot dalam folder <code>NIM_Nama_Sesi6</code> → upload ke LMS/Google Classroom.</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RECAP BLOK TTE -->
+  <p class="section-title">Penutup Blok TTE</p>
+  <h2>Rangkuman Seluruh Blok TTE (Sesi 4–6)</h2>
+
+  <div class="recap-blok">
+    <div class="recap-header">🔏 Blok 2 — Digital Signature / TTE: Ringkasan Tiga Sesi</div>
+    <div class="recap-row">
+      <span class="recap-sesi">Sesi 4</span>
+      <span class="recap-topic"><strong>Konsep & Regulasi TTE</strong> — definisi TTE, tiga jenis berdasarkan PP 71/2019, perbedaan tersertifikasi vs tidak tersertifikasi, regulasi UU ITE dan turunannya</span>
+    </div>
+    <div class="recap-row">
+      <span class="recap-sesi">Sesi 5</span>
+      <span class="recap-topic"><strong>Praktik Penandatanganan</strong> — alur eSign, tools (Smallpdf, iLovePDF, DocuSign, Acrobat Sign), mengirim dokumen ke pihak lain, dan verifikasi dasar</span>
+    </div>
+    <div class="recap-row">
+      <span class="recap-sesi">Sesi 6</span>
+      <span class="recap-topic"><strong>TTE Institusi & Validasi</strong> — PSrE resmi Indonesia (BSrE, Peruri, VIDA, Privy), cara kerja BSrE, validasi QR code, studi kasus akademik</span>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:16px;">
+    <div class="info-box-label">🔜 Blok Berikutnya</div>
+    <p>Sesi 7 memulai <strong>Blok 3 — Canva</strong>: mengenal antarmuka Canva, bekerja dengan template, elemen desain, tipografi, dan warna untuk membuat konten visual akademik yang menarik.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RINGKASAN SESI -->
+  <p class="section-title">Ringkasan Sesi</p>
+  <h2>Yang Sudah Dipelajari Hari Ini</h2>
+
+  <div class="ringkasan-grid">
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🏛️</div>
+      <p>PSrE resmi Indonesia: BSrE (gratis, pemerintah), Peruri, VIDA, dan Privy</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔑</div>
+      <p>BSrE digunakan untuk ijazah digital, SK rektor, dan dokumen resmi PTN</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">📱</div>
+      <p>Validasi dokumen TTE via QR code BSrE dan panel Signatures di Adobe</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🎓</div>
+      <p>Studi kasus akademik: ijazah digital, SK rektor, MoU, surat pengantar</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">✅</div>
+      <p>Blok TTE selesai — siap melanjutkan ke Blok Canva</p>
+    </div>
+  </div>
+
+  <!-- NAV BAWAH -->
+  <div class="nav-sesi" style="margin-top:40px;margin-bottom:0;">
+    <a href="sesi5-panduan-tte.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 5 — Praktik TTE
+    </a>
+    <a href="index-tte.html" class="nav-btn" style="color:var(--blue-light);border-color:var(--blue-light);">
+      Index Blok TTE
+    </a>
+    <a href="#" class="nav-btn disabled">
+      Sesi 7 — Canva Dasar
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Teknologi Informasi Perkantoran</strong> &nbsp;·&nbsp; Sesi 6 — TTE di Institusi: BSrE, Peruri Sign &amp; Validasi &nbsp;·&nbsp;
+  Universitas Katolik Widya Mandala Surabaya
+</footer>
+
+</body>
+</html>
