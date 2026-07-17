@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kartu Arsip · Sesi 09 — Automations Dasar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #e7dcc0;
+    --paper-light: #faf5e6;
+    --paper-dark: #ddcda3;
+    --ink: #23283a;
+    --ink-soft: #545b73;
+    --stamp: #a8382c;
+    --ledger: #3d5f4c;
+    --tab: #8a5a34;
+    --line: rgba(35,40,58,.18);
+    --shadow: rgba(35,25,10,.25);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 800px at 15% -10%, #f1e6c8 0%, transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--stamp);}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 20px 90px;}
+
+  nav.tabs{
+    position:sticky; top:0; z-index:50;
+    display:flex; flex-wrap:wrap; gap:0;
+    background:var(--paper);
+    padding-top:14px;
+    border-bottom:3px solid var(--ink);
+  }
+  nav.tabs a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.72rem;
+    letter-spacing:.04em;
+    text-decoration:none;
+    color:var(--paper-light);
+    background:var(--tab);
+    padding:8px 14px 9px;
+    margin-right:4px;
+    border-radius:6px 6px 0 0;
+    border:1px solid var(--ink);
+    border-bottom:none;
+    white-space:nowrap;
+    transform:translateY(3px);
+    transition:transform .15s ease, background .15s ease;
+  }
+  nav.tabs a:hover, nav.tabs a.active{
+    background:var(--stamp);
+    transform:translateY(0);
+  }
+  nav.tabs .back{
+    background:var(--ledger);
+    margin-right:auto;
+  }
+
+  .catalog-card{
+    position:relative;
+    background:var(--paper-light);
+    border:1px solid var(--line);
+    box-shadow: 8px 8px 0 var(--shadow);
+    padding:34px 34px 30px 60px;
+    margin:34px 0 44px;
+  }
+  .catalog-card::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:34px;
+    background-image: radial-gradient(circle at 17px 28px, var(--paper) 6px, transparent 6.5px),
+      repeating-linear-gradient(to bottom, transparent 0 54px, transparent 54px);
+    background-repeat: repeat-y;
+    background-size: 34px 54px;
+    border-right:1px dashed var(--line);
+  }
+  .catalog-eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  h1.title{
+    font-family:'Special Elite', monospace;
+    font-weight:400;
+    font-size:clamp(1.6rem, 4vw, 2.5rem);
+    margin:.25em 0 .4em;
+    color:var(--ink);
+  }
+  .meta-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:10px 24px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.82rem;
+    border-top:1px dashed var(--line);
+    padding-top:14px;
+  }
+  .meta-grid dt{color:var(--ink-soft); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;}
+  .meta-grid dd{margin:2px 0 0; font-weight:600;}
+  .stamp{
+    position:absolute; top:22px; right:26px;
+    font-family:'Special Elite', monospace;
+    color:var(--stamp);
+    border:3px solid var(--stamp);
+    border-radius:8px;
+    padding:8px 14px;
+    font-size:1.05rem;
+    letter-spacing:.06em;
+    transform:rotate(6deg);
+    opacity:.88;
+    mix-blend-mode:multiply;
+  }
+  .stamp small{display:block; font-size:.55rem; letter-spacing:.18em; margin-top:2px;}
+
+  section{margin:56px 0; scroll-margin-top:70px;}
+  .section-label{display:flex; align-items:baseline; gap:12px; margin-bottom:18px;}
+  .section-num{
+    font-family:'Special Elite', monospace; font-size:2.1rem;
+    -webkit-text-stroke:1.5px var(--ink); color:transparent; line-height:1;
+  }
+  h2{font-family:'Special Elite', monospace; font-weight:400; font-size:1.4rem; margin:0; color:var(--ink);}
+  h2 span.sub{display:block; font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink-soft); letter-spacing:.05em; margin-top:3px; font-weight:400;}
+  p{max-width:68ch;}
+  .lead{font-size:1.02rem; color:var(--ink);}
+
+  .ledger{width:100%; border-collapse:collapse; background:var(--paper-light); border:1px solid var(--ink); font-size:.9rem;}
+  .ledger caption{text-align:left; font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+  .ledger th, .ledger td{padding:10px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+  .ledger thead th{background:var(--ledger); color:var(--paper-light); font-family:'IBM Plex Mono',monospace; font-size:.72rem; letter-spacing:.05em; text-transform:uppercase;}
+  .ledger tbody tr:nth-child(even){background:rgba(61,95,76,.06);}
+  .ledger td.hi{color:var(--stamp); font-weight:600;}
+  .ledger td code, p code, li code{font-family:'IBM Plex Mono',monospace; font-size:.82rem; background:var(--paper-dark); padding:1px 6px; border-radius:3px;}
+  .table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+
+  /* ---------- TRIGGER -> CONDITION -> ACTION FLOW ---------- */
+  .flow{display:flex; align-items:stretch; gap:0; flex-wrap:wrap; margin:24px 0;}
+  .flow-box{
+    background:var(--paper-light); border:1px solid var(--ink);
+    box-shadow:5px 5px 0 var(--shadow); padding:16px 18px; flex:1; min-width:190px;
+  }
+  .flow-box .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:.64rem; letter-spacing:.05em;
+    color:var(--paper-light); padding:2px 8px; border-radius:3px; display:inline-block; margin-bottom:8px;
+  }
+  .flow-box.trigger .tag{background:var(--ledger);}
+  .flow-box.condition .tag{background:var(--tab);}
+  .flow-box.action .tag{background:var(--stamp);}
+  .flow-box h4{margin:0 0 5px; font-family:'Special Elite',monospace; font-weight:400; font-size:.95rem;}
+  .flow-box p{margin:0; font-size:.8rem; color:var(--ink-soft);}
+  .flow-arrow{
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem; color:var(--stamp); padding:0 10px; font-family:'IBM Plex Mono',monospace;
+  }
+  @media(max-width:700px){
+    .flow{flex-direction:column;}
+    .flow-arrow{transform:rotate(90deg); padding:6px 0;}
+  }
+
+  .card-rack{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:20px;}
+  .idx-card{
+    background:var(--paper-light); border:1px solid var(--ink);
+    padding:16px 16px 14px; box-shadow:5px 5px 0 var(--shadow); position:relative;
+  }
+  .idx-card:nth-child(2n){transform:rotate(-.6deg);}
+  .idx-card:nth-child(3n){transform:rotate(.7deg);}
+  .idx-card .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:.62rem;
+    color:var(--paper-light); background:var(--tab);
+    display:inline-block; padding:2px 8px; border-radius:3px;
+    letter-spacing:.06em; margin-bottom:8px;
+  }
+  .idx-card h3{margin:0 0 6px; font-family:'Special Elite',monospace; font-weight:400; font-size:1.02rem;}
+  .idx-card p{margin:0; font-size:.86rem; color:var(--ink-soft); max-width:none;}
+
+  .memo{
+    background:var(--paper-light); border-left:4px solid var(--stamp);
+    padding:22px 24px; box-shadow:6px 6px 0 var(--shadow);
+  }
+  ol.steps{list-style:none; margin:0; padding:0; counter-reset:step;}
+  ol.steps li{
+    counter-increment:step; display:flex; gap:14px; align-items:flex-start;
+    padding:12px 0; border-bottom:1px dashed var(--line);
+  }
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{
+    content:counter(step,decimal-leading-zero);
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.8rem;
+    color:var(--paper-light); background:var(--ledger);
+    min-width:28px; height:28px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  ol.steps b{display:block; margin-bottom:2px;}
+  ol.steps small{color:var(--ink-soft);}
+
+  .task-order{
+    background: repeating-linear-gradient(var(--paper-light), var(--paper-light) 27px, var(--line) 28px);
+    border:1px solid var(--ink); padding:24px 26px 26px; box-shadow:8px 8px 0 var(--shadow);
+  }
+  .task-order h3{font-family:'Special Elite', monospace; font-weight:400; margin:0 0 12px; font-size:1.15rem;}
+  .checkitem{display:flex; gap:10px; align-items:flex-start; margin:10px 0; cursor:pointer;}
+  .checkitem input{margin-top:4px; width:16px; height:16px; accent-color:var(--stamp); cursor:pointer;}
+  .checkitem span{font-size:.94rem;}
+  .checkitem.done span{color:var(--ink-soft); text-decoration:line-through;}
+  .deadline{margin-top:16px; font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--stamp); border-top:1px dashed var(--line); padding-top:12px;}
+
+  .callout{
+    border:1px dashed var(--stamp); background:rgba(168,56,44,.06);
+    padding:14px 18px; font-size:.9rem; color:var(--ink);
+  }
+  .callout b{color:var(--stamp);}
+  .callout.warn{border-color:var(--tab); background:rgba(138,90,52,.08);}
+  .callout.warn b{color:var(--tab);}
+
+  footer{
+    margin-top:70px; padding-top:24px; border-top:3px double var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--ink-soft);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+
+  @media (max-width:640px){
+    .catalog-card{padding:26px 20px 24px 46px;}
+    .catalog-card::before{width:22px;}
+    .stamp{position:static; margin-top:16px; display:inline-block; transform:rotate(-2deg);}
+  }
+  @media print{
+    nav.tabs{position:static;}
+    .catalog-card,.idx-card,.memo,.task-order,.flow-box{box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <nav class="tabs" id="tabnav">
+    <a href="index-panduan-airtable.html" class="back">← Indeks</a>
+    <a href="#tinjauan">Tinjauan</a>
+    <a href="#konsep">Konsep</a>
+    <a href="#trigger">Trigger &amp; Aksi</a>
+    <a href="#praktik">Praktik</a>
+    <a href="#tugas">Tugas</a>
+  </nav>
+
+  <header class="catalog-card">
+    <div class="stamp">SESI 09<small>diperiksa</small></div>
+    <p class="catalog-eyebrow">Kartu Arsip Perkuliahan — D3 Administrasi Perkantoran</p>
+    <h1 class="title">Automations Dasar</h1>
+    <dl class="meta-grid">
+      <div><dt>Mata Kuliah</dt><dd>Pengelolaan Basis Data &amp; Administrasi Digital</dd></div>
+      <div><dt>Sesi</dt><dd>09 dari 14 (Pasca UTS)</dd></div>
+      <div><dt>Durasi</dt><dd>1–2 jam</dd></div>
+      <div><dt>Prasyarat</dt><dd>Sesi 08 — Filtering, Sorting, Grouping</dd></div>
+    </dl>
+  </header>
+
+  <section id="tinjauan">
+    <div class="section-label"><span class="section-num">01</span><h2>Tujuan Pembelajaran<span class="sub">Capaian Pembelajaran Sesi</span></h2></div>
+    <p class="lead">Setelah mengikuti sesi ini, mahasiswa diharapkan mampu:</p>
+    <div class="table-scroll">
+    <table class="ledger">
+      <thead><tr><th style="width:60px;">No</th><th>Capaian</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Menjelaskan konsep Trigger dan Action dalam automasi.</td></tr>
+        <tr><td>2</td><td>Membuat automation sederhana yang berjalan otomatis saat data baru masuk.</td></tr>
+        <tr><td>3</td><td>Menambahkan kondisi (condition) agar automation hanya berjalan pada kasus tertentu.</td></tr>
+        <tr><td>4</td><td>Memahami batasan automation pada plan gratis agar penggunaannya efisien.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="konsep">
+    <div class="section-label"><span class="section-num">02</span><h2>Automasi: Pekerjaan Berulang jadi Otomatis<span class="sub">Konsep Dasar</span></h2></div>
+    <p>Automation adalah fitur yang menjalankan tindakan tertentu secara otomatis ketika kondisi tertentu terpenuhi — tanpa admin perlu mengecek dan mengerjakannya manual satu per satu. Contoh sehari-hari di kantor: setiap kali ada pengajuan cuti baru masuk, seharusnya ada notifikasi ke atasan. Tanpa automasi, admin harus mengecek table secara berkala; dengan automasi, notifikasi terkirim sendiri begitu data masuk.</p>
+    <p>Konsepnya mirip <em>trigger</em> pada database (yang dipelajari sekilas saat membahas SQL/Neon) — perbedaannya, automation Airtable diatur lewat antarmuka visual, bukan ditulis sebagai kode trigger SQL.</p>
+  </section>
+
+  <section id="trigger">
+    <div class="section-label"><span class="section-num">03</span><h2>Anatomi Sebuah Automation<span class="sub">Trigger → Condition → Action</span></h2></div>
+    <div class="flow">
+      <div class="flow-box trigger"><span class="tag">TRIGGER</span><h4>Record baru ditambahkan</h4><p>Kapan automation ini mulai berjalan — misal saat ada entri baru di table Cuti Pegawai.</p></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box condition"><span class="tag">CONDITION (opsional)</span><h4>Jenis Cuti = "Sakit"</h4><p>Syarat tambahan agar automation hanya berjalan pada kasus tertentu.</p></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box action"><span class="tag">ACTION</span><h4>Kirim notifikasi email</h4><p>Tindakan yang dijalankan otomatis setelah trigger dan condition terpenuhi.</p></div>
+    </div>
+    <div class="card-rack" style="margin-top:26px;">
+      <div class="idx-card"><span class="tag">TRIGGER UMUM</span><h3>When record created</h3><p>Berjalan setiap kali ada record baru masuk ke table (cocok dipasangkan dengan Form).</p></div>
+      <div class="idx-card"><span class="tag">TRIGGER UMUM</span><h3>When record updated</h3><p>Berjalan saat field tertentu pada record berubah, misal Status berubah jadi "Selesai".</p></div>
+      <div class="idx-card"><span class="tag">ACTION UMUM</span><h3>Send email</h3><p>Mengirim email otomatis ke alamat tertentu, isi bisa memuat data dari record terkait.</p></div>
+      <div class="idx-card"><span class="tag">ACTION UMUM</span><h3>Update record</h3><p>Mengubah nilai field lain secara otomatis, misal mengisi "Tanggal Diproses" dengan tanggal hari ini.</p></div>
+    </div>
+    <div class="callout warn" style="margin-top:22px;">
+      <b>Batasan plan gratis:</b> maksimal 100 kali automation berjalan per bulan, 50 automation per base, dan 25 aksi per automation. Untuk latihan kelas, sebaiknya automation baru diaktifkan setelah struktur data sudah stabil — hindari uji coba berulang-ulang yang menghabiskan kuota bulanan.
+    </div>
+  </section>
+
+  <section id="praktik">
+    <div class="section-label"><span class="section-num">04</span><h2>Langkah Praktik<span class="sub">Automasi Notifikasi Pengajuan Cuti Baru</span></h2></div>
+    <div class="memo">
+      <ol class="steps">
+        <li><div><b>Buka tab "Automations" di sisi kiri base.</b><small>Klik "+ Create automation".</small></div></li>
+        <li><div><b>Pilih trigger "When record created".</b><small>Pilih table "Cuti Pegawai" sebagai sumber trigger.</small></div></li>
+        <li><div><b>Tambahkan action "Send email".</b><small>Isi alamat email tujuan (misal email dosen/admin untuk simulasi).</small></div></li>
+        <li><div><b>Sisipkan data dinamis ke isi email.</b><small>Gunakan tombol "Insert field" agar isi email otomatis memuat Nama Pegawai dan Tanggal Cuti dari record yang baru masuk.</small></div></li>
+        <li><div><b>Aktifkan automation (toggle "On").</b><small>Uji dengan mengisi Form Pengajuan Cuti sekali, lalu cek apakah email masuk.</small></div></li>
+        <li><div><b>Cek riwayat run di tab "Run history".</b><small>Airtable mencatat setiap kali automation berjalan, termasuk jika ada error.</small></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="tugas">
+    <div class="section-label"><span class="section-num">05</span><h2>Tugas Mandiri<span class="sub">Surat Perintah Latihan</span></h2></div>
+    <div class="task-order">
+      <h3>Perintah Latihan No. 09/AT/2026</h3>
+      <p style="margin-top:0;">Kerjakan sebelum sesi berikutnya. Centang setiap butir yang sudah diselesaikan:</p>
+      <label class="checkitem"><input type="checkbox"><span>Automation "Notifikasi Cuti Baru" berhasil dibuat dan diaktifkan.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Automation sudah diuji minimal satu kali dan berhasil (cek Run history).</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Isi email/notifikasi memuat data dinamis (Nama &amp; Tanggal), bukan teks statis.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Bisa menjelaskan bedanya Trigger, Condition, dan Action dengan kata sendiri.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Screenshot automation dan hasil Run history dikumpulkan lewat LMS/grup kelas.</span></label>
+      <p class="deadline">Tenggat: sebelum Sesi 10 dimulai — dibawa dalam bentuk tautan share base (Editor access untuk dosen).</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Kartu Arsip Sesi 09 · Automations Dasar</span>
+    <span>Sesi berikutnya → 10: Interface Designer / Dashboard</span>
+  </footer>
+
+</div>
+
+<script>
+  const links = Array.from(document.querySelectorAll('nav.tabs a[href^="#"]'));
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const setActive = () => {
+    let idx = 0;
+    const pos = window.scrollY + 90;
+    sections.forEach((sec, i) => { if (sec && sec.offsetTop <= pos) idx = i; });
+    links.forEach((a,i) => a.classList.toggle('active', i === idx));
+  };
+  document.addEventListener('scroll', setActive, {passive:true});
+  setActive();
+
+  document.querySelectorAll('.checkitem input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('.checkitem').classList.toggle('done', cb.checked);
+    });
+  });
+</script>
+
+</body>
+</html>
