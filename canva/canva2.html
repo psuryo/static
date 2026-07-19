@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi 8 — Canva Lanjut: Presentasi, Kolaborasi & Ekspor</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:       #00B5C4;
+    --teal-dark:  #007A87;
+    --teal-mid:   #008A96;
+    --teal-pale:  #E6F9FA;
+    --accent:     #00474F;
+    --ink:        #1A1A1A;
+    --ink-2:      #444444;
+    --ink-3:      #777777;
+    --paper:      #F6FAFA;
+    --white:      #FFFFFF;
+    --border:     #D4ECEE;
+    --green:      #1E8449;
+    --green-pale: #EAFAF1;
+    --orange:     #B7770D;
+    --orange-pale:#FEF9E7;
+    --red:        #C0392B;
+    --red-pale:   #FDECEA;
+    --purple:     #6C3483;
+    --purple-pale:#F5EEF8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--accent);
+    padding: 10px 40px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: rgba(255,255,255,0.45);
+  }
+  .topbar a { color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.15s; }
+  .topbar a:hover { color: rgba(255,255,255,0.9); }
+  .topbar span { color: rgba(255,255,255,0.25); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--accent);
+    color: var(--white);
+    padding: 52px 40px 46px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: "Canva";
+    position: absolute; right: -20px; top: -10px;
+    font-family: 'Sora', sans-serif;
+    font-size: 150px; font-weight: 800;
+    color: rgba(255,255,255,0.04); line-height: 1;
+    pointer-events: none; user-select: none;
+  }
+  .hero-label {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--teal); color: var(--white);
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 2px; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(24px, 5vw, 42px); font-weight: 800;
+    line-height: 1.15; max-width: 620px; margin-bottom: 14px;
+  }
+  .hero h1 span { color: var(--teal); }
+  .hero > p { color: rgba(255,255,255,0.68); max-width: 520px; font-size: 15px; }
+  .hero-meta { display: flex; gap: 24px; margin-top: 30px; flex-wrap: wrap; }
+  .hero-meta-item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.58); font-size: 13px; }
+  .hero-meta-item strong { color: var(--white); font-weight: 600; }
+  .icon-sm { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--teal-dark); margin-bottom: 10px;
+  }
+  h2 { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 20px; line-height: 1.3; }
+  h3 { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  p { color: var(--ink-2); margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* ── TUJUAN GRID ── */
+  .tujuan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .tujuan-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 18px 20px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .tujuan-num { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--teal-dark); line-height: 1; flex-shrink: 0; }
+  .tujuan-card p { color: var(--ink-2); font-size: 14px; margin: 0; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--white); border: 1px solid var(--border);
+    border-left: 4px solid var(--teal);
+    border-radius: 6px; padding: 18px 22px; margin: 16px 0;
+  }
+  .info-box.green  { border-left-color: #27AE60; }
+  .info-box.orange { border-left-color: #E67E22; }
+  .info-box.red    { border-left-color: #C0392B; }
+  .info-box.purple { border-left-color: #8E44AD; }
+  .info-box-label {
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--teal-dark); margin-bottom: 6px;
+  }
+  .info-box.green  .info-box-label { color: #27AE60; }
+  .info-box.orange .info-box-label { color: #E67E22; }
+  .info-box.red    .info-box-label { color: #C0392B; }
+  .info-box.purple .info-box-label { color: #8E44AD; }
+  .info-box p { margin: 0; font-size: 14px; }
+
+  /* ── STEP LIST ── */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .step-list li {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px 18px;
+  }
+  .step-num {
+    background: var(--accent); color: var(--white);
+    font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 700;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .step-list li > div { flex: 1; }
+  .step-list li h3 { font-size: 14px; margin-bottom: 3px; }
+  .step-list li p  { margin: 0; font-size: 13px; color: var(--ink-3); line-height: 1.55; }
+  code { background: #EEF7F8; color: var(--teal-dark); font-size: 12px; padding: 1px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+
+  /* ── SLIDE TIPS GRID ── */
+  .slide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
+  .slide-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px;
+  }
+  .slide-card .s-icon { font-size: 26px; margin-bottom: 8px; display: block; }
+  .slide-card h3 { font-size: 14px; margin-bottom: 4px; }
+  .slide-card p { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.5; }
+  .slide-tag {
+    display: inline-block; margin-top: 8px;
+    font-size: 11px; font-weight: 600;
+    color: var(--teal-dark); background: var(--teal-pale);
+    padding: 2px 8px; border-radius: 4px;
+  }
+
+  /* ── EKSPOR TABLE ── */
+  .ekspor-table {
+    width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 8px;
+  }
+  .ekspor-table th {
+    background: var(--accent); color: var(--white);
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.5px; text-align: left; padding: 10px 16px;
+  }
+  .ekspor-table td {
+    padding: 11px 16px; border-bottom: 1px solid var(--border);
+    color: var(--ink-2); vertical-align: top;
+  }
+  .ekspor-table tr:last-child td { border-bottom: none; }
+  .ekspor-table tr:nth-child(even) td { background: #F0F8F9; }
+  .pill {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 10px;
+  }
+  .pill-green  { background: var(--green-pale); color: var(--green); }
+  .pill-orange { background: var(--orange-pale); color: var(--orange); }
+  .pill-teal   { background: var(--teal-pale); color: var(--teal-dark); }
+  .pill-purple { background: var(--purple-pale); color: var(--purple); }
+  .pill-red    { background: var(--red-pale); color: var(--red); }
+
+  /* ── KOLABORASI VISUAL ── */
+  .kolab-wrap {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden; margin-top: 8px;
+  }
+  .kolab-header {
+    background: var(--teal-pale); padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .kolab-header h3 { font-size: 14px; color: var(--accent); margin: 0; }
+  .kolab-body { padding: 16px 18px; }
+  .kolab-fitur {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .kolab-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 13.5px; color: var(--ink-2);
+  }
+  .kolab-icon {
+    width: 32px; height: 32px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .kolab-item > div p { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+
+  /* ── BRAND KIT ── */
+  .brandkit-wrap {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px; margin-top: 8px;
+  }
+  .brandkit-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .brandkit-item {
+    border: 1px solid var(--border); border-radius: 6px; padding: 14px;
+  }
+  .brandkit-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--teal-dark); margin-bottom: 8px;
+  }
+  .brandkit-fonts { display: flex; flex-direction: column; gap: 4px; }
+  .bf-heading { font-size: 18px; font-weight: 800; color: var(--ink); line-height: 1; }
+  .bf-sub { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .bf-body { font-size: 12px; color: var(--ink-3); }
+  .brandkit-colors { display: flex; gap: 6px; flex-wrap: wrap; }
+  .bc-swatch { width: 28px; height: 28px; border-radius: 4px; }
+  .brandkit-logo {
+    background: #F5F5F5; border-radius: 4px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--ink-3);
+  }
+
+  /* ── PRESENTER VIEW ── */
+  .presenter-grid {
+    display: grid; grid-template-columns: 3fr 2fr; gap: 10px;
+    margin-top: 8px;
+  }
+  .pv-main {
+    background: #1A1A1A; border-radius: 8px; padding: 20px;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 130px;
+  }
+  .pv-slide-mock {
+    background: var(--white); width: 100%; aspect-ratio: 16/9;
+    border-radius: 4px; display: flex; align-items: center;
+    justify-content: center; flex-direction: column; gap: 6px; padding: 12px;
+  }
+  .pv-side {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .pv-box {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px; font-size: 12px; flex: 1;
+  }
+  .pv-box-label { font-weight: 700; color: var(--teal-dark); font-size: 11px; margin-bottom: 4px; }
+  .pv-box p { font-size: 12px; color: var(--ink-3); margin: 0; line-height: 1.4; }
+
+  /* ── RECAP BLOK ── */
+  .recap-blok { background: var(--white); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 8px; }
+  .recap-header { background: var(--teal-dark); color: var(--white); font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; padding: 12px 20px; letter-spacing: 0.5px; }
+  .recap-row { display: flex; align-items: flex-start; gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+  .recap-row:last-child { border-bottom: none; }
+  .recap-sesi { font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700; color: var(--teal-dark); min-width: 56px; padding-top: 2px; }
+  .recap-topic { font-size: 13.5px; color: var(--ink-2); line-height: 1.5; }
+  .recap-topic strong { color: var(--ink); }
+
+  /* ── LATIHAN BOX ── */
+  .latihan-box {
+    background: var(--accent); color: var(--white);
+    border-radius: 8px; padding: 26px 28px; margin-top: 8px;
+  }
+  .latihan-box h3 { color: var(--white); font-family: 'Sora', sans-serif; font-size: 16px; margin-bottom: 6px; }
+  .latihan-box > p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 14px; }
+  .latihan-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .latihan-steps li { display: flex; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.88); align-items: flex-start; line-height: 1.55; }
+  .latihan-steps li::before { content: "→"; color: var(--teal); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+  .tugas-box {
+    background: var(--teal-pale); border: 1.5px solid #9FD9DD;
+    border-radius: 8px; padding: 22px 24px; margin-top: 14px;
+  }
+  .tugas-box h3 { color: var(--accent); font-size: 15px; margin-bottom: 10px; }
+  .tugas-box ul { padding-left: 18px; }
+  .tugas-box ul li { font-size: 14px; color: var(--ink-2); margin-bottom: 8px; line-height: 1.55; }
+
+  /* ── RINGKASAN ── */
+  .ringkasan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  .ringkasan-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 16px; text-align: center; }
+  .ringkasan-icon { font-size: 26px; margin-bottom: 8px; }
+  .ringkasan-card p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* ── NAV SESI ── */
+  .nav-sesi { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 40px; flex-wrap: wrap; }
+  .nav-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; font-weight: 600; color: var(--accent);
+    text-decoration: none; padding: 8px 16px;
+    border: 1.5px solid var(--border); border-radius: 6px; background: var(--white);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--teal); background: var(--teal-pale); }
+  .nav-btn.disabled { opacity: 0.35; pointer-events: none; }
+  .nav-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-center { font-size: 12px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.5px; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--accent); color: rgba(255,255,255,0.45); text-align: center; padding: 18px 20px; font-size: 12px; }
+  footer strong { color: rgba(255,255,255,0.8); }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 10px 16px; }
+    .hero { padding: 40px 20px 36px; }
+    .hero::before { font-size: 100px; }
+    .page { padding: 32px 16px 60px; }
+    .presenter-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="https://panduan.philipus.my.id/pdf">Blok PDF</a>
+  <span>/</span>
+  <a href="https://panduan.philipus.my.id/signature">Blok TTE</a>
+  <span>/</span>
+  <a href="index.html">Blok Canva</a>
+  <span>/</span>
+  <span style="color:rgba(255,255,255,0.7);">Sesi 8</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">
+    <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    Sesi 8 dari 14 · Blok Canva — Penutup
+  </div>
+  <h1><span>Canva</span> Lanjut:<br>Presentasi, Kolaborasi &amp; Ekspor</h1>
+  <p>Membuat presentasi langsung di Canva, berkolaborasi secara real-time dengan tim, mengekspor hasil kerja ke berbagai format (PDF, PPT, PNG, MP4), serta memanfaatkan Brand Kit dan fitur lanjut lainnya.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Durasi: <strong>100 menit</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span>Blok Canva: <strong>Sesi 2 dari 2 · Penutup</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span>Output: <strong>PDF · PPT · PNG · Tautan Presentasi</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- NAV -->
+  <div class="nav-sesi">
+    <a href="canva1.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 7 — Canva Dasar
+    </a>
+    <span class="nav-center">BLOK CANVA · SESI 8</span>
+    <a href="#" class="nav-btn disabled">
+      Sesi 9 — PowerPoint Dasar
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+  <!-- TUJUAN -->
+  <p class="section-title">Tujuan Pembelajaran</p>
+  <h2>Setelah sesi ini, mahasiswa mampu…</h2>
+  <div class="tujuan-grid">
+    <div class="tujuan-card">
+      <span class="tujuan-num">01</span>
+      <p>Membuat deck presentasi di Canva dengan slide yang konsisten dan menarik</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">02</span>
+      <p>Berkolaborasi secara real-time dengan anggota tim dalam satu desain Canva</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">03</span>
+      <p>Mengekspor desain ke format yang tepat sesuai kebutuhan (PDF, PPT, PNG, video)</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">04</span>
+      <p>Menggunakan Brand Kit dan fitur lanjut Canva untuk konsistensi identitas visual</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 1 — PRESENTASI DI CANVA -->
+  <p class="section-title">Materi 1</p>
+  <h2>Membuat Presentasi di Canva</h2>
+
+  <p>Canva bukan hanya untuk poster — fitur presentasinya sangat lengkap dan bahkan bisa menjadi alternatif PowerPoint untuk keperluan tertentu. Presentasi Canva bisa ditampilkan langsung dari browser, tanpa perlu export ke PPT terlebih dahulu.</p>
+
+  <ul class="step-list">
+    <li>
+      <span class="step-num">1</span>
+      <div>
+        <h3>Buat desain baru dengan ukuran Presentasi</h3>
+        <p>Di halaman utama Canva, klik <strong>Buat desain</strong> → pilih <strong>Presentasi (16:9)</strong>. Atau ketik "presentasi" di kolom pencarian. Kanvas akan otomatis berukuran 1920×1080px.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      <div>
+        <h3>Tambahkan halaman / slide</h3>
+        <p>Klik tombol <strong>+ Tambahkan halaman</strong> di bagian bawah panel slide (kiri bawah) atau klik <code>Ctrl+Enter</code>. Salin slide yang sudah ada dengan klik kanan → <strong>Duplikat halaman</strong> untuk menjaga konsistensi layout.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      <div>
+        <h3>Tambahkan transisi antar slide</h3>
+        <p>Klik ikon animasi (✨) di toolbar atas → pilih tab <strong>Transisi halaman</strong>. Pilih efek transisi seperti Fade, Slide, atau Breathe. Klik <strong>Terapkan ke semua halaman</strong> untuk konsistensi.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">4</span>
+      <div>
+        <h3>Tambahkan animasi pada elemen</h3>
+        <p>Klik elemen (teks, gambar, shape) → klik ikon animasi (✨) di toolbar → pilih tab <strong>Animasi elemen</strong>. Pilih efek masuk seperti Fade, Rise, Pop. Atur durasi dan delay jika perlu.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">5</span>
+      <div>
+        <h3>Presentasikan langsung dari Canva</h3>
+        <p>Klik tombol <strong>Presentasikan</strong> di pojok kanan atas → pilih mode presentasi: <strong>Presentasikan</strong> (layar penuh), <strong>Presenter View</strong> (tampilan catatan), atau <strong>Rekam</strong> (rekam presentasi dengan webcam). Navigasi slide dengan tombol panah.</p>
+      </div>
+    </li>
+  </ul>
+
+  <!-- PRESENTER VIEW -->
+  <h3 style="margin-top:24px;margin-bottom:12px;">Presenter View — Tampilan Catatan Pembicara</h3>
+  <p>Fitur andalan yang jarang diketahui: Presenter View menampilkan slide berikutnya dan catatan di layar presenter, sementara audiens hanya melihat slide saat ini.</p>
+
+  <div class="presenter-grid">
+    <div class="pv-main">
+      <div class="pv-slide-mock">
+        <div style="width:70%;height:8px;background:#DDD;border-radius:4px;"></div>
+        <div style="width:50%;height:5px;background:#EEE;border-radius:4px;"></div>
+        <div style="font-size:10px;color:var(--ink-3);margin-top:8px;">Slide saat ini (layar audiens)</div>
+      </div>
+    </div>
+    <div class="pv-side">
+      <div class="pv-box">
+        <div class="pv-box-label">Slide Berikutnya</div>
+        <p>Preview slide selanjutnya agar presenter siap transisi</p>
+      </div>
+      <div class="pv-box">
+        <div class="pv-box-label">Catatan Pembicara</div>
+        <p>Tulis poin-poin yang ingin disampaikan — hanya terlihat oleh presenter</p>
+      </div>
+      <div class="pv-box">
+        <div class="pv-box-label">Timer</div>
+        <p>Hitung mundur waktu presentasi secara otomatis</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:16px;">
+    <div class="info-box-label">📝 Cara Menambah Catatan Pembicara</div>
+    <p>Di editor Canva, klik ikon <strong>Catatan</strong> (📄) di toolbar bawah setiap slide, atau tekan <code>N</code>. Ketik catatan yang ingin ditampilkan saat Presenter View aktif. Catatan ini tidak akan muncul saat slide diunduh atau ditampilkan ke audiens.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 2 — TIPS SLIDE PRESENTASI -->
+  <p class="section-title">Materi 2</p>
+  <h2>Tips Membuat Slide Presentasi yang Efektif</h2>
+
+  <div class="slide-grid">
+    <div class="slide-card">
+      <span class="s-icon">📝</span>
+      <h3>Satu Ide per Slide</h3>
+      <p>Jangan memasukkan terlalu banyak informasi dalam satu slide. Satu slide = satu poin utama. Audiens tidak bisa membaca dan mendengarkan sekaligus.</p>
+      <span class="slide-tag">Prinsip KISS</span>
+    </div>
+    <div class="slide-card">
+      <span class="s-icon">🔤</span>
+      <h3>Font Minimal 24pt</h3>
+      <p>Teks di bawah 24pt sulit dibaca dari jarak jauh. Heading minimal 36pt, body text minimal 24pt untuk presentasi di ruangan kelas atau auditorium.</p>
+      <span class="slide-tag">Keterbacaan</span>
+    </div>
+    <div class="slide-card">
+      <span class="s-icon">🖼️</span>
+      <h3>Visual &gt; Teks</h3>
+      <p>Ganti paragraf panjang dengan gambar, ikon, atau infografis. Otak memproses gambar 60.000× lebih cepat dari teks. Teks rinci bisa di handout terpisah.</p>
+      <span class="slide-tag">Visual Storytelling</span>
+    </div>
+    <div class="slide-card">
+      <span class="s-icon">🎨</span>
+      <h3>Konsisten di Semua Slide</h3>
+      <p>Gunakan font, warna, dan posisi elemen yang sama di seluruh slide. Manfaatkan fitur <strong>Duplikat halaman</strong> daripada membuat ulang layout dari nol.</p>
+      <span class="slide-tag">Konsistensi</span>
+    </div>
+    <div class="slide-card">
+      <span class="s-icon">⬜</span>
+      <h3>Manfaatkan White Space</h3>
+      <p>Ruang kosong bukan pemborosan — ia membantu fokus audiens. Jangan isi setiap sudut slide. Margin yang cukup membuat slide terasa lebih elegan.</p>
+      <span class="slide-tag">Breathing Room</span>
+    </div>
+    <div class="slide-card">
+      <span class="s-icon">🎬</span>
+      <h3>Animasi Secukupnya</h3>
+      <p>Animasi yang berlebihan mengalihkan perhatian. Gunakan satu jenis animasi konsisten (misalnya: Fade untuk semua elemen) dan hindari animasi yang terlalu mencolok.</p>
+      <span class="slide-tag">Less is More</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 3 — KOLABORASI -->
+  <p class="section-title">Materi 3</p>
+  <h2>Kolaborasi Real-Time di Canva</h2>
+
+  <p>Canva memungkinkan beberapa orang mengedit desain yang sama secara bersamaan — mirip Google Docs untuk desain grafis. Fitur ini sangat berguna untuk kerja kelompok di kampus.</p>
+
+  <div class="kolab-wrap">
+    <div class="kolab-header">
+      <span style="font-size:18px;">👥</span>
+      <h3>Fitur Kolaborasi Canva</h3>
+    </div>
+    <div class="kolab-body">
+      <div class="kolab-fitur">
+        <div class="kolab-item">
+          <div class="kolab-icon" style="background:var(--teal-pale);">🔗</div>
+          <div>
+            <h3 style="font-size:14px;margin-bottom:2px;">Bagikan Tautan Edit</h3>
+            <p>Klik <strong>Bagikan</strong> → <strong>Undang orang</strong> → masukkan email, atau klik <strong>Salin tautan</strong> dengan izin "Dapat mengedit". Penerima bisa langsung mengedit tanpa perlu akun Canva Pro.</p>
+          </div>
+        </div>
+        <div class="kolab-item">
+          <div class="kolab-icon" style="background:#EAFAF1;">👁️</div>
+          <div>
+            <h3 style="font-size:14px;margin-bottom:2px;">Kontrol Izin Akses</h3>
+            <p>Pilih tiga level akses: <strong>Dapat mengedit</strong> (edit penuh), <strong>Dapat memberi komentar</strong> (reviewer), atau <strong>Dapat melihat</strong> (view only). Cocok untuk workflow revisi dokumen.</p>
+          </div>
+        </div>
+        <div class="kolab-item">
+          <div class="kolab-icon" style="background:#F5EEF8;">💬</div>
+          <div>
+            <h3 style="font-size:14px;margin-bottom:2px;">Komentar pada Elemen</h3>
+            <p>Klik kanan elemen mana saja → <strong>Tambahkan komentar</strong>. Komentar bisa dibalas, diselesaikan (resolve), atau ditandai. Berguna saat dosen memberikan feedback pada desain mahasiswa.</p>
+          </div>
+        </div>
+        <div class="kolab-item">
+          <div class="kolab-icon" style="background:var(--orange-pale);">📱</div>
+          <div>
+            <h3 style="font-size:14px;margin-bottom:2px;">Indikator Pengguna Aktif</h3>
+            <p>Saat beberapa orang mengedit bersamaan, kursor masing-masing ditampilkan dengan warna dan nama berbeda — kamu bisa melihat siapa sedang mengedit bagian mana secara real-time.</p>
+          </div>
+        </div>
+        <div class="kolab-item">
+          <div class="kolab-icon" style="background:var(--teal-pale);">📂</div>
+          <div>
+            <h3 style="font-size:14px;margin-bottom:2px;">Tim & Folder Bersama</h3>
+            <p>Buat <strong>Tim</strong> di Canva untuk berbagi desain, template, dan Brand Kit dengan seluruh anggota. Cocok untuk organisasi kemahasiswaan atau kelompok kerja yang membutuhkan identitas visual konsisten.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 4 — EKSPOR -->
+  <p class="section-title">Materi 4</p>
+  <h2>Mengekspor Desain ke Berbagai Format</h2>
+
+  <p>Canva mendukung ekspor ke banyak format. Memilih format yang tepat penting agar kualitas hasil sesuai dengan kebutuhan penggunaan.</p>
+
+  <table class="ekspor-table">
+    <thead>
+      <tr>
+        <th>Format</th>
+        <th>Keunggulan</th>
+        <th>Cocok untuk</th>
+        <th>Catatan</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>PDF Standard</strong></td>
+        <td>Ukuran kecil, hyperlink aktif</td>
+        <td><span class="pill pill-teal">Berbagi digital</span></td>
+        <td>Untuk dokumen dikirim via email/LMS</td>
+      </tr>
+      <tr>
+        <td><strong>PDF Print</strong></td>
+        <td>Resolusi tinggi, warna akurat</td>
+        <td><span class="pill pill-green">Cetak fisik</span></td>
+        <td>Ukuran file lebih besar, untuk percetakan</td>
+      </tr>
+      <tr>
+        <td><strong>PNG</strong></td>
+        <td>Transparan, kualitas tinggi</td>
+        <td><span class="pill pill-teal">Postingan media sosial</span></td>
+        <td>Pilih resolusi 2× atau 3× untuk kualitas lebih baik</td>
+      </tr>
+      <tr>
+        <td><strong>JPG</strong></td>
+        <td>Ukuran paling kecil</td>
+        <td><span class="pill pill-teal">Foto & thumbnail</span></td>
+        <td>Tidak mendukung transparansi</td>
+      </tr>
+      <tr>
+        <td><strong>PPTX</strong></td>
+        <td>Bisa diedit di PowerPoint</td>
+        <td><span class="pill pill-purple">Edit lanjutan di PPT</span></td>
+        <td>Beberapa elemen Canva mungkin bergeser saat dibuka di PPT</td>
+      </tr>
+      <tr>
+        <td><strong>MP4 (Video)</strong></td>
+        <td>Animasi & transisi dipertahankan</td>
+        <td><span class="pill pill-orange">Presentasi video / reel</span></td>
+        <td>Hanya tersedia jika desain memiliki animasi</td>
+      </tr>
+      <tr>
+        <td><strong>GIF</strong></td>
+        <td>Animasi singkat berulang</td>
+        <td><span class="pill pill-teal">Stiker & media sosial</span></td>
+        <td>Resolusi terbatas, cocok untuk animasi sederhana</td>
+      </tr>
+      <tr>
+        <td><strong>Tautan Presentasi</strong></td>
+        <td>Langsung dibuka di browser</td>
+        <td><span class="pill pill-green">Presentasi online</span></td>
+        <td>Tidak perlu unduh — bagikan tautan, audiens bisa melihat live</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box green" style="margin-top:16px;">
+    <div class="info-box-label">💡 Tips Ekspor PPTX</div>
+    <p>Saat mengekspor ke PPTX, beberapa elemen Canva (terutama font khusus dan efek animasi) mungkin tidak terbaca sempurna di PowerPoint. Untuk menghindari masalah ini, <strong>flatten</strong> elemen teks menjadi gambar sebelum export, atau gunakan font standar seperti Arial, Calibri, atau Times New Roman yang tersedia di keduanya.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 5 — BRAND KIT -->
+  <p class="section-title">Materi 5</p>
+  <h2>Brand Kit: Menjaga Konsistensi Identitas Visual</h2>
+
+  <p>Brand Kit adalah fitur Canva yang menyimpan warna, font, dan logo resmi suatu institusi atau organisasi — sehingga semua anggota tim bisa mengaksesnya dengan mudah tanpa perlu copy-paste manual setiap saat.</p>
+
+  <div class="brandkit-wrap">
+    <div style="font-size:12px;color:var(--ink-3);margin-bottom:12px;font-weight:600;">Contoh Brand Kit — UKWMS</div>
+    <div class="brandkit-row">
+      <div class="brandkit-item">
+        <div class="brandkit-label">Logo</div>
+        <div class="brandkit-logo">Logo UKWMS</div>
+      </div>
+      <div class="brandkit-item">
+        <div class="brandkit-label">Warna Brand</div>
+        <div class="brandkit-colors">
+          <div class="bc-swatch" style="background:#003366;" title="Biru Tua"></div>
+          <div class="bc-swatch" style="background:#0066CC;" title="Biru"></div>
+          <div class="bc-swatch" style="background:#FFD700;" title="Kuning"></div>
+          <div class="bc-swatch" style="background:#FFFFFF;border:1px solid #DDD;" title="Putih"></div>
+          <div class="bc-swatch" style="background:#F5F5F5;border:1px solid #DDD;" title="Abu"></div>
+        </div>
+      </div>
+      <div class="brandkit-item">
+        <div class="brandkit-label">Font Brand</div>
+        <div class="brandkit-fonts">
+          <div class="bf-heading">Heading</div>
+          <div class="bf-sub">Subheading</div>
+          <div class="bf-body">Body text reguler</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ul class="step-list" style="margin-top:14px;">
+    <li>
+      <span class="step-num">1</span>
+      <div>
+        <h3>Buka Brand Kit</h3>
+        <p>Di editor Canva, klik tab <strong>Brand</strong> di panel kiri (ikon mahkota/shield). Jika belum punya, klik <strong>Buat Brand Kit baru</strong>.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      <div>
+        <h3>Tambahkan logo, warna, dan font</h3>
+        <p>Upload logo dalam format PNG transparan. Tambahkan kode hex warna brand (bisa dari manual brand instansi). Pilih font yang sesuai dari perpustakaan Canva atau upload font custom.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      <div>
+        <h3>Gunakan Brand Kit saat mendesain</h3>
+        <p>Saat memilih warna elemen, panel Brand Colors akan muncul di bagian atas pilihan warna — klik untuk menerapkan warna brand secara instan. Font brand juga tersedia di daftar font teratas.</p>
+      </div>
+    </li>
+  </ul>
+
+  <hr class="divider">
+
+  <!-- MATERI 6 — FITUR TAMBAHAN -->
+  <p class="section-title">Materi 6</p>
+  <h2>Fitur Tambahan yang Berguna</h2>
+
+  <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:24px;flex-shrink:0;">🔮</span>
+      <div>
+        <h3 style="font-size:14px;margin-bottom:4px;">Magic Resize — Ubah Ukuran Sekali Klik</h3>
+        <p style="font-size:13px;color:var(--ink-3);margin:0;line-height:1.55;">Fitur Canva Pro: ubah desain poster A4 menjadi Instagram Story, Twitter Banner, atau ukuran lainnya secara otomatis. Semua elemen akan disesuaikan proporsinya. Di versi gratis, bisa resize manual dengan cara menduplikat desain dan mengubah dimensi.</p>
+      </div>
+    </div>
+
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:24px;flex-shrink:0;">📅</span>
+      <div>
+        <h3 style="font-size:14px;margin-bottom:4px;">Content Planner — Jadwal Posting</h3>
+        <p style="font-size:13px;color:var(--ink-3);margin:0;line-height:1.55;">Jadwalkan posting konten media sosial langsung dari Canva ke Instagram, Facebook, Twitter/X, dan LinkedIn. Cocok untuk organisasi kemahasiswaan yang mengelola media sosial secara terstruktur.</p>
+      </div>
+    </div>
+
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:24px;flex-shrink:0;">🤖</span>
+      <div>
+        <h3 style="font-size:14px;margin-bottom:4px;">Magic Write & Magic Design — AI di Canva</h3>
+        <p style="font-size:13px;color:var(--ink-3);margin:0;line-height:1.55;">Canva kini mengintegrasikan AI: <strong>Magic Write</strong> menghasilkan teks otomatis (tagline, deskripsi, poin presentasi), sedangkan <strong>Magic Design</strong> menghasilkan template otomatis berdasarkan teks atau gambar yang diunggah. Tersedia terbatas di akun gratis.</p>
+      </div>
+    </div>
+
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;">
+      <span style="font-size:24px;flex-shrink:0;">🔗</span>
+      <div>
+        <h3 style="font-size:14px;margin-bottom:4px;">Canva Website & Microsite</h3>
+        <p style="font-size:13px;color:var(--ink-3);margin:0;line-height:1.55;">Desain Canva bisa dipublikasikan sebagai website sederhana (one-page) dengan domain gratis <code>*.my.canva.site</code>. Cocok untuk portofolio, landing page event kampus, atau profil organisasi sederhana tanpa perlu coding.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 7 — RECAP BLOK CANVA -->
+  <p class="section-title">Penutup Blok Canva</p>
+  <h2>Rangkuman Seluruh Blok Canva (Sesi 7–8)</h2>
+
+  <div class="recap-blok">
+    <div class="recap-header">🎨 Blok 3 — Canva: Ringkasan Dua Sesi</div>
+    <div class="recap-row">
+      <span class="recap-sesi">Sesi 7</span>
+      <span class="recap-topic"><strong>Canva Dasar</strong> — antarmuka tiga zona, shortcut, template, elemen grafis (foto/ikon/shape/frame), tipografi (heading/body/kombinasi font), warna (palet 3–4 warna), dan 4 prinsip desain (CARP)</span>
+    </div>
+    <div class="recap-row">
+      <span class="recap-sesi">Sesi 8</span>
+      <span class="recap-topic"><strong>Canva Lanjut</strong> — presentasi dengan Presenter View & catatan, tips slide efektif, kolaborasi real-time, ekspor ke 8 format berbeda, Brand Kit, dan fitur AI (Magic Write, Magic Design)</span>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:16px;">
+    <div class="info-box-label">🔜 Blok Berikutnya</div>
+    <p>Sesi 9 memulai <strong>Blok 4 — PowerPoint</strong>: menguasai slide layout, master slide, tema, dan dasar-dasar membuat presentasi profesional di Microsoft PowerPoint — tools presentasi standar industri yang masih paling banyak digunakan di lingkungan kerja formal.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- LATIHAN & TUGAS -->
+  <p class="section-title">Latihan &amp; Tugas</p>
+  <h2>Praktikum Sesi 8</h2>
+
+  <div class="latihan-box">
+    <h3>🛠 Latihan Kelas (40 menit terakhir)</h3>
+    <p>Praktikum dibagi dalam dua kegiatan — presentasi dan kolaborasi:</p>
+    <ul class="latihan-steps">
+      <li><strong>Kegiatan 1 — Buat Deck Presentasi (20 menit):</strong> Buat presentasi Canva minimal 6 slide dengan tema <em>"Manfaat Teknologi Informasi di Dunia Kerja"</em> atau tema bebas sesuai minat. Wajib ada: slide judul, 3–4 slide isi dengan grafis/gambar, dan slide penutup. Tambahkan catatan pembicara di minimal 2 slide.</li>
+      <li><strong>Kegiatan 2 — Kolaborasi (20 menit):</strong> Bagikan tautan edit presentasi ke teman satu kelompok (2–3 orang). Masing-masing anggota mengerjakan minimal 2 slide berbeda secara bersamaan. Saling tinggalkan komentar pada slide teman, lalu resolve komentar tersebut.</li>
+    </ul>
+  </div>
+
+  <div class="tugas-box">
+    <h3>📌 Tugas Mandiri (dikumpulkan sebelum Sesi 9)</h3>
+    <ul>
+      <li>Sempurnakan deck presentasi dari latihan kelas menjadi <strong>minimal 10 slide</strong> yang lengkap dan konsisten. Pastikan menerapkan tips slide efektif yang sudah dipelajari.</li>
+      <li>Ekspor presentasi dalam <strong>dua format</strong>: (a) <strong>PDF Standard</strong> untuk dikumpulkan ke dosen, dan (b) <strong>PPTX</strong> untuk simulasi kompatibilitas dengan PowerPoint. Buka file PPTX di PowerPoint dan amati apakah ada pergeseran elemen — catat temuan singkat.</li>
+      <li>Opsional (nilai tambah): publikasikan presentasi sebagai <strong>Canva Website</strong> dan sertakan tautannya bersama pengumpulan tugas.</li>
+      <li>Kumpulkan: PDF + PPTX + catatan temuan dalam folder <code>NIM_Nama_Sesi8</code> → upload ke LMS/Google Classroom.</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RINGKASAN -->
+  <p class="section-title">Ringkasan</p>
+  <h2>Yang Sudah Dipelajari Hari Ini</h2>
+
+  <div class="ringkasan-grid">
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🎬</div>
+      <p>Presentasi Canva: slide, transisi, animasi, dan Presenter View dengan catatan</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">📐</div>
+      <p>Enam tips slide efektif: satu ide/slide, font 24pt+, visual > teks, konsistensi, white space, animasi secukupnya</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">👥</div>
+      <p>Kolaborasi real-time: bagikan tautan, kontrol izin, komentar, dan indikator pengguna aktif</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">📤</div>
+      <p>Delapan format ekspor: PDF Standard/Print, PNG, JPG, PPTX, MP4, GIF, tautan presentasi</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🎨</div>
+      <p>Brand Kit: simpan warna, font, dan logo untuk konsistensi identitas visual tim</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔜</div>
+      <p>Blok Canva selesai — lanjut ke Blok PowerPoint: slide layout, master slide, dan desain profesional</p>
+    </div>
+  </div>
+
+  <!-- NAV BAWAH -->
+  <div class="nav-sesi" style="margin-top:40px;margin-bottom:0;">
+    <a href="canva1.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 7 — Canva Dasar
+    </a>
+    <a href="index.html" class="nav-btn" style="color:var(--teal-dark);border-color:var(--teal);">
+      Index Blok Canva
+    </a>
+    <a href="#" class="nav-btn disabled">
+      Sesi 9 — PowerPoint Dasar
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Teknologi Informasi Perkantoran</strong> &nbsp;·&nbsp;
+  Sesi 8 — Canva Lanjut: Presentasi, Kolaborasi &amp; Ekspor &nbsp;·&nbsp;
+  Universitas Katolik Widya Mandala Surabaya
+</footer>
+
+</body>
+</html>
