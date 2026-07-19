@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi 7 — Canva Dasar: Antarmuka, Template, Elemen & Tipografi</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:       #00B5C4;
+    --teal-dark:  #007A87;
+    --teal-mid:   #008A96;
+    --teal-pale:  #E6F9FA;
+    --accent:     #00474F;
+    --ink:        #1A1A1A;
+    --ink-2:      #444444;
+    --ink-3:      #777777;
+    --paper:      #F6FAFA;
+    --white:      #FFFFFF;
+    --border:     #D4ECEE;
+    --green:      #1E8449;
+    --green-pale: #EAFAF1;
+    --orange:     #B7770D;
+    --orange-pale:#FEF9E7;
+    --red:        #C0392B;
+    --red-pale:   #FDECEA;
+    --purple:     #6C3483;
+    --purple-pale:#F5EEF8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--accent);
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+  .topbar a { color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.15s; }
+  .topbar a:hover { color: rgba(255,255,255,0.9); }
+  .topbar span { color: rgba(255,255,255,0.25); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--accent);
+    color: var(--white);
+    padding: 52px 40px 46px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "Canva";
+    position: absolute;
+    right: -20px;
+    top: -10px;
+    font-family: 'Sora', sans-serif;
+    font-size: 150px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--teal);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(24px, 5vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 620px;
+    margin-bottom: 14px;
+  }
+  .hero h1 span { color: var(--teal); }
+  .hero > p { color: rgba(255,255,255,0.68); max-width: 520px; font-size: 15px; }
+  .hero-meta { display: flex; gap: 24px; margin-top: 30px; flex-wrap: wrap; }
+  .hero-meta-item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.58); font-size: 13px; }
+  .hero-meta-item strong { color: var(--white); font-weight: 600; }
+  .icon-sm { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+    margin-bottom: 10px;
+  }
+  h2 { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 20px; line-height: 1.3; }
+  h3 { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  p { color: var(--ink-2); margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* ── TUJUAN GRID ── */
+  .tujuan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .tujuan-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .tujuan-num { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--teal-dark); line-height: 1; flex-shrink: 0; }
+  .tujuan-card p { color: var(--ink-2); font-size: 14px; margin: 0; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--teal);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+  .info-box.green  { border-left-color: #27AE60; }
+  .info-box.orange { border-left-color: #E67E22; }
+  .info-box.red    { border-left-color: #C0392B; }
+  .info-box.purple { border-left-color: #8E44AD; }
+  .info-box-label { font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal-dark); margin-bottom: 6px; }
+  .info-box.green  .info-box-label { color: #27AE60; }
+  .info-box.orange .info-box-label { color: #E67E22; }
+  .info-box.red    .info-box-label { color: #C0392B; }
+  .info-box.purple .info-box-label { color: #8E44AD; }
+  .info-box p { margin: 0; font-size: 14px; }
+
+  /* ── ANTARMUKA MAP ── */
+  .ui-map {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .ui-map-header {
+    background: var(--accent);
+    color: var(--white);
+    padding: 10px 16px;
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ui-dots { display: flex; gap: 5px; }
+  .ui-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .ui-zone-wrap {
+    display: grid;
+    grid-template-columns: 180px 1fr 160px;
+    min-height: 200px;
+    border-top: 1px solid var(--border);
+  }
+  .ui-zone {
+    padding: 14px;
+    border-right: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .ui-zone:last-child { border-right: none; }
+  .ui-zone-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ui-zone ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .ui-zone ul li { font-size: 12px; color: var(--ink-2); display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; }
+  .ui-zone ul li::before { content: "·"; color: var(--teal); font-size: 16px; line-height: 1; flex-shrink: 0; }
+  .ui-canvas {
+    background: #E8E8E8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px;
+  }
+  .ui-canvas-inner {
+    background: var(--white);
+    width: 100%;
+    max-width: 160px;
+    aspect-ratio: 1 / 1.414;
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ui-canvas-label { font-size: 11px; color: var(--ink-3); text-align: center; }
+
+  /* ── FITUR GRID ── */
+  .fitur-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 8px; }
+  .fitur-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .fitur-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+  .fitur-card h3 { font-size: 14px; margin-bottom: 4px; }
+  .fitur-card p { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.5; }
+  .fitur-tip {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--teal-dark);
+    background: var(--teal-pale);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* ── STEP LIST ── */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .step-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+  }
+  .step-num {
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-list li > div { flex: 1; }
+  .step-list li h3 { font-size: 14px; margin-bottom: 3px; }
+  .step-list li p  { margin: 0; font-size: 13px; color: var(--ink-3); line-height: 1.55; }
+  code { background: #EEF7F8; color: var(--teal-dark); font-size: 12px; padding: 1px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+
+  /* ── TIPOGRAFI SHOWCASE ── */
+  .tipografi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 8px; }
+  .tipografi-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .tipo-label { font-size: 11px; font-weight: 700; color: var(--teal-dark); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .tipo-sample { font-size: 22px; font-weight: 800; color: var(--ink); margin-bottom: 6px; line-height: 1.2; }
+  .tipo-sub { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.5; }
+  .tipo-pair { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .tipo-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: var(--teal-pale); color: var(--teal-dark); }
+
+  /* ── WARNA SHOWCASE ── */
+  .warna-section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 8px;
+  }
+  .warna-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .warna-row:last-child { margin-bottom: 0; }
+  .warna-label { font-size: 12px; font-weight: 600; color: var(--ink-3); margin-bottom: 8px; }
+  .warna-swatch {
+    width: 44px; height: 44px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .warna-set { }
+  .warna-set p { font-size: 12px; color: var(--ink-3); margin-bottom: 6px; font-weight: 600; }
+
+  /* ── PRINSIP DESAIN ── */
+  .prinsip-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .prinsip-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .prinsip-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .prinsip-item > div { flex: 1; }
+  .prinsip-item h3 { font-size: 14px; margin-bottom: 3px; }
+  .prinsip-item p { font-size: 13px; color: var(--ink-3); margin: 0; line-height: 1.5; }
+
+  /* ── LATIHAN BOX ── */
+  .latihan-box {
+    background: var(--accent);
+    color: var(--white);
+    border-radius: 8px;
+    padding: 26px 28px;
+    margin-top: 8px;
+  }
+  .latihan-box h3 { color: var(--white); font-family: 'Sora', sans-serif; font-size: 16px; margin-bottom: 6px; }
+  .latihan-box > p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 14px; }
+  .latihan-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .latihan-steps li {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.88);
+    align-items: flex-start;
+    line-height: 1.55;
+  }
+  .latihan-steps li::before { content: "→"; color: var(--teal); font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+  .tugas-box {
+    background: var(--teal-pale);
+    border: 1.5px solid #9FD9DD;
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-top: 14px;
+  }
+  .tugas-box h3 { color: var(--accent); font-size: 15px; margin-bottom: 10px; }
+  .tugas-box ul { padding-left: 18px; }
+  .tugas-box ul li { font-size: 14px; color: var(--ink-2); margin-bottom: 8px; line-height: 1.55; }
+
+  /* ── RINGKASAN ── */
+  .ringkasan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  .ringkasan-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 16px; text-align: center; }
+  .ringkasan-icon { font-size: 26px; margin-bottom: 8px; }
+  .ringkasan-card p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* ── NAV SESI ── */
+  .nav-sesi {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--white);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--teal); background: var(--teal-pale); }
+  .nav-btn.disabled { opacity: 0.35; pointer-events: none; }
+  .nav-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-center { font-size: 12px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.5px; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--accent); color: rgba(255,255,255,0.45); text-align: center; padding: 18px 20px; font-size: 12px; }
+  footer strong { color: rgba(255,255,255,0.8); }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 10px 16px; }
+    .hero { padding: 40px 20px 36px; }
+    .hero::before { font-size: 100px; }
+    .page { padding: 32px 16px 60px; }
+    .ui-zone-wrap { grid-template-columns: 1fr; }
+    .ui-zone { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index-pdf.html">Blok PDF</a>
+  <span>/</span>
+  <a href="index-tte.html">Blok TTE</a>
+  <span>/</span>
+  <a href="index-canva.html">Blok Canva</a>
+  <span>/</span>
+  <span style="color:rgba(255,255,255,0.7);">Sesi 7</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">
+    <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    Sesi 7 dari 14 · Blok Canva
+  </div>
+  <h1><span>Canva</span> Dasar:<br>Antarmuka, Template, Elemen &amp; Tipografi</h1>
+  <p>Mengenal antarmuka Canva, memilih dan menyesuaikan template, menggunakan elemen grafis, mengatur tipografi dan warna untuk membuat poster atau flyer akademik yang menarik dan profesional.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Durasi: <strong>100 menit</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span>Blok Canva: <strong>Sesi 1 dari 2</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span>Output: <strong>Poster/Flyer Akademik</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- NAV -->
+  <div class="nav-sesi">
+    <a href="sesi6-panduan-tte.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 6 — TTE Institusi
+    </a>
+    <span class="nav-center">BLOK CANVA · SESI 7</span>
+    <a href="sesi8-panduan-canva.html" class="nav-btn disabled">
+      Sesi 8 — Canva Lanjut
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+  <!-- TUJUAN -->
+  <p class="section-title">Tujuan Pembelajaran</p>
+  <h2>Setelah sesi ini, mahasiswa mampu…</h2>
+  <div class="tujuan-grid">
+    <div class="tujuan-card">
+      <span class="tujuan-num">01</span>
+      <p>Menavigasi antarmuka Canva dan menggunakan fitur-fitur utamanya dengan lancar</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">02</span>
+      <p>Memilih template yang sesuai dan memodifikasinya sesuai kebutuhan konten</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">03</span>
+      <p>Menggunakan elemen grafis, foto, ikon, dan frame untuk memperkuat desain</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">04</span>
+      <p>Menerapkan prinsip tipografi dan kombinasi warna yang harmonis dalam desain</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 1 — MENGENAL CANVA -->
+  <p class="section-title">Materi 1</p>
+  <h2>Mengenal Canva</h2>
+
+  <p>Canva adalah platform desain grafis berbasis web yang memungkinkan siapa saja membuat konten visual profesional tanpa perlu keahlian desain khusus. Tersedia gratis dengan fitur yang sangat lengkap, dan bisa diakses di browser maupun aplikasi mobile.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px;margin-bottom:4px;">
+    <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid var(--teal);border-radius:6px;padding:14px 16px;">
+      <p style="font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:4px;">🆓 Gratis</p>
+      <p style="font-size:13px;color:var(--ink-3);margin:0;">Ribuan template, jutaan elemen, dan semua fitur dasar tersedia tanpa biaya</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid #27AE60;border-radius:6px;padding:14px 16px;">
+      <p style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;">🌐 Berbasis Web</p>
+      <p style="font-size:13px;color:var(--ink-3);margin:0;">Tidak perlu install — cukup buka browser dan login di canva.com</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid #8E44AD;border-radius:6px;padding:14px 16px;">
+      <p style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:4px;">☁️ Tersimpan Otomatis</p>
+      <p style="font-size:13px;color:var(--ink-3);margin:0;">Semua desain tersimpan di cloud — bisa dilanjutkan dari perangkat mana saja</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid #E67E22;border-radius:6px;padding:14px 16px;">
+      <p style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:4px;">🎓 Canva for Education</p>
+      <p style="font-size:13px;color:var(--ink-3);margin:0;">Akun institusi pendidikan mendapat akses fitur premium gratis</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 2 — ANTARMUKA -->
+  <p class="section-title">Materi 2</p>
+  <h2>Mengenal Antarmuka Canva</h2>
+  <p>Saat membuka sebuah desain di Canva, layar terbagi menjadi tiga zona utama:</p>
+
+  <!-- UI MAP -->
+  <div class="ui-map">
+    <div class="ui-map-header">
+      <div class="ui-dots">
+        <div class="ui-dot" style="background:#FF5F57;"></div>
+        <div class="ui-dot" style="background:#FEBC2E;"></div>
+        <div class="ui-dot" style="background:#28C840;"></div>
+      </div>
+      <span style="font-size:12px;opacity:0.7;">Canva Editor — canva.com</span>
+    </div>
+    <div class="ui-zone-wrap">
+      <div class="ui-zone" style="background:#F8FAFB;">
+        <div class="ui-zone-label">Panel Kiri</div>
+        <ul>
+          <li>Template — pilih desain siap pakai</li>
+          <li>Elemen — foto, ikon, shape, frame</li>
+          <li>Upload — gambar dari komputer</li>
+          <li>Teks — tambah heading/body text</li>
+          <li>Brand Kit — warna & font brand</li>
+          <li>Aplikasi — integrasi Pexels, dll</li>
+        </ul>
+      </div>
+      <div class="ui-zone ui-canvas">
+        <div style="font-size:11px;color:var(--ink-3);margin-bottom:8px;text-align:center;">Area Kanvas</div>
+        <div class="ui-canvas-inner">
+          <div style="padding:12px;text-align:center;">
+            <div style="width:60%;height:8px;background:#DDD;border-radius:4px;margin:0 auto 8px;"></div>
+            <div style="width:80%;height:5px;background:#EEE;border-radius:4px;margin:0 auto 4px;"></div>
+            <div style="width:70%;height:5px;background:#EEE;border-radius:4px;margin:0 auto;"></div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:8px;">Klik elemen untuk edit</div>
+      </div>
+      <div class="ui-zone" style="background:#F8FAFB;">
+        <div class="ui-zone-label">Toolbar Atas & Kanan</div>
+        <ul>
+          <li>Font, ukuran, warna teks</li>
+          <li>Posisi & layer elemen</li>
+          <li>Transparansi objek</li>
+          <li>Animasi halaman</li>
+          <li>Tombol Share & Download</li>
+          <li>Undo / Redo (Ctrl+Z)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:16px;">
+    <div class="info-box-label">⌨️ Shortcut Penting</div>
+    <p>
+      <code>Ctrl+Z</code> Undo &nbsp;·&nbsp;
+      <code>Ctrl+D</code> Duplikat elemen &nbsp;·&nbsp;
+      <code>Ctrl+G</code> Grup elemen &nbsp;·&nbsp;
+      <code>Ctrl+A</code> Pilih semua &nbsp;·&nbsp;
+      <code>Delete</code> Hapus elemen &nbsp;·&nbsp;
+      <code>R</code> Tambah shape kotak &nbsp;·&nbsp;
+      <code>T</code> Tambah teks &nbsp;·&nbsp;
+      <code>Ctrl+]</code> / <code>[</code> Pindah layer
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 3 — TEMPLATE -->
+  <p class="section-title">Materi 3</p>
+  <h2>Menggunakan Template dengan Efektif</h2>
+
+  <p>Template adalah titik awal yang paling efisien di Canva. Alih-alih memulai dari kanvas kosong, pilih template yang mendekati kebutuhan lalu modifikasi isinya.</p>
+
+  <ul class="step-list">
+    <li>
+      <span class="step-num">1</span>
+      <div>
+        <h3>Pilih ukuran desain yang tepat</h3>
+        <p>Di halaman utama Canva, klik <strong>Buat desain</strong> → pilih format: Poster (A3/A4), Presentasi (16:9), Infografis, Kartu, Instagram Post, dsb. Atau ketik dimensi custom di kolom pencarian.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      <div>
+        <h3>Cari template yang relevan</h3>
+        <p>Di panel kiri, klik <strong>Template</strong> → ketik kata kunci seperti <code>akademik</code>, <code>event kampus</code>, <code>poster seminar</code>. Filter berdasarkan gaya (minimalis, modern, colorful) atau tema.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      <div>
+        <h3>Klik template untuk menerapkan</h3>
+        <p>Hover di atas template → klik <strong>Gunakan template ini</strong>. Semua elemen template akan muncul di kanvas dan siap diedit. Template tidak mengubah desain yang sudah ada di halaman lain.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">4</span>
+      <div>
+        <h3>Ganti teks, gambar, dan warna</h3>
+        <p>Klik dua kali pada teks untuk mengedit. Klik foto/gambar lalu klik <strong>Ganti gambar</strong> atau drag foto baru ke atasnya. Ganti warna elemen dengan klik elemen → klik kotak warna di toolbar atas.</p>
+      </div>
+    </li>
+  </ul>
+
+  <div class="info-box green" style="margin-top:4px;">
+    <div class="info-box-label">💡 Tips Template</div>
+    <p>Jangan terpaku pada template yang sempurna — pilih yang paling mendekati layout yang diinginkan, bukan yang paling mirip dari sisi warna atau konten. Warna dan teks jauh lebih mudah diganti daripada struktur layout.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 4 — ELEMEN -->
+  <p class="section-title">Materi 4</p>
+  <h2>Elemen Grafis: Foto, Ikon, Shape &amp; Frame</h2>
+
+  <div class="fitur-grid">
+    <div class="fitur-card">
+      <span class="fitur-icon">🖼️</span>
+      <h3>Foto & Gambar</h3>
+      <p>Canva menyediakan jutaan foto gratis dari Pexels dan Pixabay. Cari di panel Elemen → Foto. Atau upload foto sendiri via panel <strong>Unggah</strong>.</p>
+      <span class="fitur-tip">Elemen → Foto → ketik kata kunci</span>
+    </div>
+    <div class="fitur-card">
+      <span class="fitur-icon">✨</span>
+      <h3>Ikon & Stiker</h3>
+      <p>Ribuan ikon vektor siap pakai. Cari di <strong>Elemen</strong> → ketik kata kunci + pilih filter Grafis. Warna ikon bisa diubah langsung di Canva.</p>
+      <span class="fitur-tip">Elemen → Grafis → filter ikon</span>
+    </div>
+    <div class="fitur-card">
+      <span class="fitur-icon">⬛</span>
+      <h3>Shape & Garis</h3>
+      <p>Bentuk geometris (kotak, lingkaran, segitiga) dan garis dekoratif untuk membangun struktur layout. Cari di Elemen → Shape, atau tekan <code>R</code> untuk kotak, <code>C</code> untuk lingkaran.</p>
+      <span class="fitur-tip">Shortcut: R (kotak), C (lingkaran)</span>
+    </div>
+    <div class="fitur-card">
+      <span class="fitur-icon">🖼</span>
+      <h3>Frame (Bingkai)</h3>
+      <p>Frame adalah tempat khusus untuk foto — bentuknya bisa lingkaran, kotak dengan sudut, atau bentuk unik lainnya. Drag foto ke dalam frame untuk mengisi secara otomatis.</p>
+      <span class="fitur-tip">Elemen → Frame → drag foto masuk</span>
+    </div>
+    <div class="fitur-card">
+      <span class="fitur-icon">📊</span>
+      <h3>Chart & Grafik</h3>
+      <p>Canva menyediakan grafik batang, pie, garis yang bisa diedit datanya langsung. Cocok untuk poster akademik atau infografis data.</p>
+      <span class="fitur-tip">Elemen → Chart → edit data</span>
+    </div>
+    <div class="fitur-card">
+      <span class="fitur-icon">🎬</span>
+      <h3>Video & Animasi</h3>
+      <p>Elemen animasi dan klip video pendek tersedia untuk desain yang akan ditampilkan di layar. Bisa digunakan untuk presentasi Canva atau konten media sosial.</p>
+      <span class="fitur-tip">Elemen → Video / Animasi</span>
+    </div>
+  </div>
+
+  <div class="info-box orange" style="margin-top:4px;">
+    <div class="info-box-label">⚠️ Elemen Berbayar (Pro)</div>
+    <p>Elemen bertanda mahkota <strong>👑</strong> atau label <strong>Pro</strong> hanya tersedia di Canva Pro berbayar. Hindari menggunakannya di akun gratis karena akan menampilkan watermark saat diunduh. Selalu cek filter <strong>Gratis</strong> saat mencari elemen.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 5 — TIPOGRAFI -->
+  <p class="section-title">Materi 5</p>
+  <h2>Tipografi: Memilih &amp; Memadukan Font</h2>
+
+  <p>Tipografi adalah salah satu elemen terpenting dalam desain. Font yang tepat membuat desain terasa profesional; font yang salah membuat desain terlihat amatir meski elemennya bagus.</p>
+
+  <div class="tipografi-grid">
+    <div class="tipografi-card">
+      <div class="tipo-label">Heading (Judul)</div>
+      <div class="tipo-sample" style="font-family:'Sora',sans-serif;">Sora Bold</div>
+      <p class="tipo-sub">Digunakan untuk judul utama. Pilih font yang tegas, mudah dibaca dari jauh. Ukuran: 36–72pt tergantung media.</p>
+      <div class="tipo-pair">
+        <span class="tipo-tag">Bebas Neue</span>
+        <span class="tipo-tag">Montserrat Bold</span>
+        <span class="tipo-tag">Playfair Display</span>
+      </div>
+    </div>
+    <div class="tipografi-card">
+      <div class="tipo-label">Subheading</div>
+      <div class="tipo-sample" style="font-size:18px;font-weight:600;">Montserrat SemiBold</div>
+      <p class="tipo-sub">Digunakan untuk subjudul atau keterangan penting. Ukuran biasanya 18–28pt. Harus kontras dengan heading tapi tidak terlalu dominan.</p>
+      <div class="tipo-pair">
+        <span class="tipo-tag">Raleway</span>
+        <span class="tipo-tag">Lato SemiBold</span>
+        <span class="tipo-tag">Nunito Bold</span>
+      </div>
+    </div>
+    <div class="tipografi-card">
+      <div class="tipo-label">Body Text (Isi)</div>
+      <div class="tipo-sample" style="font-size:16px;font-weight:400;">Inter Regular</div>
+      <p class="tipo-sub">Digunakan untuk teks panjang. Prioritaskan keterbacaan. Ukuran minimal 12pt untuk cetak, 14–16pt untuk layar.</p>
+      <div class="tipo-pair">
+        <span class="tipo-tag">Open Sans</span>
+        <span class="tipo-tag">Source Sans Pro</span>
+        <span class="tipo-tag">Roboto</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-top:14px;">
+    <h3 style="font-size:14px;margin-bottom:12px;">Aturan Emas Kombinasi Font</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-2);">
+        <span style="background:var(--green-pale);color:var(--green);font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;">✓ Baik</span>
+        <span>Serif + Sans-serif — kontras yang harmonis (contoh: Playfair Display + Open Sans)</span>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-2);">
+        <span style="background:var(--green-pale);color:var(--green);font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;">✓ Baik</span>
+        <span>Satu font dengan berbagai weight — simple dan konsisten (contoh: Montserrat Bold + Montserrat Regular)</span>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-2);">
+        <span style="background:var(--red-pale);color:var(--red);font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;">✗ Hindari</span>
+        <span>Dua font dekoratif sekaligus — terlalu ramai dan sulit dibaca</span>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-2);">
+        <span style="background:var(--red-pale);color:var(--red);font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;">✗ Hindari</span>
+        <span>Lebih dari 3 font berbeda dalam satu desain — membuat desain terlihat tidak profesional</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 6 — WARNA -->
+  <p class="section-title">Materi 6</p>
+  <h2>Warna: Membangun Palet yang Harmonis</h2>
+
+  <p>Canva menyediakan fitur <strong>Color Palette Generator</strong> dan koleksi palet warna siap pakai. Prinsip dasarnya: gunakan maksimal 3–4 warna per desain, dengan satu warna dominan, satu warna aksen, dan satu warna netral.</p>
+
+  <div class="warna-section">
+    <div class="warna-set" style="margin-bottom:16px;">
+      <p>Contoh palet <strong>Akademik Profesional</strong></p>
+      <div class="warna-row">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#1A3A52;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Dominan</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#2980B9;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Aksen</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#F2F4F7;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Netral</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#FFFFFF;border:1px solid #DDD;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Latar</span>
+        </div>
+      </div>
+    </div>
+    <div class="warna-set" style="margin-bottom:16px;">
+      <p>Contoh palet <strong>Modern & Segar</strong></p>
+      <div class="warna-row">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#00474F;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Dominan</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#00B5C4;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Aksen</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#E6F9FA;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Netral</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#FFFFFF;border:1px solid #DDD;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Latar</span>
+        </div>
+      </div>
+    </div>
+    <div class="warna-set">
+      <p>Contoh palet <strong>Hangat & Kreatif</strong></p>
+      <div class="warna-row">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#922B21;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Dominan</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#E67E22;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Aksen</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#FAE5D3;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Netral</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="warna-swatch" style="background:#FDF8F0;border:1px solid #DDD;"></div>
+          <span style="font-size:10px;color:var(--ink-3);">Latar</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:14px;">
+    <div class="info-box-label">🎨 Tips Warna di Canva</div>
+    <p>Gunakan fitur <strong>Color Palette Generator</strong> (canva.com/colors/color-palette-generator) — upload foto apapun dan Canva otomatis mengekstrak palet warna yang harmonis. Cara lain: klik elemen → klik warna → pilih tab <strong>Document colors</strong> untuk menjaga konsistensi palet di seluruh halaman.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 7 — PRINSIP DESAIN -->
+  <p class="section-title">Materi 7</p>
+  <h2>Empat Prinsip Desain Dasar</h2>
+  <p>Prinsip ini berlaku di semua software desain, termasuk Canva. Menerapkannya akan membuat desain terlihat jauh lebih profesional meski menggunakan template sederhana.</p>
+
+  <div class="prinsip-list">
+    <div class="prinsip-item">
+      <span class="prinsip-icon">⬛</span>
+      <div>
+        <h3>Contrast (Kontras)</h3>
+        <p>Buat elemen penting terlihat menonjol dengan perbedaan yang jelas — teks gelap di latar terang, atau sebaliknya. Judul harus jauh lebih besar dari body text. Warna aksen harus berbeda signifikan dari warna dominan.</p>
+      </div>
+    </div>
+    <div class="prinsip-item">
+      <span class="prinsip-icon">📐</span>
+      <div>
+        <h3>Alignment (Perataan)</h3>
+        <p>Sejajarkan semua elemen ke garis yang sama. Canva menyediakan panduan snap otomatis saat menggeser elemen. Hindari meletakkan teks atau gambar secara acak — pilih rata kiri, kanan, atau tengah, lalu konsisten.</p>
+      </div>
+    </div>
+    <div class="prinsip-item">
+      <span class="prinsip-icon">🔁</span>
+      <div>
+        <h3>Repetition (Pengulangan)</h3>
+        <p>Ulangi elemen visual yang sama di seluruh desain untuk menciptakan kesatuan — warna yang sama, font yang sama, ukuran ikon yang seragam. Ini yang membuat desain terlihat "satu kesatuan" bukan kumpulan elemen acak.</p>
+      </div>
+    </div>
+    <div class="prinsip-item">
+      <span class="prinsip-icon">📏</span>
+      <div>
+        <h3>Proximity (Kedekatan)</h3>
+        <p>Elemen yang berhubungan diletakkan berdekatan; elemen yang tidak berhubungan diberi jarak. Judul dan subjudul harus dekat satu sama lain, tapi berikan ruang (white space) yang cukup antara bagian-bagian berbeda.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- LATIHAN & TUGAS -->
+  <p class="section-title">Latihan &amp; Tugas</p>
+  <h2>Praktikum Sesi 7</h2>
+
+  <div class="latihan-box">
+    <h3>🛠 Latihan Kelas (40 menit terakhir)</h3>
+    <p>Setiap mahasiswa membuat satu desain poster akademik di Canva secara mandiri:</p>
+    <ul class="latihan-steps">
+      <li><strong>Tema poster:</strong> Pilih salah satu — (a) Poster pengumuman jadwal ujian, (b) Poster seminar/webinar kampus, atau (c) Poster tips belajar efektif. Bebas memilih sesuai kreativitas.</li>
+      <li><strong>Ukuran:</strong> Gunakan format <strong>Poster A3</strong> atau <strong>Instagram Post (1:1)</strong> agar mudah dibagikan.</li>
+      <li><strong>Wajib ada:</strong> Judul yang menonjol, minimal 1 foto/gambar dari perpustakaan Canva, minimal 2 warna yang harmonis, nama pembuat di bagian bawah, dan logo/nama instansi (UKWMS atau prodi).</li>
+      <li><strong>Terapkan:</strong> Minimal 2 dari 4 prinsip desain yang sudah dipelajari (Contrast, Alignment, Repetition, Proximity).</li>
+    </ul>
+  </div>
+
+  <div class="tugas-box">
+    <h3>📌 Tugas Mandiri (dikumpulkan sebelum Sesi 8)</h3>
+    <ul>
+      <li>Buat <strong>dua versi desain</strong> yang berbeda untuk topik yang sama (poster dari latihan kelas): satu versi dengan palet warna gelap (dark mode) dan satu versi terang (light mode). Ini melatih kemampuan variasi desain.</li>
+      <li>Pastikan kedua versi menggunakan font yang <strong>konsisten</strong> dan menerapkan semua 4 prinsip desain dasar.</li>
+      <li>Download kedua versi sebagai <strong>PDF Standard</strong> (bukan PNG) dari Canva.</li>
+      <li>Kumpulkan kedua berkas PDF dalam folder <code>NIM_Nama_Sesi7</code> → upload ke LMS/Google Classroom.</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RINGKASAN -->
+  <p class="section-title">Ringkasan</p>
+  <h2>Yang Sudah Dipelajari Hari Ini</h2>
+
+  <div class="ringkasan-grid">
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🖥️</div>
+      <p>Antarmuka Canva: panel kiri, kanvas tengah, toolbar atas & shortcut penting</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">📐</div>
+      <p>Template: memilih, menerapkan, dan memodifikasi sesuai kebutuhan konten</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">✨</div>
+      <p>Elemen: foto, ikon, shape, frame, chart — dan cara menghindari elemen Pro</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔤</div>
+      <p>Tipografi: aturan kombinasi font dan pemilihan ukuran untuk heading/body</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🎨</div>
+      <p>Warna: membangun palet 3–4 warna dan menggunakan Color Palette Generator</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">🔜</div>
+      <p>Sesi berikutnya: presentasi Canva, kolaborasi tim, dan ekspor ke PDF/PPT/PNG</p>
+    </div>
+  </div>
+
+  <!-- NAV BAWAH -->
+  <div class="nav-sesi" style="margin-top:40px;margin-bottom:0;">
+    <a href="sesi6-panduan-tte.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 6 — TTE Institusi
+    </a>
+    <a href="index-canva.html" class="nav-btn" style="color:var(--teal-dark);border-color:var(--teal);">
+      Index Blok Canva
+    </a>
+    <a href="sesi8-panduan-canva.html" class="nav-btn disabled">
+      Sesi 8 — Canva Lanjut
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Teknologi Informasi Perkantoran</strong> &nbsp;·&nbsp; Sesi 7 — Canva Dasar: Antarmuka, Template, Elemen &amp; Tipografi &nbsp;·&nbsp;
+  Universitas Katolik Widya Mandala Surabaya
+</footer>
+
+</body>
+</html>
