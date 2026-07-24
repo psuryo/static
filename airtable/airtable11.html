@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kartu Arsip · Sesi 11 — Kolaborasi & Permission</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #e7dcc0;
+    --paper-light: #faf5e6;
+    --paper-dark: #ddcda3;
+    --ink: #23283a;
+    --ink-soft: #545b73;
+    --stamp: #a8382c;
+    --ledger: #3d5f4c;
+    --tab: #8a5a34;
+    --line: rgba(35,40,58,.18);
+    --shadow: rgba(35,25,10,.25);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 800px at 15% -10%, #f1e6c8 0%, transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--stamp);}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 20px 90px;}
+
+  nav.tabs{
+    position:sticky; top:0; z-index:50;
+    display:flex; flex-wrap:wrap; gap:0;
+    background:var(--paper);
+    padding-top:14px;
+    border-bottom:3px solid var(--ink);
+  }
+  nav.tabs a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.72rem;
+    letter-spacing:.04em;
+    text-decoration:none;
+    color:var(--paper-light);
+    background:var(--tab);
+    padding:8px 14px 9px;
+    margin-right:4px;
+    border-radius:6px 6px 0 0;
+    border:1px solid var(--ink);
+    border-bottom:none;
+    white-space:nowrap;
+    transform:translateY(3px);
+    transition:transform .15s ease, background .15s ease;
+  }
+  nav.tabs a:hover, nav.tabs a.active{
+    background:var(--stamp);
+    transform:translateY(0);
+  }
+  nav.tabs .back{
+    background:var(--ledger);
+    margin-right:auto;
+  }
+
+  .catalog-card{
+    position:relative;
+    background:var(--paper-light);
+    border:1px solid var(--line);
+    box-shadow: 8px 8px 0 var(--shadow);
+    padding:34px 34px 30px 60px;
+    margin:34px 0 44px;
+  }
+  .catalog-card::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:34px;
+    background-image: radial-gradient(circle at 17px 28px, var(--paper) 6px, transparent 6.5px),
+      repeating-linear-gradient(to bottom, transparent 0 54px, transparent 54px);
+    background-repeat: repeat-y;
+    background-size: 34px 54px;
+    border-right:1px dashed var(--line);
+  }
+  .catalog-eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  h1.title{
+    font-family:'Special Elite', monospace;
+    font-weight:400;
+    font-size:clamp(1.5rem, 4vw, 2.3rem);
+    margin:.25em 0 .4em;
+    color:var(--ink);
+  }
+  .meta-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:10px 24px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.82rem;
+    border-top:1px dashed var(--line);
+    padding-top:14px;
+  }
+  .meta-grid dt{color:var(--ink-soft); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;}
+  .meta-grid dd{margin:2px 0 0; font-weight:600;}
+  .stamp{
+    position:absolute; top:22px; right:26px;
+    font-family:'Special Elite', monospace;
+    color:var(--stamp);
+    border:3px solid var(--stamp);
+    border-radius:8px;
+    padding:8px 14px;
+    font-size:1.05rem;
+    letter-spacing:.06em;
+    transform:rotate(6deg);
+    opacity:.88;
+    mix-blend-mode:multiply;
+  }
+  .stamp small{display:block; font-size:.55rem; letter-spacing:.18em; margin-top:2px;}
+
+  section{margin:56px 0; scroll-margin-top:70px;}
+  .section-label{display:flex; align-items:baseline; gap:12px; margin-bottom:18px;}
+  .section-num{
+    font-family:'Special Elite', monospace; font-size:2.1rem;
+    -webkit-text-stroke:1.5px var(--ink); color:transparent; line-height:1;
+  }
+  h2{font-family:'Special Elite', monospace; font-weight:400; font-size:1.4rem; margin:0; color:var(--ink);}
+  h2 span.sub{display:block; font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink-soft); letter-spacing:.05em; margin-top:3px; font-weight:400;}
+  p{max-width:68ch;}
+  .lead{font-size:1.02rem; color:var(--ink);}
+
+  .ledger{width:100%; border-collapse:collapse; background:var(--paper-light); border:1px solid var(--ink); font-size:.9rem;}
+  .ledger caption{text-align:left; font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px;}
+  .ledger th, .ledger td{padding:10px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+  .ledger thead th{background:var(--ledger); color:var(--paper-light); font-family:'IBM Plex Mono',monospace; font-size:.72rem; letter-spacing:.05em; text-transform:uppercase;}
+  .ledger tbody tr:nth-child(even){background:rgba(61,95,76,.06);}
+  .ledger td.hi{color:var(--stamp); font-weight:600;}
+  .table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+
+  .card-rack{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:20px;}
+  .idx-card{
+    background:var(--paper-light); border:1px solid var(--ink);
+    padding:16px 16px 14px; box-shadow:5px 5px 0 var(--shadow); position:relative;
+  }
+  .idx-card:nth-child(2n){transform:rotate(-.6deg);}
+  .idx-card:nth-child(3n){transform:rotate(.7deg);}
+  .idx-card .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:.62rem;
+    color:var(--paper-light); background:var(--tab);
+    display:inline-block; padding:2px 8px; border-radius:3px;
+    letter-spacing:.06em; margin-bottom:8px;
+  }
+  .idx-card h3{margin:0 0 6px; font-family:'Special Elite',monospace; font-weight:400; font-size:1.02rem;}
+  .idx-card p{margin:0; font-size:.86rem; color:var(--ink-soft); max-width:none;}
+
+  /* ---------- ROLE PYRAMID ---------- */
+  .role-rack{display:flex; flex-direction:column; gap:2px; max-width:480px; margin:24px auto;}
+  .role-row{
+    display:grid; grid-template-columns:130px 1fr; align-items:center;
+    background:var(--paper-light); border:1px solid var(--ink);
+  }
+  .role-row .rname{
+    font-family:'IBM Plex Mono',monospace; font-size:.78rem; font-weight:600;
+    color:var(--paper-light); padding:10px 12px; text-align:center;
+  }
+  .role-row .rdesc{padding:10px 14px; font-size:.82rem; color:var(--ink-soft);}
+  .role-row:nth-child(1) .rname{background:var(--stamp);}
+  .role-row:nth-child(2) .rname{background:#b8532f;}
+  .role-row:nth-child(3) .rname{background:var(--tab);}
+  .role-row:nth-child(4) .rname{background:#9c8a4f;}
+  .role-row:nth-child(5) .rname{background:var(--ledger);}
+
+  .memo{
+    background:var(--paper-light); border-left:4px solid var(--stamp);
+    padding:22px 24px; box-shadow:6px 6px 0 var(--shadow);
+  }
+  ol.steps{list-style:none; margin:0; padding:0; counter-reset:step;}
+  ol.steps li{
+    counter-increment:step; display:flex; gap:14px; align-items:flex-start;
+    padding:12px 0; border-bottom:1px dashed var(--line);
+  }
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{
+    content:counter(step,decimal-leading-zero);
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:.8rem;
+    color:var(--paper-light); background:var(--ledger);
+    min-width:28px; height:28px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  ol.steps b{display:block; margin-bottom:2px;}
+  ol.steps small{color:var(--ink-soft);}
+
+  .task-order{
+    background: repeating-linear-gradient(var(--paper-light), var(--paper-light) 27px, var(--line) 28px);
+    border:1px solid var(--ink); padding:24px 26px 26px; box-shadow:8px 8px 0 var(--shadow);
+  }
+  .task-order h3{font-family:'Special Elite', monospace; font-weight:400; margin:0 0 12px; font-size:1.15rem;}
+  .checkitem{display:flex; gap:10px; align-items:flex-start; margin:10px 0; cursor:pointer;}
+  .checkitem input{margin-top:4px; width:16px; height:16px; accent-color:var(--stamp); cursor:pointer;}
+  .checkitem span{font-size:.94rem;}
+  .checkitem.done span{color:var(--ink-soft); text-decoration:line-through;}
+  .deadline{margin-top:16px; font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--stamp); border-top:1px dashed var(--line); padding-top:12px;}
+
+  .callout{
+    border:1px dashed var(--stamp); background:rgba(168,56,44,.06);
+    padding:14px 18px; font-size:.9rem; color:var(--ink);
+  }
+  .callout b{color:var(--stamp);}
+  .callout.warn{border-color:var(--tab); background:rgba(138,90,52,.08);}
+  .callout.warn b{color:var(--tab);}
+
+  footer{
+    margin-top:70px; padding-top:24px; border-top:3px double var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--ink-soft);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+
+  @media (max-width:640px){
+    .catalog-card{padding:26px 20px 24px 46px;}
+    .catalog-card::before{width:22px;}
+    .stamp{position:static; margin-top:16px; display:inline-block; transform:rotate(-2deg);}
+    .role-row{grid-template-columns:100px 1fr;}
+  }
+  @media print{
+    nav.tabs{position:static;}
+    .catalog-card,.idx-card,.memo,.task-order,.role-row{box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <nav class="tabs" id="tabnav">
+    <a href="index.html" class="back">← Indeks</a>
+    <a href="#tinjauan">Tinjauan</a>
+    <a href="#peran">Peran &amp; Hak Akses</a>
+    <a href="#berbagi">Cara Berbagi</a>
+    <a href="#praktik">Praktik</a>
+    <a href="#tugas">Tugas</a>
+  </nav>
+
+  <header class="catalog-card">
+    <div class="stamp">SESI 11<small>diperiksa</small></div>
+    <p class="catalog-eyebrow">Kartu Arsip Perkuliahan — D3 Administrasi Perkantoran</p>
+    <h1 class="title">Kolaborasi &amp; Permission</h1>
+    <dl class="meta-grid">
+      <div><dt>Mata Kuliah</dt><dd>Pengelolaan Basis Data &amp; Administrasi Digital</dd></div>
+      <div><dt>Sesi</dt><dd>11 dari 14 (Pasca UTS)</dd></div>
+      <div><dt>Durasi</dt><dd>1–2 jam</dd></div>
+      <div><dt>Prasyarat</dt><dd>Sesi 10 — Interface Designer / Dashboard</dd></div>
+    </dl>
+  </header>
+
+  <section id="tinjauan">
+    <div class="section-label"><span class="section-num">01</span><h2>Tujuan Pembelajaran<span class="sub">Capaian Pembelajaran Sesi</span></h2></div>
+    <p class="lead">Setelah mengikuti sesi ini, mahasiswa diharapkan mampu:</p>
+    <div class="table-scroll">
+    <table class="ledger">
+      <thead><tr><th style="width:60px;">No</th><th>Capaian</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Menjelaskan tingkatan hak akses (permission level) yang tersedia di Airtable.</td></tr>
+        <tr><td>2</td><td>Menentukan hak akses yang sesuai untuk setiap peran dalam sebuah tim/organisasi.</td></tr>
+        <tr><td>3</td><td>Membagikan base dan Interface dengan hak akses yang berbeda-beda ke tiap anggota.</td></tr>
+        <tr><td>4</td><td>Memahami batasan jumlah editor pada plan gratis dan strategi menyiasatinya.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="peran">
+    <div class="section-label"><span class="section-num">02</span><h2>Lima Tingkatan Hak Akses<span class="sub">Konsep Dasar</span></h2></div>
+    <p>Seperti halnya hak akses pengguna di sistem administrasi kantor (misal staf biasa vs kepala bagian), Airtable menyediakan beberapa tingkatan permission per base. Semakin tinggi tingkatannya, semakin banyak yang bisa diubah.</p>
+    <div class="role-rack">
+      <div class="role-row"><div class="rname">Owner</div><div class="rdesc">Kendali penuh — termasuk menghapus base dan mengatur akses orang lain.</div></div>
+      <div class="role-row"><div class="rname">Creator</div><div class="rdesc">Bisa mengubah struktur: menambah/menghapus table, field, dan Automation.</div></div>
+      <div class="role-row"><div class="rname">Editor</div><div class="rdesc">Bisa menambah, mengubah, menghapus record — tapi tidak bisa mengubah struktur table.</div></div>
+      <div class="role-row"><div class="rname">Commenter</div><div class="rdesc">Hanya bisa melihat data dan menambahkan komentar, tidak bisa mengubah data.</div></div>
+      <div class="role-row"><div class="rname">Viewer / Read-only</div><div class="rdesc">Hanya bisa melihat data, tidak bisa mengubah atau berkomentar apa pun.</div></div>
+    </div>
+    <div class="callout warn" style="margin-top:22px;">
+      <b>Batasan plan gratis:</b> maksimal 5 editor per workspace (Owner, Creator, dan Editor dihitung sebagai editor; Commenter dan Viewer tidak dihitung). Untuk proyek kelompok besar, gunakan kombinasi peran agar tidak melebihi batas — misalnya hanya 1-2 orang jadi Creator/Editor, sisanya Commenter/Viewer atau mengakses lewat Form dan share link view.
+    </div>
+    <div class="callout" style="margin-top:16px;">
+      <b>Penting — batasan menyembunyikan table:</b> fitur "Interface-only access" (memberi akses ke Dashboard/Interface tanpa bisa membuka base sama sekali) hanya tersedia di plan Team/Business/Enterprise, <strong>tidak tersedia di plan gratis</strong>. Artinya, siapa pun yang dijadikan kolaborator Interface di plan gratis otomatis juga bisa membuka base dan melihat semua table di dalamnya (meski tidak bisa mengedit). Kalau memang perlu ada pihak yang <em>sama sekali tidak boleh</em> melihat table (misalnya pelanggan restoran atau pihak luar), jangan jadikan mereka kolaborator sama sekali — gunakan <strong>Share View Link</strong> atau <strong>Share Form Link</strong> saja, karena keduanya tidak pernah memberi akses ke base.
+    </div>
+  </section>
+
+  <section id="berbagi">
+    <div class="section-label"><span class="section-num">03</span><h2>Tiga Cara Berbagi Akses<span class="sub">Sesuai Kebutuhan</span></h2></div>
+    <div class="card-rack">
+      <div class="idx-card"><span class="tag">UNDANG LANGSUNG</span><h3>Invite Collaborator</h3><p>Mengundang seseorang lewat email dengan salah satu dari 5 tingkatan akses di atas. Cocok untuk anggota tim inti. <em>Catatan: di plan gratis, kolaborator tetap bisa membuka base dan melihat table lain.</em></p></div>
+      <div class="idx-card"><span class="tag">TAUTAN VIEW</span><h3>Share View Link</h3><p>Membagikan satu View tertentu (read-only) tanpa perlu penerima punya akun Airtable. Cocok untuk laporan ke pihak luar.</p></div>
+      <div class="idx-card"><span class="tag">FORM</span><h3>Share Form Link</h3><p>Membagikan Form untuk input data tanpa memberi akses lihat data lain sama sekali. Cocok untuk pelanggan/pihak eksternal.</p></div>
+    </div>
+  </section>
+
+  <section id="praktik">
+    <div class="section-label"><span class="section-num">04</span><h2>Langkah Praktik<span class="sub">Simulasi Peran dalam Tim Administrasi</span></h2></div>
+    <div class="memo">
+      <ol class="steps">
+        <li><div><b>Klik "Share" di pojok kanan atas base.</b><small>Lihat daftar kolaborator yang sudah ada (biasanya baru diri sendiri sebagai Owner).</small></div></li>
+        <li><div><b>Tambahkan satu anggota kelompok sebagai "Editor".</b><small>Peran ini cocok untuk yang bertugas mengisi/mengubah data harian.</small></div></li>
+        <li><div><b>Tambahkan satu anggota kelompok lain sebagai "Commenter".</b><small>Peran ini cocok untuk yang bertugas mengawasi tanpa perlu mengubah struktur.</small></div></li>
+        <li><div><b>Buat Share View Link dari Dashboard Sesi 10, atur ke read-only.</b><small>Bayangkan ini dibagikan ke "pimpinan" yang hanya perlu melihat laporan.</small></div></li>
+        <li><div><b>Bandingkan dengan mengundang anggota sebagai kolaborator Interface.</b><small>Login sebagai akun lain (atau minta teman sekelompok mencoba), lalu cek apakah mereka bisa membuka tab "Data"/base di belakang Interface — ini membuktikan keterbatasan plan gratis yang sudah dijelaskan.</small></div></li>
+        <li><div><b>Diskusikan dalam kelompok: siapa cocok jadi peran apa dalam proyek akhir nanti.</b><small>Kaitkan dengan peran Kasir/Dapur/Pemilik pada proyek restoran.</small></div></li>
+      </ol>
+    </div>
+    <div class="callout" style="margin-top:18px;">
+      <b>Kaitan dengan proyek restoran:</b> pola permission ini langsung diterapkan di Sesi 12 nanti — Kasir &amp; Dapur sebagai Editor (terbatas ke table Pesanan/Detail Pesanan lewat Interface khusus), dan Pemilik sebagai Viewer ke Dashboard laporan penjualan.
+    </div>
+  </section>
+
+  <section id="tugas">
+    <div class="section-label"><span class="section-num">05</span><h2>Tugas Mandiri<span class="sub">Surat Perintah Latihan</span></h2></div>
+    <div class="task-order">
+      <h3>Perintah Latihan No. 11/AT/2026</h3>
+      <p style="margin-top:0;">Kerjakan sebelum sesi berikutnya. Centang setiap butir yang sudah diselesaikan:</p>
+      <label class="checkitem"><input type="checkbox"><span>Minimal 2 anggota kelompok sudah ditambahkan sebagai kolaborator dengan peran berbeda.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Share View Link untuk Dashboard sudah dibuat dan diuji bisa dibuka tanpa akun Airtable.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Kelompok sudah menuliskan rencana pembagian peran untuk proyek akhir (siapa Creator, Editor, Viewer).</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Bisa menjelaskan beda Editor, Commenter, dan Viewer dengan kata sendiri.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Bisa menjelaskan mengapa Share View/Form Link dipilih untuk pihak yang tidak boleh melihat table sama sekali (bukan mengundang sebagai kolaborator).</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Screenshot daftar kolaborator dan tautan share dikumpulkan lewat LMS/grup kelas.</span></label>
+      <p class="deadline">Tenggat: sebelum Sesi 12 dimulai — dibawa dalam bentuk tautan share base (Editor access untuk dosen).</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Kartu Arsip Sesi 11 · Kolaborasi &amp; Permission</span>
+    <span>Sesi berikutnya → 12: Proyek — Perancangan</span>
+  </footer>
+
+</div>
+
+<script>
+  const links = Array.from(document.querySelectorAll('nav.tabs a[href^="#"]'));
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const setActive = () => {
+    let idx = 0;
+    const pos = window.scrollY + 90;
+    sections.forEach((sec, i) => { if (sec && sec.offsetTop <= pos) idx = i; });
+    links.forEach((a,i) => a.classList.toggle('active', i === idx));
+  };
+  document.addEventListener('scroll', setActive, {passive:true});
+  setActive();
+
+  document.querySelectorAll('.checkitem input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('.checkitem').classList.toggle('done', cb.checked);
+    });
+  });
+</script>
+
+</body>
+</html>
