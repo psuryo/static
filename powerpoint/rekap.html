@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesi 14 — Review Umum & Latihan Soal UAS</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --slate:       #34495E;
+    --slate-dark:  #2C3E50;
+    --slate-pale:  #EBEDEF;
+    --accent:      #1C2833;
+    --ink:         #1A1A1A;
+    --ink-2:       #444444;
+    --ink-3:       #777777;
+    --paper:       #F7F8F9;
+    --white:       #FFFFFF;
+    --border:      #DCE1E5;
+    --red:         #C0392B;
+    --red-pale:    #FDECEA;
+    --blue:        #2980B9;
+    --blue-pale:   #EBF5FB;
+    --teal:        #00B5C4;
+    --teal-pale:   #E6F9FA;
+    --orange:      #D35400;
+    --orange-pale: #FDF2E9;
+    --green:       #1E8449;
+    --green-pale:  #EAFAF1;
+    --gold:        #B7950B;
+    --gold-pale:   #FEF9E7;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .topbar {
+    background: var(--accent);
+    padding: 10px 40px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: rgba(255,255,255,0.45);
+  }
+  .topbar a { color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.15s; }
+  .topbar a:hover { color: rgba(255,255,255,0.9); }
+  .topbar span { color: rgba(255,255,255,0.25); }
+
+  .hero {
+    background: var(--accent);
+    color: var(--white);
+    padding: 52px 40px 46px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: "14";
+    position: absolute; right: -10px; top: -30px;
+    font-family: 'Sora', sans-serif;
+    font-size: 200px; font-weight: 800;
+    color: rgba(255,255,255,0.04); line-height: 1;
+    pointer-events: none; user-select: none;
+  }
+  .hero-label {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--gold); color: var(--white);
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 2px; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(24px, 5vw, 40px); font-weight: 800;
+    line-height: 1.15; max-width: 640px; margin-bottom: 14px;
+  }
+  .hero h1 span { color: #F7DC6F; }
+  .hero > p { color: rgba(255,255,255,0.68); max-width: 540px; font-size: 15px; }
+  .hero-meta { display: flex; gap: 24px; margin-top: 30px; flex-wrap: wrap; }
+  .hero-meta-item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.58); font-size: 13px; }
+  .hero-meta-item strong { color: var(--white); font-weight: 600; }
+  .icon-sm { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  .page { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .section-title {
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase; color: var(--slate-dark); margin-bottom: 10px;
+  }
+  h2 { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 20px; line-height: 1.3; }
+  h3 { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  p { color: var(--ink-2); margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  .tujuan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .tujuan-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start;
+  }
+  .tujuan-num { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--slate-dark); line-height: 1; flex-shrink: 0; }
+  .tujuan-card p { color: var(--ink-2); font-size: 14px; margin: 0; }
+
+  .info-box {
+    background: var(--white); border: 1px solid var(--border);
+    border-left: 4px solid var(--slate);
+    border-radius: 6px; padding: 18px 22px; margin: 16px 0;
+  }
+  .info-box.green  { border-left-color: #27AE60; }
+  .info-box.blue   { border-left-color: #2980B9; }
+  .info-box.red    { border-left-color: #C0392B; }
+  .info-box.gold   { border-left-color: #B7950B; }
+  .info-box-label {
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--slate-dark); margin-bottom: 6px;
+  }
+  .info-box.green  .info-box-label { color: #27AE60; }
+  .info-box.blue   .info-box-label { color: #2980B9; }
+  .info-box.red    .info-box-label { color: #C0392B; }
+  .info-box.gold   .info-box-label { color: #B7950B; }
+  .info-box p { margin: 0; font-size: 14px; }
+
+  /* ── UAS STRUCTURE CARDS ── */
+  .uas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 8px; }
+  .uas-card { border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+  .uas-header { padding: 12px 16px; color: white; display: flex; align-items: center; justify-content: space-between; }
+  .uas-header h3 { color: white; font-size: 13px; margin: 0; }
+  .uas-weight { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 800; }
+  .uas-body { background: var(--white); padding: 12px 16px; }
+  .uas-body ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .uas-body ul li { font-size: 11.5px; color: var(--ink-3); display: flex; gap: 5px; align-items: flex-start; }
+  .uas-body ul li::before { content: "·"; font-size: 14px; line-height: 1.2; flex-shrink: 0; }
+
+  /* ── WEIGHT BAR ── */
+  .weight-bar-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 12px; }
+  .weight-bar { display: flex; height: 36px; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+  .weight-seg { display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700; font-family: 'Sora', sans-serif; }
+  .weight-legend { display: flex; gap: 16px; flex-wrap: wrap; }
+  .weight-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-3); }
+  .weight-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* ── REVIEW TABLE ── */
+  .review-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  .review-table th {
+    background: var(--accent); color: white;
+    font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.5px; text-align: left; padding: 10px 14px;
+  }
+  .review-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--ink-2); vertical-align: top; }
+  .review-table tr:last-child td { border-bottom: none; }
+  .review-table tr:nth-child(even) td { background: #F5F6F7; }
+  .pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 8px; }
+  .pill-red    { background: var(--red-pale); color: var(--red); }
+  .pill-blue   { background: var(--blue-pale); color: var(--blue); }
+  .pill-teal   { background: var(--teal-pale); color: var(--teal); }
+  .pill-orange { background: var(--orange-pale); color: var(--orange); }
+
+  /* ── CHECKLIST ── */
+  .checklist-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 12px; }
+  .checklist-group-title { font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 700; color: var(--slate-dark); margin: 14px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .checklist-group-title:first-child { margin-top: 0; }
+  .checklist-item { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; }
+  .checklist-check { width: 18px; height: 18px; border: 2px solid var(--slate); border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
+  .checklist-item p { font-size: 13px; color: var(--ink-2); margin: 0; }
+
+  /* ── STEP LIST ── */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .step-list li {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px 18px;
+  }
+  .step-num {
+    background: var(--accent); color: var(--white);
+    font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 700;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .step-list li > div { flex: 1; }
+  .step-list li h3 { font-size: 14px; margin-bottom: 3px; }
+  .step-list li p  { margin: 0; font-size: 13px; color: var(--ink-3); line-height: 1.55; }
+  code { background: #EEF1F3; color: var(--slate-dark); font-size: 12px; padding: 1px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+
+  /* ── COMMON MISTAKES ── */
+  .mistake-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 8px; }
+  .mistake-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .mistake-header { padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+  .mistake-body { padding: 12px 14px; border-top: 1px solid var(--border); }
+  .mistake-body p { font-size: 12.5px; color: var(--ink-3); margin: 0; line-height: 1.5; }
+
+  /* ── LATIHAN BOX ── */
+  .latihan-box { background: var(--accent); color: var(--white); border-radius: 8px; padding: 26px 28px; margin-top: 8px; }
+  .latihan-box h3 { color: var(--white); font-family: 'Sora', sans-serif; font-size: 16px; margin-bottom: 6px; }
+  .latihan-box > p { color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 14px; }
+  .latihan-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .latihan-steps li { display: flex; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.88); align-items: flex-start; line-height: 1.55; }
+  .latihan-steps li::before { content: "→"; color: #F7DC6F; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+  .tugas-box { background: var(--gold-pale); border: 1.5px solid #F5D98E; border-radius: 8px; padding: 22px 24px; margin-top: 14px; }
+  .tugas-box h3 { color: #7D6608; font-size: 15px; margin-bottom: 10px; }
+  .tugas-box ul { padding-left: 18px; }
+  .tugas-box ul li { font-size: 14px; color: var(--ink-2); margin-bottom: 8px; line-height: 1.55; }
+
+  .ringkasan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+  .ringkasan-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 16px; text-align: center; }
+  .ringkasan-icon { font-size: 26px; margin-bottom: 8px; }
+  .ringkasan-card p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* ── FINAL CLOSING ── */
+  .closing-banner {
+    background: linear-gradient(135deg, var(--accent), var(--slate-dark));
+    border-radius: 10px; padding: 32px; text-align: center; margin-top: 8px;
+  }
+  .closing-banner h3 { color: white; font-family: 'Sora', sans-serif; font-size: 20px; margin-bottom: 10px; }
+  .closing-banner p { color: rgba(255,255,255,0.75); font-size: 14px; max-width: 480px; margin: 0 auto; }
+
+  .nav-sesi { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 40px; flex-wrap: wrap; }
+  .nav-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; font-weight: 600; color: var(--accent);
+    text-decoration: none; padding: 8px 16px;
+    border: 1.5px solid var(--border); border-radius: 6px; background: var(--white);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--slate); background: var(--slate-pale); }
+  .nav-btn.disabled { opacity: 0.35; pointer-events: none; }
+  .nav-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-center { font-size: 12px; color: var(--ink-3); font-weight: 600; letter-spacing: 0.5px; }
+
+  footer { background: var(--accent); color: rgba(255,255,255,0.45); text-align: center; padding: 18px 20px; font-size: 12px; }
+  footer strong { color: rgba(255,255,255,0.8); }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 10px 16px; }
+    .hero { padding: 40px 20px 36px; }
+    .hero::before { font-size: 120px; }
+    .page { padding: 32px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index-pdf.html">Blok PDF</a>
+  <span>/</span>
+  <a href="index-tte.html">Blok TTE</a>
+  <span>/</span>
+  <a href="index-canva.html">Blok Canva</a>
+  <span>/</span>
+  <a href="index-powerpoint.html">Blok PowerPoint</a>
+  <span>/</span>
+  <span style="color:rgba(255,255,255,0.7);">Sesi 14</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">
+    <svg class="icon-sm" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Sesi 14 dari 14 · Sesi Terakhir
+  </div>
+  <h1>Review Umum &amp;<br><span>Latihan Soal UAS</span></h1>
+  <p>Merangkum seluruh materi 14 sesi, memahami struktur dan bobot soal UAS, serta berlatih menyelesaikan simulasi paket dokumen lengkap sebagai persiapan akhir sebelum ujian.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Durasi: <strong>100 menit</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <span>Fokus: <strong>Review + Simulasi UAS</strong></span>
+    </div>
+    <div class="hero-meta-item">
+      <svg class="icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span>Output: <strong>Simulasi Paket Dokumen UAS</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- NAV -->
+  <div class="nav-sesi">
+    <a href="sesi13-panduan-terpadu.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 13 — Praktikum Terpadu
+    </a>
+    <span class="nav-center">SESI 14 · REVIEW &amp; UAS PREP</span>
+    <span class="nav-btn disabled">
+      UAS
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </span>
+  </div>
+
+  <!-- TUJUAN -->
+  <p class="section-title">Tujuan Pembelajaran</p>
+  <h2>Setelah sesi ini, mahasiswa mampu…</h2>
+  <div class="tujuan-grid">
+    <div class="tujuan-card">
+      <span class="tujuan-num">01</span>
+      <p>Merangkum kembali seluruh kompetensi inti dari 4 blok materi (PDF, TTE, Canva, PowerPoint)</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">02</span>
+      <p>Memahami struktur, bobot nilai, dan ekspektasi setiap bagian soal UAS</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">03</span>
+      <p>Mengidentifikasi kesalahan umum yang sering terjadi dan cara menghindarinya</p>
+    </div>
+    <div class="tujuan-card">
+      <span class="tujuan-num">04</span>
+      <p>Menyelesaikan simulasi paket soal UAS secara mandiri dalam waktu terbatas</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 1 — REVIEW 14 SESI -->
+  <p class="section-title">Materi 1</p>
+  <h2>Perjalanan 14 Sesi — Rekap Singkat</h2>
+  <p>Sebelum masuk ke persiapan UAS, mari kilas balik seluruh materi yang sudah dipelajari sepanjang semester.</p>
+
+  <table class="review-table">
+    <thead>
+      <tr><th>Sesi</th><th>Blok</th><th>Topik Inti</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1–3</td><td><span class="pill pill-red">PDF</span></td><td>Membuat PDF, mengelola (merge/split/compress), mengisi form, anotasi, konversi, dan edit teks</td></tr>
+      <tr><td>4–6</td><td><span class="pill pill-blue">TTE</span></td><td>Konsep & regulasi TTE, praktik menandatangani, TTE institusi (BSrE, Peruri, Privy) & validasi</td></tr>
+      <tr><td>7–8</td><td><span class="pill pill-teal">Canva</span></td><td>Antarmuka, template, elemen, tipografi, warna; presentasi, kolaborasi, dan ekspor</td></tr>
+      <tr><td>9–12</td><td><span class="pill pill-orange">PowerPoint</span></td><td>Layout & Master Slide; SmartArt/chart; animasi & trigger; Presenter View & ekspor</td></tr>
+      <tr><td>13</td><td>Integrasi</td><td>Praktikum terpadu — menggabungkan keempat blok dalam satu alur kerja</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <!-- MATERI 2 — STRUKTUR UAS -->
+  <p class="section-title">Materi 2</p>
+  <h2>Struktur dan Bobot Soal UAS</h2>
+  <p>Soal UAS terdiri dari empat bagian yang saling terhubung — dokumen yang dihasilkan di satu bagian akan dipakai kembali di bagian berikutnya, sehingga kesalahan atau file yang hilang di awal dapat berdampak ke bagian selanjutnya.</p>
+
+  <div class="weight-bar-wrap">
+    <div class="weight-bar">
+      <div class="weight-seg" style="width:25%;background:var(--red);">PDF 25%</div>
+      <div class="weight-seg" style="width:25%;background:var(--blue);">TTE 25%</div>
+      <div class="weight-seg" style="width:30%;background:var(--orange);">PPT 30%</div>
+      <div class="weight-seg" style="width:20%;background:var(--teal);">Flyer 20%</div>
+    </div>
+    <div class="weight-legend">
+      <div class="weight-legend-item"><div class="weight-dot" style="background:var(--red);"></div>Soal PDF — 25%</div>
+      <div class="weight-legend-item"><div class="weight-dot" style="background:var(--blue);"></div>Soal TTE — 25%</div>
+      <div class="weight-legend-item"><div class="weight-dot" style="background:var(--orange);"></div>Soal PPT — 30%</div>
+      <div class="weight-legend-item"><div class="weight-dot" style="background:var(--teal);"></div>Soal Flyer Canva — 20%</div>
+    </div>
+  </div>
+
+  <div class="uas-grid" style="margin-top:16px;">
+    <div class="uas-card">
+      <div class="uas-header" style="background:var(--red);">
+        <h3>Soal PDF</h3>
+        <span class="uas-weight">25%</span>
+      </div>
+      <div class="uas-body">
+        <ul>
+          <li>Buat surat di Word → export PDF</li>
+          <li>Edit isi surat langsung di PDF</li>
+          <li>Merge dengan lampiran</li>
+          <li>Compress berkas final</li>
+        </ul>
+      </div>
+    </div>
+    <div class="uas-card">
+      <div class="uas-header" style="background:var(--blue);">
+        <h3>Soal TTE</h3>
+        <span class="uas-weight">25%</span>
+      </div>
+      <div class="uas-body">
+        <ul>
+          <li>Buka berkas dari Soal PDF</li>
+          <li>Bubuhkan tanda tangan elektronik</li>
+          <li>Jelaskan jenis TTE & alasannya</li>
+          <li>Simpan sebagai berkas final</li>
+        </ul>
+      </div>
+    </div>
+    <div class="uas-card">
+      <div class="uas-header" style="background:var(--orange);">
+        <h3>Soal PPT</h3>
+        <span class="uas-weight">30%</span>
+      </div>
+      <div class="uas-body">
+        <ul>
+          <li>Presentasikan topik dari Soal PDF</li>
+          <li>Konten wajib lengkap 5 poin</li>
+          <li>Tema senada + Slide Master</li>
+          <li>SmartArt/chart + animasi</li>
+        </ul>
+      </div>
+    </div>
+    <div class="uas-card">
+      <div class="uas-header" style="background:var(--teal);">
+        <h3>Soal Flyer Canva</h3>
+        <span class="uas-weight">20%</span>
+      </div>
+      <div class="uas-body">
+        <ul>
+          <li>Flyer promosi topik yang sama</li>
+          <li>Template senada surat & PPT</li>
+          <li>Terapkan prinsip desain (CARP)</li>
+          <li>Ekspor sebagai JPG</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box gold" style="margin-top:16px;">
+    <div class="info-box-label">🔑 Kunci Sukses UAS</div>
+    <p>Karena keempat bagian saling terhubung, kerjakan <strong>secara berurutan</strong> mulai dari Soal PDF. Pastikan penamaan file konsisten (gunakan NRP di setiap nama berkas) agar mudah dilacak dan tidak keliru saat pengumpulan.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 3 — KESALAHAN UMUM -->
+  <p class="section-title">Materi 3</p>
+  <h2>Kesalahan Umum yang Perlu Dihindari</h2>
+
+  <div class="mistake-grid">
+    <div class="mistake-card">
+      <div class="mistake-header" style="background:var(--red-pale);">
+        <span style="font-size:16px;">❌</span>
+        <h3 style="color:var(--red);font-size:13px;margin:0;">Lupa Menyimpan dengan Nama yang Benar</h3>
+      </div>
+      <div class="mistake-body"><p>Nama file tidak sesuai ketentuan (misalnya lupa menambahkan NRP) membuat file sulit dinilai atau dianggap tidak lengkap.</p></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-header" style="background:var(--red-pale);">
+        <span style="font-size:16px;">❌</span>
+        <h3 style="color:var(--red);font-size:13px;margin:0;">Menandatangani Dokumen yang Belum Final</h3>
+      </div>
+      <div class="mistake-body"><p>TTE dibubuhkan sebelum semua revisi PDF selesai, sehingga tanda tangan menjadi tidak valid setelah diedit ulang.</p></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-header" style="background:var(--red-pale);">
+        <span style="font-size:16px;">❌</span>
+        <h3 style="color:var(--red);font-size:13px;margin:0;">Tema Visual Tidak Konsisten</h3>
+      </div>
+      <div class="mistake-body"><p>Warna dan font antara surat, PPT, dan flyer berbeda-beda — padahal soal meminta identitas visual yang senada di ketiganya.</p></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-header" style="background:var(--red-pale);">
+        <span style="font-size:16px;">❌</span>
+        <h3 style="color:var(--red);font-size:13px;margin:0;">Slide Terlalu Padat Teks</h3>
+      </div>
+      <div class="mistake-body"><p>Mengabaikan aturan 6×6 dan prinsip visual — slide dipenuhi paragraf panjang alih-alih SmartArt atau poin ringkas.</p></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-header" style="background:var(--red-pale);">
+        <span style="font-size:16px;">❌</span>
+        <h3 style="color:var(--red);font-size:13px;margin:0;">Format Ekspor Salah</h3>
+      </div>
+      <div class="mistake-body"><p>Flyer dikumpulkan dalam PDF padahal diminta JPG, atau sebaliknya — periksa kembali instruksi format setiap soal.</p></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-header" style="background:var(--red-pale);">
+        <span style="font-size:16px;">❌</span>
+        <h3 style="color:var(--red);font-size:13px;margin:0;">Manajemen Waktu Buruk</h3>
+      </div>
+      <div class="mistake-body"><p>Terlalu lama di satu bagian (biasanya desain Canva) sehingga bagian lain dikerjakan terburu-buru mendekati waktu habis.</p></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 4 — CHECKLIST PERSIAPAN -->
+  <p class="section-title">Materi 4</p>
+  <h2>Checklist Persiapan Sebelum UAS</h2>
+
+  <div class="checklist-wrap">
+    <div class="checklist-group-title">📄 PDF</div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah lancar membuat PDF dari Word (Save As / Export)</p></div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah bisa mengedit teks langsung di PDF (LibreOffice/Adobe)</p></div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah lancar merge & compress via iLovePDF/Smallpdf</p></div>
+
+    <div class="checklist-group-title">🔏 TTE</div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Memahami perbedaan TTE tersertifikasi & tidak tersertifikasi</p></div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah lancar menandatangani PDF via Smallpdf/iLovePDF/Privy</p></div>
+
+    <div class="checklist-group-title">📊 PowerPoint</div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah terbiasa mengatur Slide Master untuk konsistensi tema</p></div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah lancar membuat SmartArt, tabel, dan chart sederhana</p></div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah bisa menerapkan animasi dasar tanpa berlebihan</p></div>
+
+    <div class="checklist-group-title">🎨 Canva</div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah terbiasa memilih & memodifikasi template Canva dengan cepat</p></div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Memahami cara mengekspor ke JPG/PDF sesuai kebutuhan</p></div>
+
+    <div class="checklist-group-title">⏱️ Manajemen Ujian</div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah tahu alokasi waktu ideal per bagian soal (lihat Materi 5)</p></div>
+    <div class="checklist-item"><div class="checklist-check"></div><p>Sudah menyiapkan penamaan file sesuai format yang diminta</p></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MATERI 5 — SIMULASI ALOKASI WAKTU -->
+  <p class="section-title">Materi 5</p>
+  <h2>Simulasi Alokasi Waktu Ujian (120 Menit)</h2>
+  <p>Berdasarkan bobot soal UAS, berikut saran alokasi waktu yang proporsional selama 120 menit ujian:</p>
+
+  <ul class="step-list">
+    <li>
+      <span class="step-num">1</span>
+      <div>
+        <h3>Soal PDF — ± 25 menit</h3>
+        <p>Buat surat di Word, export ke PDF, edit isi, merge lampiran, compress. Jangan berlama-lama menyusun kalimat surat — fokus ke penyelesaian teknis.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">2</span>
+      <div>
+        <h3>Soal TTE — ± 20 menit</h3>
+        <p>Tandatangani dokumen, tulis penjelasan singkat jenis TTE. Bagian ini relatif cepat jika dokumen dari Soal PDF sudah benar-benar final.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">3</span>
+      <div>
+        <h3>Soal PPT — ± 40 menit</h3>
+        <p>Bagian dengan bobot terbesar — alokasikan waktu terbanyak di sini. Susun Slide Master dulu sebelum mengisi konten agar tidak perlu mengulang format di setiap slide.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">4</span>
+      <div>
+        <h3>Soal Flyer Canva — ± 25 menit</h3>
+        <p>Pilih template yang sudah senada dari awal (sesuai warna surat/PPT) agar tidak buang waktu mencari-cari desain dari nol.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-num">5</span>
+      <div>
+        <h3>Cadangan &amp; pemeriksaan akhir — ± 10 menit</h3>
+        <p>Periksa kembali nama file, format ekspor, dan pastikan semua berkas terupload dengan benar sebelum waktu ujian berakhir.</p>
+      </div>
+    </li>
+  </ul>
+
+  <hr class="divider">
+
+  <!-- LATIHAN & TUGAS -->
+  <p class="section-title">Latihan &amp; Simulasi</p>
+  <h2>Simulasi UAS — Sesi 14</h2>
+
+  <div class="latihan-box">
+    <h3>🛠 Simulasi Ujian Penuh (85 menit)</h3>
+    <p>Kerjakan simulasi soal UAS secara mandiri dan senyata mungkin, mengikuti alokasi waktu di Materi 5 (dipersingkat proporsional untuk sesi kelas):</p>
+    <ul class="latihan-steps">
+      <li><strong>Soal PDF (± 18 menit):</strong> Buat surat pengumuman kegiatan singkat, export PDF, edit satu bagian, merge dengan lampiran sederhana, compress.</li>
+      <li><strong>Soal TTE (± 14 menit):</strong> Tandatangani hasil Soal PDF, tuliskan alasan jenis TTE yang dipilih.</li>
+      <li><strong>Soal PPT (± 28 menit):</strong> Susun 6–8 slide presentasi bertema sama dengan surat, terapkan Slide Master, tambahkan SmartArt dan animasi sederhana.</li>
+      <li><strong>Soal Flyer Canva (± 18 menit):</strong> Buat flyer senada, ekspor JPG.</li>
+      <li><strong>Pemeriksaan akhir (± 7 menit):</strong> Periksa semua nama file dan format sebelum dikumpulkan ke dosen sebagai simulasi.</li>
+    </ul>
+  </div>
+
+  <div class="tugas-box">
+    <h3>📌 Refleksi Akhir (opsional, tidak dinilai)</h3>
+    <ul>
+      <li>Bagian mana dari simulasi yang terasa paling menyita waktu? Pertimbangkan strategi untuk mempercepatnya sebelum UAS sesungguhnya.</li>
+      <li>Apakah ada materi dari 14 sesi yang masih terasa kurang dikuasai? Manfaatkan waktu sebelum UAS untuk berlatih ulang secara mandiri menggunakan panduan sesi-sesi sebelumnya.</li>
+      <li>Simulasi hari ini tidak dikumpulkan sebagai nilai, namun sangat dianjurkan untuk diselesaikan penuh sebagai bentuk latihan nyata.</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- RINGKASAN -->
+  <p class="section-title">Ringkasan</p>
+  <h2>Yang Direview Hari Ini</h2>
+
+  <div class="ringkasan-grid">
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">📚</div>
+      <p>Rekap 14 sesi dalam 4 blok materi: PDF, TTE, Canva, dan PowerPoint</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">⚖️</div>
+      <p>Struktur UAS: PDF 25%, TTE 25%, PPT 30%, Flyer Canva 20%</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">⚠️</div>
+      <p>Enam kesalahan umum yang perlu dihindari saat mengerjakan UAS</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">✅</div>
+      <p>Checklist kesiapan per topik sebelum menghadapi ujian</p>
+    </div>
+    <div class="ringkasan-card">
+      <div class="ringkasan-icon">⏱️</div>
+      <p>Alokasi waktu proporsional 120 menit sesuai bobot tiap soal</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CLOSING BANNER -->
+  <div class="closing-banner">
+    <h3>🎓 Selamat! 14 Sesi Telah Selesai</h3>
+    <p>Seluruh materi Teknologi Informasi Perkantoran — PDF, Digital Signature/TTE, Canva, dan PowerPoint — telah tuntas dipelajari. Selamat mempersiapkan diri menghadapi UAS. Tetap tenang, kerjakan secara berurutan, dan percaya pada kemampuan yang sudah diasah selama 14 sesi ini.</p>
+  </div>
+
+  <!-- NAV BAWAH -->
+  <div class="nav-sesi" style="margin-top:40px;margin-bottom:0;">
+    <a href="sesi13-panduan-terpadu.html" class="nav-btn">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Sesi 13 — Praktikum Terpadu
+    </a>
+    <span class="nav-btn disabled">Selamat Mengerjakan UAS 🎓</span>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Teknologi Informasi Perkantoran</strong> &nbsp;·&nbsp;
+  Sesi 14 — Review Umum &amp; Latihan Soal UAS &nbsp;·&nbsp;
+  Universitas Katolik Widya Mandala Surabaya
+</footer>
+
+</body>
+</html>
