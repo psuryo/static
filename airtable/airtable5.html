@@ -245,7 +245,8 @@
     <a href="#tinjauan">Tinjauan</a>
     <a href="#konsep">Konsep</a>
     <a href="#dua-arah">Dua Arah</a>
-    <a href="#praktik">Praktik</a>
+    <a href="#praktik">Praktik Dasar</a>
+    <a href="#praktik-lanjutan">Praktik Lanjutan</a>
     <a href="#tugas">Tugas</a>
   </nav>
 
@@ -256,7 +257,7 @@
     <dl class="meta-grid">
       <div><dt>Mata Kuliah</dt><dd>Pengelolaan Basis Data &amp; Administrasi Digital</dd></div>
       <div><dt>Sesi</dt><dd>05 dari 14 (Pasca UTS)</dd></div>
-      <div><dt>Durasi</dt><dd>1–2 jam</dd></div>
+      <div><dt>Durasi</dt><dd>2,5 jam (150 menit)</dd></div>
       <div><dt>Prasyarat</dt><dd>Sesi 04 — Form Airtable</dd></div>
     </dl>
   </header>
@@ -327,18 +328,85 @@
     </div>
   </section>
 
+
+  <section id="praktik-lanjutan">
+    <div class="section-label"><span class="section-num">05</span><h2>Praktik Lanjutan<span class="sub">Studi Kasus — Alur Disposisi Surat Masuk</span></h2></div>
+    <p class="lead">Setelah berhasil menghubungkan Pegawai, Cuti Pegawai, dan Surat Masuk, kembangkan base menjadi sistem pencatatan disposisi surat. Fokus latihan tetap pada pembuatan dan pengelolaan <em>Linked Record</em>, bukan Lookup, Rollup, atau Formula.</p>
+
+    <div class="memo">
+      <h3 style="font-family:'Special Elite',monospace;font-weight:400;margin-top:0;">Skenario pekerjaan</h3>
+      <p>Bagian administrasi menerima surat dari beberapa instansi. Setiap surat dicatat, kemudian dapat diteruskan kepada satu atau beberapa pegawai untuk ditindaklanjuti. Seorang pegawai juga dapat menerima disposisi dari beberapa surat.</p>
+      <p><strong>Relasi yang akan dibangun:</strong></p>
+      <div class="relation">
+        <div class="rel-box">
+          <span class="tname">Surat Masuk</span>
+          <div class="frow">Nomor Surat</div><div class="frow">Tanggal Terima</div>
+          <div class="frow">Perihal</div><div class="frow link">Disposisi (Linked Record)</div>
+        </div>
+        <div class="rel-link"><span>satu surat</span><div class="arrow-line"></div><span>banyak disposisi</span></div>
+        <div class="rel-box">
+          <span class="tname">Disposisi</span>
+          <div class="frow">Nomor Disposisi</div><div class="frow">Tanggal Disposisi</div>
+          <div class="frow">Instruksi</div><div class="frow link">Surat Masuk (Linked Record)</div>
+          <div class="frow link">Pegawai (Linked Record)</div>
+        </div>
+        <div class="rel-link"><span>ditugaskan kepada</span><div class="arrow-line"></div><span>banyak ke satu</span></div>
+        <div class="rel-box">
+          <span class="tname">Pegawai</span>
+          <div class="frow">Nama</div><div class="frow">Jabatan</div>
+          <div class="frow">Unit Kerja</div><div class="frow link">Disposisi (Linked Record)</div>
+        </div>
+      </div>
+      <div class="callout"><b>Catatan desain:</b> satu record Disposisi mewakili satu penugasan kepada satu pegawai untuk satu surat. Jika satu surat diteruskan kepada tiga pegawai, buat tiga record Disposisi. Dengan demikian, riwayat penugasan dapat dicatat secara terpisah.</div>
+    </div>
+
+    <h3 style="font-family:'Special Elite',monospace;font-weight:400;margin:26px 0 10px;">Tahapan pengerjaan</h3>
+    <div class="memo">
+      <ol class="steps">
+        <li><div><b>Buat table baru bernama "Disposisi".</b><small>Siapkan field: Nomor Disposisi (primary field), Tanggal Disposisi (Date), Instruksi (Long text), Status (Single select: Baru, Diproses, Selesai), Surat Masuk (Link to another record), dan Pegawai (Link to another record).</small></div></li>
+        <li><div><b>Hubungkan Disposisi dengan Surat Masuk.</b><small>Pilih table Surat Masuk pada field Linked Record. Pastikan field cerminan Disposisi muncul di table Surat Masuk.</small></div></li>
+        <li><div><b>Hubungkan Disposisi dengan Pegawai.</b><small>Pilih table Pegawai. Pastikan field cerminan Disposisi muncul di table Pegawai. Gunakan satu pegawai untuk setiap record disposisi.</small></div></li>
+        <li><div><b>Masukkan data latihan.</b><small>Buat minimal 8 record Disposisi. Gunakan minimal 4 surat dan 5 pegawai yang sudah tersedia. Pastikan ada satu surat yang memiliki minimal 3 disposisi dan satu pegawai yang menerima minimal 2 disposisi.</small></div></li>
+        <li><div><b>Periksa relasi dari ketiga arah.</b><small>Buka table Disposisi, Surat Masuk, dan Pegawai. Cocokkan apakah record yang saling terkait tampil pada field cerminan yang benar.</small></div></li>
+        <li><div><b>Lakukan simulasi perubahan data.</b><small>Ubah pegawai yang menerima satu disposisi, ganti surat yang dirujuk oleh satu disposisi, lalu periksa perubahan pada kedua table terkait.</small></div></li>
+        <li><div><b>Uji penghapusan tautan.</b><small>Hapus hubungan antara satu disposisi dan pegawai melalui field Linked Record (bukan menghapus record pegawainya). Periksa apakah hubungan yang sama juga hilang dari sisi Pegawai. Setelah itu, hubungkan kembali dengan pegawai yang benar.</small></div></li>
+        <li><div><b>Uji konsistensi dan dokumentasikan.</b><small>Periksa kembali minimal 8 record Disposisi. Pastikan tidak ada penugasan yang tertaut ke surat atau pegawai yang keliru. Ambil screenshot ketiga table dan relasi cerminan.</small></div></li>
+      </ol>
+    </div>
+
+    <h3 style="font-family:'Special Elite',monospace;font-weight:400;margin:26px 0 10px;">Pembagian waktu praktik 150 menit</h3>
+    <div class="table-scroll">
+      <table class="ledger">
+        <thead><tr><th>Kegiatan</th><th>Waktu</th><th>Hasil yang diharapkan</th></tr></thead>
+        <tbody>
+          <tr><td>Review relasi Pegawai–Cuti Pegawai dan Pegawai–Surat Masuk</td><td>15 menit</td><td>Relasi dasar sudah benar</td></tr>
+          <tr><td>Membuat table Disposisi dan field-fieldnya</td><td>20 menit</td><td>Struktur table Disposisi tersedia</td></tr>
+          <tr><td>Membuat dua Linked Record</td><td>25 menit</td><td>Relasi Disposisi–Surat Masuk dan Disposisi–Pegawai aktif</td></tr>
+          <tr><td>Mengisi dan menghubungkan data latihan</td><td>30 menit</td><td>Minimal 8 record Disposisi tertaut dengan benar</td></tr>
+          <tr><td>Memeriksa relasi dua arah dan melakukan simulasi perubahan</td><td>25 menit</td><td>Mahasiswa memahami dampak perubahan relasi</td></tr>
+          <tr><td>Uji konsistensi, perbaikan, dan dokumentasi</td><td>20 menit</td><td>Seluruh relasi diperiksa dan screenshot tersedia</td></tr>
+          <tr><td>Demonstrasi singkat dan refleksi</td><td>15 menit</td><td>Mahasiswa dapat menjelaskan struktur relasi yang dibuat</td></tr>
+          <tr><th>Total</th><th>150 menit</th><th>2,5 jam praktik</th></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section id="tugas">
-    <div class="section-label"><span class="section-num">05</span><h2>Tugas Mandiri<span class="sub">Surat Perintah Latihan</span></h2></div>
+    <div class="section-label"><span class="section-num">06</span><h2>Tugas Mandiri<span class="sub">Surat Perintah Latihan</span></h2></div>
     <div class="task-order">
       <h3>Perintah Latihan No. 05/AT/2026</h3>
-      <p style="margin-top:0;">Kerjakan sebelum sesi berikutnya. Centang setiap butir yang sudah diselesaikan:</p>
-      <label class="checkitem"><input type="checkbox"><span>Field Linked Record berhasil dibuat antara table Cuti Pegawai dan Pegawai.</span></label>
-      <label class="checkitem"><input type="checkbox"><span>Minimal 5 record cuti sudah dikaitkan ke pegawai yang sesuai.</span></label>
-      <label class="checkitem"><input type="checkbox"><span>Field cerminan otomatis terlihat dan berfungsi di table Pegawai.</span></label>
-      <label class="checkitem"><input type="checkbox"><span>Tambahan: hubungkan juga table "Surat Masuk" (Sesi 02) ke table Pegawai.</span></label>
-      <label class="checkitem"><input type="checkbox"><span>Screenshot kedua relasi dikumpulkan lewat LMS/grup kelas.</span></label>
-      <p class="deadline">Tenggat: sebelum Sesi 06 dimulai — dibawa dalam bentuk tautan share base (Editor access untuk dosen).</p>
-    </div>
+      <p style="margin-top:0;">Pastikan seluruh hasil berikut tersedia pada base Airtable yang sama:</p>
+      <label class="checkitem"><input type="checkbox"><span>Relasi Pegawai–Cuti Pegawai berfungsi dan minimal 5 record cuti tertaut ke pegawai yang sesuai.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Relasi Pegawai–Surat Masuk berfungsi dan minimal 5 surat tertaut ke pegawai yang sesuai.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Table Disposisi sudah dibuat dengan field sesuai instruksi praktik.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Minimal 8 record Disposisi sudah dibuat, menggunakan minimal 4 surat dan 5 pegawai.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Ada satu surat yang memiliki minimal 3 disposisi dan satu pegawai yang menerima minimal 2 disposisi.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Field cerminan pada table Surat Masuk dan Pegawai menampilkan relasi Disposisi yang sesuai.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Simulasi mengubah dan menghapus tautan sudah dilakukan, kemudian relasi diperiksa dan diperbaiki kembali.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Screenshot table Pegawai, Cuti Pegawai, Surat Masuk, dan Disposisi dikumpulkan.</span></label>
+      <label class="checkitem"><input type="checkbox"><span>Sertakan penjelasan singkat (150–250 kata): tabel mana yang saling terhubung, jenis relasinya, dan contoh satu surat yang memiliki beberapa disposisi.</span></label>
+      <p class="deadline">Pengumpulan: tautan share base (Editor access untuk dosen) dan screenshot melalui LMS/grup kelas. Pastikan data tidak berisi informasi pribadi yang sebenarnya.</p>    </div>
   </section>
 
   <footer>
