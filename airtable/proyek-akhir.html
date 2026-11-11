@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyek Akhir Airtable · Soal dan Topik — D3 Administrasi Perkantoran</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#e7dcc0;--paper-light:#faf5e6;--paper-dark:#ddcda3;--ink:#23283a;--ink-soft:#545b73;--stamp:#a8382c;--ledger:#3d5f4c;--tab:#8a5a34;--line:rgba(35,40,58,.18);--shadow:rgba(35,25,10,.25);}
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:radial-gradient(1200px 800px at 15% -10%,#f1e6c8 0%,transparent 60%),var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:var(--stamp);}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 20px 90px;}
+  nav.tabs{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;background:var(--paper);padding-top:14px;border-bottom:3px solid var(--ink);}
+  nav.tabs a{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.04em;text-decoration:none;color:var(--paper-light);background:var(--tab);padding:8px 14px 9px;margin-right:4px;border-radius:6px 6px 0 0;border:1px solid var(--ink);border-bottom:none;white-space:nowrap;transform:translateY(3px);transition:.15s;}
+  nav.tabs a:hover,nav.tabs a.active{background:var(--stamp);transform:translateY(0);}
+  nav.tabs .back{background:var(--ledger);margin-right:auto;}
+  .catalog-card{position:relative;background:var(--paper-light);border:1px solid var(--line);box-shadow:8px 8px 0 var(--shadow);padding:34px 34px 30px 60px;margin:34px 0 44px;}
+  .catalog-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:34px;background-image:radial-gradient(circle at 17px 28px,var(--paper) 6px,transparent 6.5px);background-repeat:repeat-y;background-size:34px 54px;border-right:1px dashed var(--line);}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin:0;}
+  h1.title{font-family:'Special Elite',monospace;font-weight:400;font-size:clamp(1.6rem,4vw,2.5rem);margin:.25em 0 .4em;}
+  .meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px 24px;font-family:'IBM Plex Mono',monospace;font-size:.82rem;border-top:1px dashed var(--line);padding-top:14px;margin:0;}
+  .meta-grid dt{color:var(--ink-soft);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;}
+  .meta-grid dd{margin:2px 0 0;font-weight:600;}
+  .stamp{position:absolute;top:22px;right:26px;font-family:'Special Elite',monospace;color:var(--stamp);border:3px solid var(--stamp);border-radius:8px;padding:8px 14px;font-size:1.05rem;letter-spacing:.06em;transform:rotate(6deg);opacity:.88;mix-blend-mode:multiply;}
+  .stamp small{display:block;font-size:.55rem;letter-spacing:.18em;margin-top:2px;}
+  section{margin:56px 0;scroll-margin-top:70px;}
+  .section-label{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;}
+  .section-num{font-family:'Special Elite',monospace;font-size:2.1rem;-webkit-text-stroke:1.5px var(--ink);color:transparent;line-height:1;}
+  h2{font-family:'Special Elite',monospace;font-weight:400;font-size:1.4rem;margin:0;}
+  h2 .sub{display:block;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--ink-soft);letter-spacing:.05em;margin-top:3px;}
+  p{max-width:68ch;}
+  code{font-family:'IBM Plex Mono',monospace;font-size:.82rem;background:var(--paper-dark);padding:1px 6px;border-radius:3px;}
+  .ledger{width:100%;border-collapse:collapse;background:var(--paper-light);border:1px solid var(--ink);font-size:.9rem;}
+  .ledger caption{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;}
+  .ledger th,.ledger td{padding:10px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;}
+  .ledger thead th{background:var(--ledger);color:var(--paper-light);font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;}
+  .ledger tbody tr:nth-child(even){background:rgba(61,95,76,.06);}
+  .ledger tfoot td{font-weight:700;background:var(--paper-dark);}
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0;}
+  .memo{background:var(--paper-light);border-left:4px solid var(--stamp);padding:22px 24px;box-shadow:6px 6px 0 var(--shadow);margin:18px 0;}
+  .memo h3{font-family:'Special Elite',monospace;font-weight:400;font-size:1.1rem;margin:0 0 4px;}
+  .memo .pts{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--paper-light);background:var(--tab);padding:2px 8px;border-radius:3px;margin-left:8px;letter-spacing:.05em;vertical-align:middle;}
+  ol.steps{list-style:none;margin:10px 0 0;padding:0;counter-reset:step;}
+  ol.steps li{counter-increment:step;display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(step,decimal-leading-zero);font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.78rem;color:var(--paper-light);background:var(--ledger);min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  ol.steps small{color:var(--ink-soft);display:block;}
+  .callout{border:1px dashed var(--stamp);background:rgba(168,56,44,.06);padding:14px 18px;font-size:.9rem;margin:16px 0;}
+  .callout b{color:var(--stamp);}
+  .task-order{background:repeating-linear-gradient(var(--paper-light),var(--paper-light) 27px,var(--line) 28px);border:1px solid var(--ink);padding:24px 26px 26px;box-shadow:8px 8px 0 var(--shadow);}
+  .task-order h3{font-family:'Special Elite',monospace;font-weight:400;margin:0 0 12px;font-size:1.15rem;}
+  .checkitem{display:flex;gap:10px;align-items:flex-start;margin:10px 0;cursor:pointer;}
+  .checkitem input{margin-top:4px;width:16px;height:16px;accent-color:var(--stamp);cursor:pointer;}
+  .checkitem.done span{color:var(--ink-soft);text-decoration:line-through;}
+  .deadline{margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--stamp);border-top:1px dashed var(--line);padding-top:12px;}
+  footer{margin-top:70px;padding-top:24px;border-top:3px double var(--ink);font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  @media(max-width:640px){.catalog-card{padding:26px 20px 24px 46px;}.catalog-card::before{width:22px;}.stamp{position:static;margin-top:16px;display:inline-block;transform:rotate(-2deg);}}
+  @media print{nav.tabs{position:static;}.catalog-card,.memo,.task-order{box-shadow:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="tabs">
+    <a href="index.html" class="back">← Indeks</a>
+    <a href="#ketentuan">Ketentuan</a>
+    <a href="#topik">9 Topik</a>
+    <a href="#syarat">Syarat Teknis</a>
+    <a href="#tahap">Tahapan</a>
+    <a href="#rubrik">Penilaian</a>
+  </nav>
+
+  <header class="catalog-card">
+    <div class="stamp">PROYEK<small>sesi 12–14</small></div>
+    <p class="eyebrow">Surat Perintah Proyek — D3 Administrasi Perkantoran</p>
+    <h1 class="title">Proyek Akhir: Sistem Administrasi Digital dengan Airtable</h1>
+    <dl class="meta-grid">
+      <div><dt>Sesi</dt><dd>12 – 14</dd></div>
+      <div><dt>Sifat</dt><dd>Individu, topik berbeda</dd></div>
+      <div><dt>Peserta</dt><dd>9 mahasiswa, 9 topik</dd></div>
+      <div><dt>Evaluasi</dt><dd>Setelah Sesi 14</dd></div>
+    </dl>
+  </header>
+
+  <section id="ketentuan">
+    <div class="section-label"><span class="section-num">01</span><h2>Soal Proyek<span class="sub">Baca sampai selesai</span></h2></div>
+    <p>Anda adalah staf administrasi yang ditugaskan menggantikan pencatatan manual (buku, Excel, atau grup percakapan) dengan sebuah <strong>sistem berbasis Airtable</strong>. Rancang, bangun, uji, dan presentasikan sistem tersebut untuk <strong>satu topik</strong> yang Anda peroleh dari daftar di bagian 02. Proyek ini merangkum materi Sesi 01–11: field, view, form, linked record, lookup, rollup, formula, filtering, automation, interface, dan permission.</p>
+    <div class="callout"><b>Aturan topik:</b> setiap mahasiswa mendapat <strong>satu topik yang berbeda</strong>, tidak boleh bertukar tanpa persetujuan dosen. Topik dibagikan lewat undian di Sesi 12 dan dicatat pada tabel di bawah. Data boleh fiktif, namun harus masuk akal dan dibuat sendiri.</div>
+    <div class="table-scroll">
+    <table class="ledger">
+      <caption>Pembagian topik (diisi dosen setelah undian)</caption>
+      <thead><tr><th style="width:60px;">No</th><th>Topik</th><th>Nama Mahasiswa</th></tr></thead>
+      <tbody><tr><td>1</td><td>Kontrak Vendor &amp; Pembayaran</td><td>&nbsp;</td></tr><tr><td>2</td><td>Arsip Dokumen &amp; Retensi</td><td>&nbsp;</td></tr><tr><td>3</td><td>Inventaris &amp; Permintaan ATK</td><td>&nbsp;</td></tr><tr><td>4</td><td>Peminjaman Ruang Rapat</td><td>&nbsp;</td></tr><tr><td>5</td><td>Kendaraan Dinas &amp; Pemeliharaan</td><td>&nbsp;</td></tr><tr><td>6</td><td>Notulen Rapat &amp; Tindak Lanjut</td><td>&nbsp;</td></tr><tr><td>7</td><td>Buku Tamu &amp; Janji Temu</td><td>&nbsp;</td></tr><tr><td>8</td><td>Helpdesk &amp; Pengaduan Layanan</td><td>&nbsp;</td></tr><tr><td>9</td><td>Perjalanan Dinas &amp; Biaya</td><td>&nbsp;</td></tr></tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="topik">
+    <div class="section-label"><span class="section-num">02</span><h2>Daftar 9 Topik<span class="sub">Kasus dan arah pengerjaan</span></h2></div>
+    <p>Struktur table, rollup, dan formula di bawah hanyalah <b>usulan awal</b>. Anda boleh menambah atau mengubahnya, selama syarat teknis di bagian 03 terpenuhi.</p>
+    <div class="memo">
+      <h3>Topik 1 — Kontrak Vendor &amp; Pembayaran</h3>
+      <p style="margin:6px 0;"><b>Kasus:</b> Kontrak dengan vendor (kebersihan, internet, fotokopi, dan lain-lain) sering lewat masa berlaku dan jadwal pembayarannya tidak terpantau.</p>
+      <p style="margin:6px 0;"><b>Table awal (usulan):</b> Vendor, Kontrak, Pembayaran/Termin, Penanggung Jawab.</p>
+      <p style="margin:6px 0;"><b>Rollup &amp; Formula:</b> Rollup total nilai yang sudah dibayar per kontrak dan jumlah kontrak aktif per vendor; Formula <i>Sisa Masa Kontrak</i>, <i>Sisa Tagihan</i>, dan status <i>Segera Berakhir</i> bila sisa masa kurang dari 30 hari.</p>
+      <p style="margin:6px 0;"><b>Otomatisasi:</b> Pengingat ke penanggung jawab saat kontrak mendekati masa berakhir atau pembayaran jatuh tempo.</p>
+      <p style="margin:6px 0;"><b>Dashboard:</b> Kontrak per status, total tagihan belum dibayar, daftar kontrak segera berakhir.</p>
+    </div>
+    <div class="memo">
+      <h3>Topik 2 — Arsip Dokumen &amp; Retensi</h3>
+      <p style="margin:6px 0;"><b>Kasus:</b> Dokumen kantor menumpuk tanpa kejelasan lokasi simpan dan kapan boleh dimusnahkan.</p>
+      <p style="margin:6px 0;"><b>Table awal (usulan):</b> Dokumen, Kategori/Klasifikasi, Lokasi Simpan (rak/boks), Peminjaman Arsip.</p>
+      <p style="margin:6px 0;"><b>Rollup &amp; Formula:</b> Rollup jumlah dokumen per boks; Formula <i>Tanggal Jatuh Retensi</i> dan status <i>Siap Musnah</i>.</p>
+      <p style="margin:6px 0;"><b>Otomatisasi:</b> Pengingat saat dokumen mendekati masa retensi.</p>
+      <p style="margin:6px 0;"><b>Dashboard:</b> Dokumen per kategori, daftar siap musnah.</p>
+    </div>
+    <div class="memo">
+      <h3>Topik 3 — Inventaris &amp; Permintaan ATK</h3>
+      <p style="margin:6px 0;"><b>Kasus:</b> Stok ATK sering habis mendadak karena permintaan antar-bagian tidak tercatat.</p>
+      <p style="margin:6px 0;"><b>Table awal (usulan):</b> Barang, Permintaan, Bagian/Unit, Pembelian/Restock.</p>
+      <p style="margin:6px 0;"><b>Rollup &amp; Formula:</b> Rollup total keluar per barang; Formula <i>Stok Saat Ini</i> dan status <i>Perlu Restock</i> bila di bawah batas minimum.</p>
+      <p style="margin:6px 0;"><b>Otomatisasi:</b> Peringatan otomatis saat stok di bawah minimum.</p>
+      <p style="margin:6px 0;"><b>Dashboard:</b> Stok kritis, pemakaian per bagian.</p>
+    </div>
+    <div class="memo">
+      <h3>Topik 4 — Peminjaman Ruang Rapat</h3>
+      <p style="margin:6px 0;"><b>Kasus:</b> Jadwal ruang rapat bentrok karena dicatat di grup percakapan.</p>
+      <p style="margin:6px 0;"><b>Table awal (usulan):</b> Ruang, Peminjaman, Pegawai/Unit Peminjam, Fasilitas.</p>
+      <p style="margin:6px 0;"><b>Rollup &amp; Formula:</b> Rollup jumlah peminjaman per ruang; Formula <i>Durasi (jam)</i> dan penanda <i>Hari Ini</i>.</p>
+      <p style="margin:6px 0;"><b>Otomatisasi:</b> Konfirmasi otomatis ke peminjam setelah form diisi.</p>
+      <p style="margin:6px 0;"><b>Dashboard:</b> Kalender pemakaian, ruang paling sering dipakai.</p>
+    </div>
+    <div class="memo">
+      <h3>Topik 5 — Kendaraan Dinas &amp; Pemeliharaan</h3>
+      <p style="margin:6px 0;"><b>Kasus:</b> Pemakaian dan servis kendaraan dinas dicatat manual sehingga jadwal servis terlewat.</p>
+      <p style="margin:6px 0;"><b>Table awal (usulan):</b> Kendaraan, Penggunaan, Pengemudi, Servis/BBM.</p>
+      <p style="margin:6px 0;"><b>Rollup &amp; Formula:</b> Rollup total biaya servis dan total km per kendaraan; Formula <i>Servis Berikutnya</i> dan status <i>Segera Servis</i>.</p>
+      <p style="margin:6px 0;"><b>Otomatisasi:</b> Pengingat jadwal servis dan pajak kendaraan.</p>
+      <p style="margin:6px 0;"><b>Dashboard:</b> Biaya per kendaraan, kendaraan jatuh tempo servis.</p>
+    </div>
+    <div class="memo">
+      <h3>Topik 6 — Notulen Rapat &amp; Tindak Lanjut</h3>
+      <p style="margin:6px 0;"><b>Kasus:</b> Hasil rapat tidak terpantau sehingga tindak lanjut sering terlupa.</p>
+      <p style="margin:6px 0;"><b>Table awal (usulan):</b> Rapat, Butir Tindak Lanjut, Penanggung Jawab, Peserta.</p>
+      <p style="margin:6px 0;"><b>Rollup &amp; Formula:</b> Rollup jumlah butir selesai/total per rapat; Formula <i>% Penyelesaian</i> dan status <i>Lewat Tenggat</i>.</p>
+      <p style="margin:6px 0;"><b>Otomatisasi:</b> Pengingat ke penanggung jawab H-1 tenggat.</p>
+      <p style="margin:6px 0;"><b>Dashboard:</b> Penyelesaian per rapat, butir lewat tenggat.</p>
+    </div>
+    <div class="memo">
+      <h3>Topik 7 — Buku Tamu &amp; Janji Temu</h3>
+      <p style="margin:6px 0;"><b>Kasus:</b> Kunjungan tamu dicatat di buku kertas sehingga sulit dirunjuk dan dilaporkan.</p>
+      <p style="margin:6px 0;"><b>Table awal (usulan):</b> Tamu, Kunjungan/Janji Temu, Pegawai Tujuan, Keperluan.</p>
+      <p style="margin:6px 0;"><b>Rollup &amp; Formula:</b> Rollup jumlah kunjungan per pegawai dan per tamu; Formula <i>Lama Kunjungan</i> dan label <i>Tamu Rutin</i> bila lebih dari 3 kali.</p>
+      <p style="margin:6px 0;"><b>Otomatisasi:</b> Pemberitahuan ke pegawai tujuan saat janji dibuat.</p>
+      <p style="margin:6px 0;"><b>Dashboard:</b> Kunjungan per hari/keperluan, tamu rutin.</p>
+    </div>
+    <div class="memo">
+      <h3>Topik 8 — Helpdesk &amp; Pengaduan Layanan</h3>
+      <p style="margin:6px 0;"><b>Kasus:</b> Keluhan layanan kantor datang dari banyak jalur dan tidak ada batas waktu penyelesaian.</p>
+      <p style="margin:6px 0;"><b>Table awal (usulan):</b> Tiket Pengaduan, Pelapor, Petugas, Kategori.</p>
+      <p style="margin:6px 0;"><b>Rollup &amp; Formula:</b> Rollup jumlah tiket terbuka per petugas; Formula <i>Lama Penanganan</i> dan status <i>Melewati SLA</i> (misal 3 hari).</p>
+      <p style="margin:6px 0;"><b>Otomatisasi:</b> Notifikasi ke petugas saat tiket baru masuk.</p>
+      <p style="margin:6px 0;"><b>Dashboard:</b> Tiket per status dan kategori, tiket melewati SLA.</p>
+    </div>
+    <div class="memo">
+      <h3>Topik 9 — Perjalanan Dinas &amp; Biaya</h3>
+      <p style="margin:6px 0;"><b>Kasus:</b> Rekap biaya perjalanan dinas dihitung manual di akhir bulan dan rawan salah.</p>
+      <p style="margin:6px 0;"><b>Table awal (usulan):</b> Perjalanan Dinas, Pegawai, Rincian Biaya, Tujuan/Kegiatan.</p>
+      <p style="margin:6px 0;"><b>Rollup &amp; Formula:</b> Rollup total biaya per perjalanan dan per pegawai; Formula <i>Lama Perjalanan</i> dan <i>Selisih dengan Anggaran</i>.</p>
+      <p style="margin:6px 0;"><b>Otomatisasi:</b> Pemberitahuan ke atasan saat pengajuan perjalanan baru.</p>
+      <p style="margin:6px 0;"><b>Dashboard:</b> Biaya per bulan, perjalanan melebihi anggaran.</p>
+    </div>
+  </section>
+
+  <section id="syarat">
+    <div class="section-label"><span class="section-num">03</span><h2>Syarat Teknis Minimal<span class="sub">Berlaku untuk semua topik</span></h2></div>
+    <div class="table-scroll">
+    <table class="ledger">
+      <thead><tr><th>Komponen</th><th>Minimal</th><th>Materi</th></tr></thead>
+      <tbody>
+        <tr><td>Table dan data</td><td>3–4 table, masing-masing 10–15 record data uji</td><td>Sesi 01–02</td></tr>
+        <tr><td>Linked Record</td><td>2 relasi antar table</td><td>Sesi 05</td></tr>
+        <tr><td>Lookup</td><td>2 field</td><td>Sesi 06</td></tr>
+        <tr><td>Rollup</td><td>2 field dengan fungsi agregat berbeda</td><td>Sesi 06</td></tr>
+        <tr><td>Formula</td><td>3 field, minimal 1 memakai IF dan 1 memakai tanggal</td><td>Sesi 07</td></tr>
+        <tr><td>Form</td><td>1 form input utama</td><td>Sesi 04</td></tr>
+        <tr><td>View</td><td>3 jenis view berbeda (mis. Grid, Kanban, Calendar) dengan filter, sort, atau group</td><td>Sesi 03, 08</td></tr>
+        <tr><td>Automation</td><td>1 automation (trigger dan aksi)</td><td>Sesi 09</td></tr>
+        <tr><td>Interface/Dashboard</td><td>1 dashboard dengan minimal 4 komponen</td><td>Sesi 10</td></tr>
+        <tr><td>Permission</td><td>Dua peran: Editor/Staf dan Read-only/Pimpinan</td><td>Sesi 11</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <section id="tahap">
+    <div class="section-label"><span class="section-num">04</span><h2>Tahapan dan Luaran<span class="sub">Tiga sesi, tiga setoran</span></h2></div>
+    <div class="memo">
+      <h3>Sesi 12 — Perancangan</h3>
+      <ol class="steps">
+        <li><div><b>Undian topik</b> dan konsultasi singkat dengan dosen.</div></li>
+        <li><div><b>Tulis dokumen rancangan 1 halaman:</b> uraian masalah, daftar pengguna dan perannya, daftar table beserta field, gambar relasi (ERD sederhana), serta rencana Lookup, Rollup, Formula, Automation, dan Dashboard.</div></li>
+        <li><div><b>Presentasi rancangan 3 menit</b> dan perbaikan dari masukan.</div></li>
+      </ol>
+      <p><b>Luaran:</b> dokumen rancangan (dikumpulkan di akhir sesi).</p>
+    </div>
+    <div class="memo">
+      <h3>Sesi 13 — Implementasi</h3>
+      <ol class="steps">
+        <li><div><b>Bangun base sesuai rancangan:</b> table, relasi, field turunan, form, dan view.</div></li>
+        <li><div><b>Buat automation dan dashboard</b>, lalu atur permission untuk dua peran.</div></li>
+        <li><div><b>Isi data uji</b> sampai memenuhi syarat minimal.</div></li>
+      </ol>
+      <p><b>Luaran:</b> tautan base (akses Editor untuk dosen) dan checklist fitur yang sudah selesai.</p>
+    </div>
+    <div class="memo">
+      <h3>Sesi 14 — Penyempurnaan &amp; Simulasi</h3>
+      <ol class="steps">
+        <li><div><b>Uji silang berantai:</b> Mahasiswa 1 menguji base Mahasiswa 2, Mahasiswa 2 menguji base Mahasiswa 3, dan seterusnya sampai Mahasiswa 9 menguji base Mahasiswa 1. Penguji mengisi lembar temuan (minimal 3 temuan: salah rumus, field membingungkan, data kosong, dan sebagainya).</div></li>
+        <li><div><b>Perbaiki base</b> berdasarkan temuan, lalu tulis panduan pakai 1 halaman untuk pengguna awam.</div></li>
+        <li><div><b>Latihan presentasi 5–7 menit:</b> masalah, solusi, demo, refleksi.</div></li>
+      </ol>
+      <p><b>Luaran:</b> base final, panduan pakai, lembar temuan, dan bahan presentasi. Presentasi akhir dilaksanakan pada jadwal evaluasi setelah Sesi 14.</p>
+    </div>
+    <div class="callout"><b>Pegangan:</b> format penamaan file <code>NIM_Nama_Proyek_[Nama Topik]</code>. Tautan base harus tetap terbuka sampai nilai keluar.</div>
+  </section>
+
+  <section id="rubrik">
+    <div class="section-label"><span class="section-num">05</span><h2>Rubrik Penilaian<span class="sub">Total 100 poin</span></h2></div>
+    <div class="table-scroll">
+    <table class="ledger">
+      <thead><tr><th>Aspek</th><th>Kriteria</th><th style="width:80px;">Poin</th></tr></thead>
+      <tbody>
+        <tr><td>Rancangan</td><td>Masalah jelas, struktur table dan relasi logis, sesuai topik</td><td>20</td></tr>
+        <tr><td>Struktur data</td><td>Linked Record, Lookup, Rollup, dan Formula benar dan berfungsi; data uji memadai</td><td>25</td></tr>
+        <tr><td>Otomatisasi &amp; dashboard</td><td>Form, view, automation, interface, dan permission lengkap dan berguna bagi pengguna</td><td>20</td></tr>
+        <tr><td>Uji coba &amp; dokumentasi</td><td>Temuan uji silang ditindaklanjuti; panduan pakai jelas</td><td>15</td></tr>
+        <tr><td>Presentasi</td><td>Alur runtut, demo lancar, mampu menjelaskan alasan rancangan saat tanya jawab</td><td>20</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="2">Total</td><td>100</td></tr></tfoot>
+    </table>
+    </div>
+    <p style="font-size:.88rem;color:var(--ink-soft);">Pengurangan nilai: terlambat mengumpulkan luaran tiap sesi, akses base tidak bisa dibuka, syarat teknis minimal tidak terpenuhi, atau base terbukti disalin dari teman.</p>
+  </section>
+
+  <footer>
+    <span>Proyek Akhir · Sesi 12–14</span>
+    <span>Evaluasi akhir setelah Sesi 14</span>
+  </footer>
+
+</div>
+
+<script>
+  const links=Array.from(document.querySelectorAll('nav.tabs a[href^="#"]'));
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  const setActive=()=>{let idx=0;const pos=window.scrollY+90;secs.forEach((s,i)=>{if(s&&s.offsetTop<=pos)idx=i;});links.forEach((a,i)=>a.classList.toggle('active',i===idx));};
+  document.addEventListener('scroll',setActive,{passive:true});setActive();
+  document.querySelectorAll('.checkitem input').forEach(cb=>cb.addEventListener('change',()=>cb.closest('.checkitem').classList.toggle('done',cb.checked)));
+</script>
+</body>
+</html>
